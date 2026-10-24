@@ -16,7 +16,9 @@ DISCLAIMER = ("Automated technical signal for personal use only. Not investment 
 def send_email(subject: str, text: str, html: str | None = None) -> bool:
     user = os.getenv("SMTP_USER")
     pw = os.getenv("SMTP_PASS")
-    to = os.getenv("EMAIL_TO") or user
+    # EMAIL_TO can hold several addresses separated by commas or semicolons
+    raw = (os.getenv("EMAIL_TO") or user or "").replace(";", ",")
+    to = ", ".join(a.strip() for a in raw.split(",") if a.strip())
     if not user or not pw:
         print(f"[email skipped – not configured] {subject}")
         return False
