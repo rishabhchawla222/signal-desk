@@ -1,6 +1,6 @@
-# Signal Desk — personal NIFTY / BANKNIFTY call & put signals
+# Signal Desk — personal NIFTY / SENSEX call & put signals
 
-A personal tool that watches NIFTY and BANKNIFTY every 5 minutes from 9:15 AM to 3:15 PM IST,
+A personal tool that watches NIFTY and SENSEX every 5 minutes from 9:15 AM to 3:15 PM IST,
 and emails you when a strict buy-CALL or buy-PUT setup appears — plus stop-loss updates and exits.
 A dashboard website shows the live picture.
 
@@ -89,7 +89,7 @@ pick the nearest available expiry. An ATM option moves roughly half the index po
 
 ## Changing settings
 Edit `config.json` on GitHub (pencil icon → Commit). Examples:
-- Turn SENSEX on: set `"enabled": true` for SENSEX.
+- Switch indices: set `"enabled": true` or `false` per index (BANKNIFTY is included but off).
 - More/fewer signals: `max_trades_per_index`, `adx_min`, RSI bands.
 - Wider target: `reward_risk` (e.g. 2.0).
 

@@ -1,8 +1,23 @@
 {
   "indices": [
-    { "name": "NIFTY",     "symbol": "^NSEI",    "strike_step": 50,  "enabled": true },
-    { "name": "BANKNIFTY", "symbol": "^NSEBANK", "strike_step": 100, "enabled": true },
-    { "name": "SENSEX",    "symbol": "^BSESN",   "strike_step": 100, "enabled": false }
+    {
+      "name": "NIFTY",
+      "symbol": "^NSEI",
+      "strike_step": 50,
+      "enabled": true
+    },
+    {
+      "name": "SENSEX",
+      "symbol": "^BSESN",
+      "strike_step": 100,
+      "enabled": true
+    },
+    {
+      "name": "BANKNIFTY",
+      "symbol": "^NSEBANK",
+      "strike_step": 100,
+      "enabled": false
+    }
   ],
   "strategy": {
     "ema_fast": 9,
