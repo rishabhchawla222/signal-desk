@@ -17,30 +17,35 @@ def send_email(subject: str, text: str, html: str | None = None) -> bool:
     user = os.getenv("SMTP_USER")
     pw = os.getenv("SMTP_PASS")
     # EMAIL_TO can hold several addresses separated by commas or semicolons
+    # Each recipient gets a separate copy, so nobody sees the other addresses.
     raw = (os.getenv("EMAIL_TO") or user or "").replace(";", ",")
-    to = ", ".join(a.strip() for a in raw.split(",") if a.strip())
-    if not user or not pw:
+    recipients = list(dict.fromkeys(a.strip() for a in raw.split(",") if a.strip()))
+    if not user or not pw or not recipients:
         print(f"[email skipped – not configured] {subject}")
         return False
-    msg = EmailMessage()
-    msg["Subject"] = subject
-    msg["From"] = f"Signal Desk <{user}>"
-    msg["To"] = to
-    msg.set_content(text)
-    if html:
-        msg.add_alternative(html, subtype="html")
     host = os.getenv("SMTP_HOST", "smtp.gmail.com")
     port = int(os.getenv("SMTP_PORT", "465"))
+    pending = recipients[:]
     for attempt in range(3):
         try:
             with smtplib.SMTP_SSL(host, port, timeout=30) as s:
                 s.login(user, pw)
-                s.send_message(msg)
-            print(f"[email sent] {subject}")
+                while pending:
+                    msg = EmailMessage()
+                    msg["Subject"] = subject
+                    msg["From"] = f"Signal Desk <{user}>"
+                    msg["To"] = pending[0]
+                    msg.set_content(text)
+                    if html:
+                        msg.add_alternative(html, subtype="html")
+                    s.send_message(msg)
+                    pending.pop(0)
+            print(f"[email sent to {len(recipients)}] {subject}")
             return True
         except Exception as e:  # noqa: BLE001
             print(f"[email error attempt {attempt + 1}] {e}")
-    return False
+    print(f"[email not sent to {len(pending)} of {len(recipients)}]")
+    return len(pending) < len(recipients)
 
 
 def _fmt(x):
