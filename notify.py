@@ -46,7 +46,7 @@ def _fmt(x):
 
 
 def _wrap(title: str, color: str, rows: list[tuple[str, str]], extra: str = "") -> str:
-    link = os.getenv("DASHBOARD_URL")
+    link = os.getenv("DASHBOARD_URL") or "https://rishabhchawla222.github.io/signal-desk/"
     trs = "".join(
         f"<tr><td style='padding:6px 12px;color:#667;'>{k}</td>"
         f"<td style='padding:6px 12px;font-weight:600;'>{v}</td></tr>" for k, v in rows

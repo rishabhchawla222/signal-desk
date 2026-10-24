@@ -4,6 +4,14 @@ on:
   schedule:
     - cron: "30 11 * * 6"   # every Saturday 17:00 IST
   workflow_dispatch: {}
+  push:                     # re-test automatically whenever the rules change
+    branches: [main]
+    paths:
+      - config.json
+      - strategy.py
+      - indicators.py
+      - backtest.py
+      - .github/workflows/backtest.yml
 
 permissions:
   contents: write
