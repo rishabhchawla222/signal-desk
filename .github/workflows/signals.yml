@@ -1,0 +1,62 @@
+name: Live signals
+
+on:
+  schedule:
+    # Times are UTC. 03:20 UTC = 08:50 IST, 06:30 UTC = 12:00 IST (Mon–Fri).
+    # Two runs because a GitHub job can last at most 6 hours; the second
+    # waits in the queue and takes over when the first finishes.
+    - cron: "20 3 * * 1-5"
+    - cron: "30 6 * * 1-5"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: signals
+  cancel-in-progress: false
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Checkout data branch
+        id: databranch
+        continue-on-error: true
+        uses: actions/checkout@v4
+        with:
+          ref: signals-data
+          path: data-branch
+
+      - name: Create data branch (first run only)
+        if: steps.databranch.outcome == 'failure'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          rm -rf data-branch && mkdir data-branch && cd data-branch
+          git init -b signals-data
+          git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+
+      - name: Configure git
+        run: |
+          git -C data-branch config user.name "signal-bot"
+          git -C data-branch config user.email "signal-bot@users.noreply.github.com"
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - run: pip install -r requirements.txt
+
+      - name: Run signal engine
+        env:
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SMTP_PASS: ${{ secrets.SMTP_PASS }}
+          EMAIL_TO: ${{ secrets.EMAIL_TO }}
+          DASHBOARD_URL: ${{ vars.DASHBOARD_URL }}
+          PYTHONUNBUFFERED: "1"
+        run: python run_live.py --data-dir data-branch

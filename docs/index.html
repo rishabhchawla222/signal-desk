@@ -1,0 +1,352 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Signal Desk</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%2311151c'/><path d='M6 22l6-7 5 4 9-11' stroke='%2331d68c' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0c0f14; --panel:#131821; --panel2:#181e29; --line:#232b38; --line2:#2d3746;
+  --text:#e6ebf2; --muted:#8792a3; --faint:#5b6577;
+  --up:#31d68c; --up-bg:rgba(49,214,140,.10); --down:#ff5c6c; --down-bg:rgba(255,92,108,.10);
+  --amber:#f5b942; --amber-bg:rgba(245,185,66,.12);
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace; --sans:"IBM Plex Sans",system-ui,sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans);font-size:15px;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1180px;margin:0 auto;padding:0 16px 48px}
+.num{font-family:var(--mono);font-variant-numeric:tabular-nums}
+header{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:18px 0;border-bottom:1px solid var(--line);margin-bottom:20px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:18px;letter-spacing:.2px}
+.brand svg{width:26px;height:26px}
+.pill{font:600 11px var(--mono);letter-spacing:.8px;text-transform:uppercase;padding:5px 9px;border-radius:999px;border:1px solid var(--line2);color:var(--muted)}
+.pill.open{color:var(--up);border-color:rgba(49,214,140,.4);background:var(--up-bg)}
+.pill.open::before{content:"";display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--up);margin-right:6px;animation:pulse 1.6s infinite}
+.pill.warn{color:var(--amber);border-color:rgba(245,185,66,.4);background:var(--amber-bg)}
+@keyframes pulse{50%{opacity:.25}}
+.spacer{flex:1}
+.meta{color:var(--muted);font-size:13px}
+button{font:500 13px var(--sans);color:var(--text);background:var(--panel2);border:1px solid var(--line2);border-radius:8px;padding:8px 12px;cursor:pointer}
+button:hover{border-color:var(--faint)}
+button.on{color:var(--up);border-color:rgba(49,214,140,.45)}
+.banner{border:1px dashed var(--amber);background:var(--amber-bg);color:var(--amber);padding:10px 14px;border-radius:10px;margin-bottom:18px;font-size:14px}
+.banner.err{border-color:var(--down);color:var(--down);background:var(--down-bg)}
+h2{font-size:12px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted);margin:28px 0 12px}
+
+/* active signal */
+.active{display:grid;gap:12px}
+.sig{border-radius:14px;padding:18px 20px;border:1px solid var(--line2);background:var(--panel);display:grid;grid-template-columns:1fr auto;gap:8px 20px;align-items:center}
+.sig.call{border-color:rgba(49,214,140,.5);background:linear-gradient(120deg,var(--up-bg),var(--panel) 60%)}
+.sig.put{border-color:rgba(255,92,108,.5);background:linear-gradient(120deg,var(--down-bg),var(--panel) 60%)}
+.sig .act{font-size:13px;font-weight:600;letter-spacing:1px;text-transform:uppercase}
+.sig.call .act{color:var(--up)} .sig.put .act{color:var(--down)}
+.sig .opt{font:600 26px var(--mono);margin-top:2px}
+.sig .levels{display:flex;gap:22px;flex-wrap:wrap;margin-top:10px}
+.lv span{display:block;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.8px}
+.lv b{font:600 16px var(--mono)}
+.track{grid-column:1/-1;position:relative;height:8px;border-radius:4px;background:linear-gradient(90deg,var(--down) 0%,#3a4352 40%,#3a4352 60%,var(--up) 100%);margin-top:6px;opacity:.85}
+.track i{position:absolute;top:-5px;width:4px;height:18px;border-radius:2px;background:#fff;box-shadow:0 0 0 3px rgba(255,255,255,.15);transform:translateX(-2px)}
+.track-l{grid-column:1/-1;display:flex;justify-content:space-between;font:12px var(--mono);color:var(--muted)}
+.none{padding:20px;border:1px solid var(--line);border-radius:14px;background:var(--panel);color:var(--muted)}
+.none b{color:var(--text)}
+
+/* index cards */
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:14px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px}
+.card-h{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.card-h .nm{font-weight:700;letter-spacing:.4px}
+.card-h .px{font:600 24px var(--mono);margin-left:auto}
+.chg{font:500 13px var(--mono)} .chg.up{color:var(--up)} .chg.down{color:var(--down)}
+.sub{color:var(--faint);font-size:12px;margin-top:4px}
+.ready{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}
+.side h4{margin:0 0 8px;font-size:12px;letter-spacing:1px;text-transform:uppercase;display:flex;justify-content:space-between}
+.side.c h4{color:var(--up)} .side.p h4{color:var(--down)}
+.meter{height:4px;background:var(--line);border-radius:2px;overflow:hidden;margin-bottom:8px}
+.meter i{display:block;height:100%}
+.side.c .meter i{background:var(--up)} .side.p .meter i{background:var(--down)}
+.side ul{list-style:none;margin:0;padding:0;font-size:12.5px}
+.side li{display:flex;gap:7px;padding:3px 0;color:var(--faint)}
+.side li.ok{color:var(--text)}
+.side li::before{content:"○";font-family:var(--mono);width:12px;flex:none}
+.side.c li.ok::before{content:"●";color:var(--up)} .side.p li.ok::before{content:"●";color:var(--down)}
+.ind{display:flex;gap:6px;flex-wrap:wrap;margin-top:14px}
+.ind span{font:12px var(--mono);color:var(--muted);background:var(--panel2);border:1px solid var(--line);border-radius:6px;padding:3px 7px}
+
+/* tables & stats */
+.tbl-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:var(--panel)}
+table{width:100%;border-collapse:collapse;font-size:13.5px;min-width:640px}
+th,td{padding:10px 12px;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{font-size:11px;letter-spacing:.8px;text-transform:uppercase;color:var(--muted);font-weight:600}
+tr:last-child td{border-bottom:0}
+td.num{text-align:right}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums} th.r{text-align:right}
+.tag{font:600 11px var(--mono);padding:3px 7px;border-radius:5px}
+.tag.CALL{color:var(--up);background:var(--up-bg)} .tag.PUT{color:var(--down);background:var(--down-bg)}
+.pos{color:var(--up)} .neg{color:var(--down)}
+.empty{padding:18px;color:var(--muted);font-size:14px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+.stat{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px}
+.stat span{display:block;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.8px}
+.stat b{display:block;font:600 22px var(--mono);margin-top:4px}
+.stat small{color:var(--faint);font-size:12px}
+.tabs{display:flex;gap:6px;margin-bottom:12px}
+.tabs button.sel{background:var(--text);color:var(--bg);border-color:var(--text)}
+footer{margin-top:36px;padding-top:16px;border-top:1px solid var(--line);color:var(--faint);font-size:12.5px;line-height:1.6}
+@media (max-width:600px){
+  .sig{grid-template-columns:1fr}
+  .sig .opt{font-size:21px}
+  .ready{grid-template-columns:1fr}
+  .card-h .px{font-size:21px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <svg viewBox="0 0 32 32"><rect width="32" height="32" rx="7" fill="#1a2130"/><path d="M6 22l6-7 5 4 9-11" stroke="#31d68c" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Signal Desk
+    </div>
+    <span id="market" class="pill">—</span>
+    <div class="spacer"></div>
+    <span class="meta" id="updated">Loading…</span>
+    <button id="alerts" title="Beep and show a notification when a new signal appears while this page is open">🔔 Page alerts: off</button>
+    <button id="refresh">↻ Refresh</button>
+  </header>
+
+  <div id="banner"></div>
+
+  <h2>Active signal</h2>
+  <div id="active" class="active"></div>
+
+  <h2>Live indices · how close each setup is</h2>
+  <div id="indices" class="grid"></div>
+
+  <h2>Today's signals</h2>
+  <div id="today"></div>
+
+  <h2>Track record</h2>
+  <div class="tabs"><button data-t="live" class="sel">Live signals</button><button data-t="bt">Backtest (last ~60 days)</button></div>
+  <div id="record"></div>
+
+  <h2>Recent history</h2>
+  <div id="history"></div>
+
+  <footer>
+    Personal tool. Signals are automated technical setups on 5-minute candles from free Yahoo Finance data (can lag 1–3 minutes).
+    Entry, stop-loss and target are <b>index (spot) levels</b>; the suggested option is the at-the-money strike for the nearest expiry. An at-the-money option moves roughly half as many points as the index, and loses value with time.
+    Past results don't guarantee future ones. Not investment advice.
+  </footer>
+</div>
+
+<script src="config.js"></script>
+<script>
+const DEMO = {"status":{"indices":{"NIFTY":{"name":"NIFTY","price":24612.37,"prev_close":24626.49,"change_pct":-0.06,"bar_time":"2026-10-22T11:00:00","indicators":{"rsi":48.6,"adx":17.4,"ema_fast":24625.27,"ema_slow":24620.16,"supertrend":24578.95,"supertrend_dir":1,"orh":24573.32,"orl":24546.95,"ema15":24600.81},"call":{"checks":[{"name":"Breakout above opening range","ok":true},{"name":"EMA 9 above EMA 21","ok":true},{"name":"Supertrend bullish","ok":true},{"name":"RSI 55\u201375","ok":false},{"name":"ADX \u2265 20 (trending)","ok":false},{"name":"15-min trend up","ok":true},{"name":"Strong bullish candle","ok":false},{"name":"Not overextended","ok":false}],"score":4,"total":8},"put":{"checks":[{"name":"Breakdown below opening range","ok":false},{"name":"EMA 9 below EMA 21","ok":false},{"name":"Supertrend bearish","ok":false},{"name":"RSI 25\u201345","ok":false},{"name":"ADX \u2265 20 (trending)","ok":false},{"name":"15-min trend down","ok":false},{"name":"Strong bearish candle","ok":true},{"name":"Not overextended","ok":true}],"score":2,"total":8},"open_trade":{"id":"NIFTY-20261022-1020-CALL","index":"NIFTY","side":"CALL","option":"NIFTY 24650 CE","strike":24650,"entry_time":"2026-10-22T10:20:00","entry":24635.67,"risk":31.51,"sl":24604.16,"initial_sl":24604.16,"target":24682.94,"breakeven":false,"status":"OPEN","reasons":["Breakout above opening range","EMA 9 above EMA 21","Supertrend bullish","RSI 55\u201375","ADX \u2265 20 (trending)","15-min trend up","Strong bullish candle","Not overextended"],"indicators":{"rsi":58.3,"adx":21.5,"ema_fast":24623.34,"ema_slow":24611.87,"supertrend":24573.35}}},"BANKNIFTY":{"name":"BANKNIFTY","price":53992.08,"prev_close":54300.96,"change_pct":-0.57,"bar_time":"2026-10-22T11:00:00","indicators":{"rsi":20.7,"adx":64.9,"ema_fast":54010.05,"ema_slow":54059.65,"supertrend":54047.64,"supertrend_dir":-1,"orh":54090.67,"orl":54053.72,"ema15":54190.19},"call":{"checks":[{"name":"Breakout above opening range","ok":false},{"name":"EMA 9 above EMA 21","ok":false},{"name":"Supertrend bullish","ok":false},{"name":"RSI 55\u201375","ok":false},{"name":"ADX \u2265 20 (trending)","ok":true},{"name":"15-min trend up","ok":false},{"name":"Strong bullish candle","ok":false},{"name":"Not overextended","ok":false}],"score":1,"total":8},"put":{"checks":[{"name":"Breakdown below opening range","ok":true},{"name":"EMA 9 below EMA 21","ok":true},{"name":"Supertrend bearish","ok":true},{"name":"RSI 25\u201345","ok":false},{"name":"ADX \u2265 20 (trending)","ok":true},{"name":"15-min trend down","ok":true},{"name":"Strong bearish candle","ok":false},{"name":"Not overextended","ok":false}],"score":5,"total":8},"open_trade":null}},"errors":[],"updated_at":"2026-10-22T11:00:25","market":"OPEN","note":"","data_source":"Yahoo Finance 5-min candles (free; can lag 1\u20133 min)"},"signals":[{"id":"NIFTY-20261015-1205-CALL","index":"NIFTY","side":"CALL","option":"NIFTY 24600 CE","strike":24600,"entry_time":"2026-10-15T12:05:00","entry":24596.5,"risk":27.39,"sl":24569.12,"initial_sl":24569.12,"target":24637.58,"breakeven":false,"status":"CLOSED","reasons":["Breakout above opening range","EMA 9 above EMA 21","Supertrend bullish","RSI 55\u201375","ADX \u2265 20 (trending)","15-min trend up","Strong bullish candle","Not overextended"],"indicators":{"rsi":60.1,"adx":30.5,"ema_fast":24597.97,"ema_slow":24581.55,"supertrend":24560.28},"exit_time":"2026-10-15T12:20:00","exit":24569.12,"outcome":"STOPLOSS","note":"Stop-loss hit","points":-27.38,"r_multiple":-1.0},{"id":"BANKNIFTY-20261015-1415-CALL","index":"BANKNIFTY","side":"CALL","option":"BANKNIFTY 54500 CE","strike":54500,"entry_time":"2026-10-15T14:15:00","entry":54540.48,"risk":25.95,"sl":54514.53,"initial_sl":54514.53,"target":54579.41,"breakeven":false,"status":"CLOSED","reasons":["Breakout above opening range","EMA 9 above EMA 21","Supertrend bullish","RSI 55\u201375","ADX \u2265 20 (trending)","15-min trend up","Strong bullish candle","Not overextended"],"indicators":{"rsi":58.7,"adx":21.3,"ema_fast":54536.49,"ema_slow":54525.15,"supertrend":54503.65},"exit_time":"2026-10-15T14:35:00","exit":54514.53,"outcome":"STOPLOSS","note":"Stop-loss hit","points":-25.95,"r_multiple":-1.0},{"id":"NIFTY-20261016-1115-CALL","index":"NIFTY","side":"CALL","option":"NIFTY 24700 CE","strike":24700,"entry_time":"2026-10-16T11:15:00","entry":24711.09,"risk":30.47,"sl":24680.63,"initial_sl":24680.63,"target":24756.79,"breakeven":false,"status":"CLOSED","reasons":["Breakout above opening range","EMA 9 above EMA 21","Supertrend bullish","RSI 55\u201375","ADX \u2265 20 (trending)","15-min trend up","Strong bullish candle","Not overextended"],"indicators":{"rsi":60.8,"adx":42.7,"ema_fast":24702.84,"ema_slow":24687.6,"supertrend":24671.45},"exit_time":"2026-10-16T12:05:00","exit":24680.63,"outcome":"STOPLOSS","note":"Stop-loss hit","points":-30.46,"r_multiple":-1.0},{"id":"BANKNIFTY-20261016-1155-PUT","index":"BANKNIFTY","side":"PUT","option":"BANKNIFTY 54300 PE","strike":54300,"entry_time":"2026-10-16T11:55:00","entry":54280.51,"risk":25.14,"sl":54305.64,"initial_sl":54305.64,"target":54242.8,"breakeven":false,"status":"CLOSED","reasons":["Breakdown below opening range","EMA 9 below EMA 21","Supertrend bearish","RSI 25\u201345","ADX \u2265 20 (trending)","15-min trend down","Strong bearish candle","Not overextended"],"indicators":{"rsi":42.3,"adx":40.0,"ema_fast":54275.62,"ema_slow":54290.8,"supertrend":54305.64},"exit_time":"2026-10-16T12:25:00","exit":54305.64,"outcome":"STOPLOSS","note":"Stop-loss hit","points":-25.13,"r_multiple":-1.0},{"id":"NIFTY-20261019-1125-CALL","index":"NIFTY","side":"CALL","option":"NIFTY 24850 CE","strike":24850,"entry_time":"2026-10-19T11:25:00","entry":24844.26,"risk":21.87,"sl":24822.39,"initial_sl":24822.39,"target":24877.06,"breakeven":false,"status":"CLOSED","reasons":["Breakout above opening range","EMA 9 above EMA 21","Supertrend bullish","RSI 55\u201375","ADX \u2265 20 (trending)","15-min trend up","Strong bullish candle","Not overextended"],"indicators":{"rsi":65.1,"adx":41.7,"ema_fast":24844.78,"ema_slow":24827.26,"supertrend":24813.68},"exit_time":"2026-10-19T11:40:00","exit":24822.39,"outcome":"STOPLOSS","note":"Stop-loss hit","points":-21.87,"r_multiple":-1.0},{"id":"BANKNIFTY-20261019-1440-CALL","index":"BANKNIFTY","side":"CALL","option":"BANKNIFTY 54300 CE","strike":54300,"entry_time":"2026-10-19T14:40:00","entry":54253.13,"risk":25.26,"sl":54227.87,"initial_sl":54227.87,"target":54291.03,"breakeven":false,"status":"CLOSED","reasons":["Breakout above opening range","EMA 9 above EMA 21","Supertrend bullish","RSI 55\u201375","ADX \u2265 20 (trending)","15-min trend up","Strong bullish candle","Not overextended"],"indicators":{"rsi":57.8,"adx":25.3,"ema_fast":54249.65,"ema_slow":54239.01,"supertrend":54206.74},"exit_time":"2026-10-19T15:00:00","exit":54227.87,"outcome":"STOPLOSS","note":"Stop-loss hit","points":-25.26,"r_multiple":-1.0},{"id":"BANKNIFTY-20261020-1355-CALL","index":"BANKNIFTY","side":"CALL","option":"BANKNIFTY 54300 CE","strike":54300,"entry_time":"2026-10-20T13:55:00","entry":54275.39,"risk":18.57,"sl":54275.39,"initial_sl":54256.81,"target":54303.25,"breakeven":true,"status":"CLOSED","reasons":["Breakout above opening range","EMA 9 above EMA 21","Supertrend bullish","RSI 55\u201375","ADX \u2265 20 (trending)","15-min trend up","Strong bullish candle","Not overextended"],"indicators":{"rsi":56.8,"adx":36.8,"ema_fast":54275.57,"ema_slow":54264.67,"supertrend":54256.81},"exit_time":"2026-10-20T14:10:00","exit":54275.39,"outcome":"BREAKEVEN","note":"Stopped at cost after moving SL","points":0.0,"r_multiple":0.0},{"id":"BANKNIFTY-20261020-1425-CALL","index":"BANKNIFTY","side":"CALL","option":"BANKNIFTY 54300 CE","strike":54300,"entry_time":"2026-10-20T14:25:00","entry":54279.9,"risk":23.08,"sl":54256.81,"initial_sl":54256.81,"target":54314.52,"breakeven":false,"status":"CLOSED","reasons":["Breakout above opening range","EMA 9 above EMA 21","Supertrend bullish","RSI 55\u201375","ADX \u2265 20 (trending)","15-min trend up","Strong bullish candle","Not overextended"],"indicators":{"rsi":56.4,"adx":29.0,"ema_fast":54280.1,"ema_slow":54272.41,"supertrend":54256.81},"exit_time":"2026-10-20T14:40:00","exit":54256.81,"outcome":"STOPLOSS","note":"Stop-loss hit","points":-23.09,"r_multiple":-1.0},{"id":"NIFTY-20261022-1020-CALL","index":"NIFTY","side":"CALL","option":"NIFTY 24650 CE","strike":24650,"entry_time":"2026-10-22T10:20:00","entry":24635.67,"risk":31.51,"sl":24604.16,"initial_sl":24604.16,"target":24682.94,"breakeven":false,"status":"OPEN","reasons":["Breakout above opening range","EMA 9 above EMA 21","Supertrend bullish","RSI 55\u201375","ADX \u2265 20 (trending)","15-min trend up","Strong bullish candle","Not overextended"],"indicators":{"rsi":58.3,"adx":21.5,"ema_fast":24623.34,"ema_slow":24611.87,"supertrend":24573.35}}],"backtest":{"generated_at":"2026-10-24T17:00:00","indices":{"NIFTY":{"trades":40,"win_rate":32.5,"total_points":-105.0,"avg_win_points":35.8,"avg_loss_points":-21.1,"total_r":-4.47,"expectancy_r":-0.112,"profit_factor":0.81,"max_drawdown_r":-5.0,"outcomes":{"STOPLOSS":23,"TARGET":12,"BREAKEVEN":4,"TIME_EXIT":1},"from":"2026-08-24","to":"2026-10-23","days":42},"BANKNIFTY":{"trades":27,"win_rate":33.3,"total_points":-52.1,"avg_win_points":37.8,"avg_loss_points":-21.8,"total_r":-1.7,"expectancy_r":-0.063,"profit_factor":0.89,"max_drawdown_r":-8.7,"outcomes":{"STOPLOSS":15,"TIME_EXIT":1,"BREAKEVEN":2,"TARGET":9},"from":"2026-08-24","to":"2026-10-23","days":42}},"trades":[],"overall":{"trades":67,"win_rate":32.8,"total_points":-157.1,"avg_win_points":36.6,"avg_loss_points":-21.4,"total_r":-6.17,"expectancy_r":-0.092,"profit_factor":0.84,"max_drawdown_r":-12.2,"outcomes":{"STOPLOSS":38,"TARGET":21,"TIME_EXIT":2,"BREAKEVEN":6}}}};
+const CFG = Object.assign({refreshSeconds:60}, window.SIGNALS_CONFIG || {});
+const $ = s => document.querySelector(s);
+const fmt = (x, d=2) => x==null || isNaN(x) ? "—" : Number(x).toLocaleString("en-IN",{minimumFractionDigits:d,maximumFractionDigits:d});
+const hm = iso => iso ? iso.slice(11,16) : "—";
+const dm = iso => iso ? new Date(iso.slice(0,10)+"T00:00:00").toLocaleDateString("en-IN",{day:"numeric",month:"short"}) : "";
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const store = { get(k){ try{return localStorage.getItem(k)}catch(e){return null} }, set(k,v){ try{localStorage.setItem(k,v)}catch(e){} } };
+
+function repoInfo(){
+  if (CFG.owner && CFG.repo) return {owner:CFG.owner, repo:CFG.repo};
+  const h = location.hostname;
+  if (h.endsWith(".github.io")){
+    const owner = h.split(".")[0];
+    const seg = location.pathname.split("/").filter(Boolean)[0];
+    return {owner, repo: seg && !seg.includes(".") ? seg : `${owner}.github.io`};
+  }
+  return null;
+}
+
+async function loadData(){
+  const r = repoInfo();
+  if (!r) return {...DEMO, demo:true};
+  let ref = "signals-data";
+  try{
+    const res = await fetch(`https://api.github.com/repos/${r.owner}/${r.repo}/commits/signals-data`,
+      {headers:{Accept:"application/vnd.github.sha"}, cache:"no-store"});
+    if (res.ok) ref = (await res.text()).trim();
+  }catch(e){}
+  const base = `https://raw.githubusercontent.com/${r.owner}/${r.repo}/${ref}/`;
+  const get = async f => { try{ const x = await fetch(base+f+(ref==="signals-data"?`?t=${Date.now()}`:""), {cache:"no-store"}); return x.ok ? x.json() : null; }catch(e){ return null; } };
+  const [status, signals, backtest] = await Promise.all([get("status.json"), get("signals.json"), get("backtest.json")]);
+  return {status, signals: signals||[], backtest, repo:r};
+}
+
+let DATA = null, TAB = "live";
+
+function render(){
+  const {status, signals, backtest} = DATA;
+  const ban = $("#banner");
+  if (DATA.demo) ban.innerHTML = `<div class="banner">Showing <b>sample data from a simulated market</b> (not real results). Once this page is published on your GitHub Pages it will show your live signals automatically.</div>`;
+  else if (!status) ban.innerHTML = `<div class="banner">No live data yet. It appears after the first run of the “Live signals” workflow (or the Backtest workflow) in your repository.</div>`;
+  else if (status.errors && status.errors.length) ban.innerHTML = `<div class="banner err">Data problem: ${esc(status.errors.join(" · "))}</div>`;
+  else ban.innerHTML = "";
+
+  // header
+  const m = $("#market");
+  const mk = status?.market || "—";
+  const label = {OPEN:"Market open",PRE_OPEN:"Pre-open",CLOSED:"Closed",HOLIDAY:"Holiday",NO_DATA:"No data"}[mk] || mk;
+  m.textContent = label; m.className = "pill " + (mk==="OPEN" ? "open" : (mk==="HOLIDAY"||mk==="NO_DATA") ? "warn" : "");
+  if (status?.updated_at){
+    const t = new Date(status.updated_at + "+05:30");
+    const mins = Math.round((Date.now() - t)/60000);
+    $("#updated").textContent = `Updated ${hm(status.updated_at)} IST` + (mins>=0 && mins<600 ? ` · ${mins} min ago` : "") + (status.note ? ` · ${status.note}` : "");
+  } else $("#updated").textContent = "Waiting for first update";
+
+  // active signals
+  const open = signals.filter(s => s.status === "OPEN");
+  const idx = status?.indices || {};
+  $("#active").innerHTML = open.length ? open.map(s => {
+    const price = idx[s.index]?.price ?? s.entry;
+    const lo = s.side==="CALL" ? s.initial_sl : s.target, hi = s.side==="CALL" ? s.target : s.initial_sl;
+    let pct = Math.max(0, Math.min(100, (price - lo) / (hi - lo) * 100));
+    if (s.side==="PUT") pct = 100 - pct;
+    const live = (s.side==="CALL"?1:-1)*(price - s.entry);
+    return `<div class="sig ${s.side.toLowerCase()}">
+      <div>
+        <div class="act">Buy ${s.side==="CALL"?"call":"put"} · since ${hm(s.entry_time)} IST</div>
+        <div class="opt">${esc(s.option)}</div>
+        <div class="levels">
+          <div class="lv"><span>Entry (spot)</span><b>${fmt(s.entry)}</b></div>
+          <div class="lv"><span>Stop-loss${s.breakeven?" · at cost":""}</span><b>${fmt(s.sl)}</b></div>
+          <div class="lv"><span>Target</span><b>${fmt(s.target)}</b></div>
+          <div class="lv"><span>Now</span><b class="${live>=0?"pos":"neg"}">${fmt(price)} (${live>=0?"+":""}${fmt(live,1)})</b></div>
+        </div>
+      </div>
+      <div></div>
+      <div class="track" style="${s.side==="PUT"?"":""}"><i style="left:${pct}%"></i></div>
+      <div class="track-l num"><span>SL ${fmt(s.initial_sl,0)}</span><span>Target ${fmt(s.target,0)}</span></div>
+    </div>`;
+  }).join("") : `<div class="none"><b>No active signal.</b> The system waits until all 8 conditions line up on a closed candle. Most of the day, the right move is no trade.</div>`;
+
+  // indices
+  const names = Object.keys(idx);
+  $("#indices").innerHTML = names.length ? names.map(n => {
+    const x = idx[n], ch = x.change_pct, i = x.indicators || {};
+    const side = (k, cls, title) => {
+      const v = x[k]; if (!v) return "";
+      return `<div class="side ${cls}"><h4><span>${title}</span><span class="num">${v.score}/${v.total}</span></h4>
+        <div class="meter"><i style="width:${v.score/v.total*100}%"></i></div>
+        <ul>${v.checks.map(c => `<li class="${c.ok?"ok":""}">${esc(c.name)}</li>`).join("")}</ul></div>`;
+    };
+    return `<div class="card">
+      <div class="card-h"><span class="nm">${esc(n)}</span>
+        <span class="chg ${ch>=0?"up":"down"}">${ch==null?"":(ch>=0?"▲ ":"▼ ")+fmt(Math.abs(ch))+"%"}</span>
+        <span class="px">${fmt(x.price)}</span></div>
+      <div class="sub">5-min candle closed ${hm(x.bar_time)} IST</div>
+      <div class="ready">${side("call","c","Call setup")}${side("put","p","Put setup")}</div>
+      <div class="ind">
+        <span>RSI ${fmt(i.rsi,1)}</span><span>ADX ${fmt(i.adx,1)}</span>
+        <span>ST ${i.supertrend_dir===1?"▲":"▼"} ${fmt(i.supertrend,0)}</span>
+        <span>OR ${fmt(i.orl,0)}–${fmt(i.orh,0)}</span>
+      </div></div>`;
+  }).join("") : `<div class="none">Index data appears once the market opens.</div>`;
+
+  // today
+  const lastDay = status?.updated_at?.slice(0,10);
+  const todays = signals.filter(s => s.entry_time.slice(0,10) === lastDay);
+  $("#today").innerHTML = table(todays, "No signals today yet.");
+
+  // record
+  renderRecord();
+
+  // history
+  const hist = signals.filter(s => s.status === "CLOSED").slice(-30).reverse();
+  $("#history").innerHTML = table(hist, "No closed signals yet.", true);
+}
+
+function table(rows, emptyMsg, withDate){
+  if (!rows.length) return `<div class="tbl-wrap"><div class="empty">${emptyMsg}</div></div>`;
+  return `<div class="tbl-wrap"><table><thead><tr>
+    ${withDate?"<th>Date</th>":""}<th>Time</th><th>Signal</th><th>Option</th><th class="r">Entry</th><th class="r">SL</th><th class="r">Target</th><th>Result</th><th class="r">Points</th></tr></thead><tbody>
+    ${rows.map(s => {
+      const res = s.status==="OPEN" ? `<span class="tag" style="color:var(--amber);background:var(--amber-bg)">OPEN</span>` : esc(s.note || s.outcome);
+      const p = s.points;
+      return `<tr>${withDate?`<td>${dm(s.entry_time)}</td>`:""}<td class="mono">${hm(s.entry_time)}${s.exit_time?" → "+hm(s.exit_time):""}</td>
+        <td><span class="tag ${s.side}">${s.side}</span></td><td class="mono">${esc(s.option)}</td>
+        <td class="num">${fmt(s.entry)}</td><td class="num">${fmt(s.initial_sl ?? s.sl)}</td><td class="num">${fmt(s.target)}</td>
+        <td>${res}</td><td class="num ${p>0?"pos":p<0?"neg":""}">${p==null?"—":(p>0?"+":"")+fmt(p,1)}</td></tr>`;
+    }).join("")}</tbody></table></div>`;
+}
+
+function statsOf(trades){
+  const n = trades.length; if (!n) return null;
+  const rs = trades.map(t => t.r_multiple||0), wins = trades.filter(t => t.points>0).length;
+  let eq=0, peak=0, mdd=0; rs.forEach(r => { eq+=r; peak=Math.max(peak,eq); mdd=Math.min(mdd,eq-peak); });
+  const gl = Math.abs(rs.filter(r=>r<0).reduce((a,b)=>a+b,0)), gw = rs.filter(r=>r>0).reduce((a,b)=>a+b,0);
+  return {trades:n, win_rate: wins/n*100, total_r: eq, expectancy_r: eq/n, profit_factor: gl? gw/gl : null, max_drawdown_r: mdd};
+}
+
+function statCards(s, sub){
+  if (!s || !s.trades) return `<div class="none">${sub}</div>`;
+  return `<div class="stats">
+    <div class="stat"><span>Signals</span><b>${s.trades}</b></div>
+    <div class="stat"><span>Win rate</span><b>${fmt(s.win_rate,1)}%</b><small>breakeven exits count as non-wins</small></div>
+    <div class="stat"><span>Net result</span><b class="${s.total_r>=0?"pos":"neg"}">${s.total_r>=0?"+":""}${fmt(s.total_r,1)}R</b><small>R = the risk taken per trade</small></div>
+    <div class="stat"><span>Avg per signal</span><b>${s.expectancy_r>=0?"+":""}${fmt(s.expectancy_r,2)}R</b></div>
+    <div class="stat"><span>Profit factor</span><b>${s.profit_factor==null?"—":fmt(s.profit_factor,2)}</b></div>
+    <div class="stat"><span>Worst drawdown</span><b class="neg">${fmt(s.max_drawdown_r,1)}R</b></div>
+  </div>`;
+}
+
+function renderRecord(){
+  document.querySelectorAll(".tabs button").forEach(b => b.classList.toggle("sel", b.dataset.t===TAB));
+  const el = $("#record");
+  if (TAB === "live"){
+    const closed = DATA.signals.filter(s => s.status==="CLOSED");
+    el.innerHTML = statCards(statsOf(closed), "No completed live signals yet. Results build up from the first market day.");
+  } else {
+    const bt = DATA.backtest;
+    if (!bt) { el.innerHTML = `<div class="none">No backtest yet. Run the “Backtest” workflow once from the Actions tab of your repository.</div>`; return; }
+    const per = Object.entries(bt.indices||{}).map(([n,s]) =>
+      `<div class="stat"><span>${esc(n)} · ${s.from||""} → ${s.to||""}</span><b>${s.trades} trades</b><small>${fmt(s.win_rate,1)}% wins · ${s.total_r>=0?"+":""}${fmt(s.total_r,1)}R · ${s.total_points>=0?"+":""}${fmt(s.total_points,0)} index pts</small></div>`).join("");
+    el.innerHTML = statCards(bt.overall, "No trades in backtest.") + `<div class="stats" style="margin-top:12px">${per}</div>
+      <p class="meta" style="margin-top:10px">Backtest generated ${hm(bt.generated_at)} IST, ${dm(bt.generated_at)}. Same rules as live, on the free data's last ~60 days. Small samples can mislead – treat it as a sanity check, not a promise.</p>`;
+  }
+}
+
+// alerts while page is open
+let alertsOn = store.get("alerts") === "1";
+function paintAlerts(){ const b=$("#alerts"); b.textContent = `🔔 Page alerts: ${alertsOn?"on":"off"}`; b.classList.toggle("on", alertsOn); }
+$("#alerts").onclick = async () => {
+  alertsOn = !alertsOn;
+  if (alertsOn && "Notification" in window && Notification.permission === "default") { try{ await Notification.requestPermission(); }catch(e){} }
+  if (alertsOn) beep();
+  store.set("alerts", alertsOn ? "1" : "0"); paintAlerts();
+};
+function beep(){
+  try{ const a = new (window.AudioContext||window.webkitAudioContext)(); [0,0.18].forEach(d => {
+    const o=a.createOscillator(), g=a.createGain(); o.frequency.value=880; o.connect(g); g.connect(a.destination);
+    g.gain.setValueAtTime(.15,a.currentTime+d); g.gain.exponentialRampToValueAtTime(.001,a.currentTime+d+.15);
+    o.start(a.currentTime+d); o.stop(a.currentTime+d+.16); }); }catch(e){}
+}
+function checkNew(){
+  const seen = new Set((store.get("seen")||"").split(",").filter(Boolean));
+  const first = seen.size === 0;
+  const fresh = DATA.signals.filter(s => s.status==="OPEN" && !seen.has(s.id));
+  DATA.signals.forEach(s => seen.add(s.id));
+  store.set("seen", [...seen].slice(-300).join(","));
+  if (first || !alertsOn || DATA.demo) return;
+  fresh.forEach(s => {
+    beep();
+    try{ if (Notification.permission==="granted") new Notification(`BUY ${s.option}`, {body:`Spot ${fmt(s.entry)} · SL ${fmt(s.sl)} · Target ${fmt(s.target)}`}); }catch(e){}
+  });
+}
+
+document.querySelectorAll(".tabs button").forEach(b => b.onclick = () => { TAB = b.dataset.t; renderRecord(); });
+async function refresh(){ DATA = await loadData(); render(); checkNew(); }
+$("#refresh").onclick = refresh;
+paintAlerts();
+refresh();
+setInterval(refresh, Math.max(30, CFG.refreshSeconds) * 1000);
+</script>
+</body>
+</html>

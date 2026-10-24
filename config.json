@@ -1,0 +1,38 @@
+{
+  "indices": [
+    { "name": "NIFTY",     "symbol": "^NSEI",    "strike_step": 50,  "enabled": true },
+    { "name": "BANKNIFTY", "symbol": "^NSEBANK", "strike_step": 100, "enabled": true },
+    { "name": "SENSEX",    "symbol": "^BSESN",   "strike_step": 100, "enabled": false }
+  ],
+  "strategy": {
+    "ema_fast": 9,
+    "ema_slow": 21,
+    "rsi_period": 14,
+    "rsi_call_min": 55,
+    "rsi_call_max": 75,
+    "rsi_put_min": 25,
+    "rsi_put_max": 45,
+    "adx_period": 14,
+    "adx_min": 20,
+    "supertrend_period": 10,
+    "supertrend_mult": 3.0,
+    "atr_period": 14,
+    "htf_ema": 20,
+    "strong_close_ratio": 0.6,
+    "max_extension_atr": 1.2,
+    "risk_min_atr": 0.5,
+    "risk_max_atr": 1.5,
+    "reward_risk": 1.5,
+    "breakeven_at_r": 1.0,
+    "opening_range_minutes": 15,
+    "first_entry": "09:35",
+    "last_entry": "14:45",
+    "square_off": "15:15",
+    "max_trades_per_index": 2,
+    "cooldown_after_loss_min": 30
+  },
+  "email": {
+    "enabled": true,
+    "send_daily_summary": true
+  }
+}
