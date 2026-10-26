@@ -38,16 +38,41 @@ def head(j):
     return str(j)[:300]
 
 
-for idx in ["NIFTY 50", "NIFTY 200", "SECURITIES IN F&O", "NIFTY BANK"]:
-    from urllib.parse import quote
-    probe("eq_" + idx, "https://www.nseindia.com/api/equity-stockIndices?index=" + quote(idx),
-          lambda j: {"n": len(j.get("data", [])), "row": j["data"][1] if len(j.get("data", [])) > 1 else head(j)})
-probe("eq_raw_fo", "https://www.nseindia.com/api/equity-stockIndices?index=SECURITIES%20IN%20F%26O", raw=True)
-for ix in ["nse50_fut", "nifty_bank_fut", "stock_fut"]:
-    probe("fut_" + ix, f"https://www.nseindia.com/api/liveEquity-derivatives?index={ix}",
-          lambda j: {"n": len(j.get("data", [])), "row": (j.get("data") or [None])[0]})
-probe("quote_eq", "https://www.nseindia.com/api/quote-equity?symbol=RELIANCE", lambda j: head(j))
-probe("deriv_raw", "https://www.nseindia.com/api/quote-derivative?symbol=NIFTY", raw=True)
+probe("variations", "https://www.nseindia.com/api/live-analysis-variations?index=gainers", lambda j: head(j))
+probe("most_active", "https://www.nseindia.com/api/live-analysis-most-active-securities?index=volume", lambda j: head(j))
+# Yahoo batch endpoints
+syms = "RELIANCE.NS,HDFCBANK.NS,ICICIBANK.NS,INFY.NS,TCS.NS,SBIN.NS,M&M.NS,BAJAJ-AUTO.NS,ITC.NS,LT.NS,AXISBANK.NS,KOTAKBANK.NS,HINDUNILVR.NS,BHARTIARTL.NS,MARUTI.NS,TATAMOTORS.NS,SUNPHARMA.NS,TITAN.NS,ASIANPAINT.NS,NTPC.NS"
+for nm, url, params in [
+    ("y_spark", "https://query1.finance.yahoo.com/v8/finance/spark", {"symbols": syms, "range": "1d", "interval": "5m"}),
+    ("y_spark2", "https://query2.finance.yahoo.com/v7/finance/spark", {"symbols": syms, "range": "1d", "interval": "5m"}),
+    ("y_quote", "https://query1.finance.yahoo.com/v7/finance/quote", {"symbols": syms}),
+]:
+    t = time.time()
+    try:
+        r = requests.get(url, params=params, headers=H, timeout=20)
+        j = r.json()
+        res = {"status": r.status_code, "ms": int((time.time() - t) * 1000), "bytes": len(r.content)}
+        if isinstance(j, dict) and "spark" in j:
+            rr = j["spark"]["result"]
+            res["n"] = len(rr)
+            res["first"] = str(rr[0])[:700]
+        elif isinstance(j, dict) and any(k.endswith(".NS") for k in j):
+            res["n"] = len(j)
+            k0 = next(iter(j))
+            res["first"] = {k0: str(j[k0])[:700]}
+        else:
+            res["head"] = str(j)[:500]
+    except Exception as e:  # noqa: BLE001
+        res = {"error": repr(e)[:300]}
+    out[nm] = res
+    print(nm, json.dumps(res)[:300])
+# lot file: number of F&O underlyings
+try:
+    txt = s.get("https://nsearchives.nseindia.com/content/fo/fo_mktlots.csv", timeout=20).text
+    rows = [l.split(",") for l in txt.splitlines()[1:] if l.strip()]
+    out["lots"] = {"n": len(rows), "sample": [[c.strip() for c in r[:3]] for r in rows[:6] + rows[-3:]]}
+except Exception as e:  # noqa: BLE001
+    out["lots"] = {"error": repr(e)}
 
 # Yahoo daily history for one stock
 try:
