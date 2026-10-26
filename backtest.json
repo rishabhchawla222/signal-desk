@@ -1,49 +1,90 @@
 {
- "generated_at": "2026-10-24T23:59:44",
+ "generated_at": "2026-10-26T17:56:21",
  "indices": {
   "NIFTY": {
-   "trades": 55,
-   "win_rate": 32.7,
-   "total_points": 29.0,
-   "avg_win_points": 42.1,
-   "avg_loss_points": -19.7,
-   "total_r": -4.96,
-   "expectancy_r": -0.09,
-   "profit_factor": 0.83,
-   "max_drawdown_r": -17.12,
+   "trades": 59,
+   "win_rate": 33.9,
+   "total_points": -17.6,
+   "avg_win_points": 40.7,
+   "avg_loss_points": -21.3,
+   "total_r": -5.59,
+   "expectancy_r": -0.095,
+   "profit_factor": 0.82,
+   "max_drawdown_r": -18.11,
    "outcomes": {
-    "STOPLOSS": 29,
+    "STOPLOSS": 31,
     "TARGET": 16,
+    "TIME_EXIT": 6,
     "BREAKEVEN": 5,
-    "TIME_EXIT": 4,
     "REVERSAL": 1
    },
-   "from": "2026-07-29",
-   "to": "2026-10-23",
+   "from": "2026-07-30",
+   "to": "2026-10-26",
    "days": 60
   },
   "SENSEX": {
-   "trades": 43,
-   "win_rate": 25.6,
-   "total_points": -609.3,
-   "avg_win_points": 152.6,
-   "avg_loss_points": -71.5,
-   "total_r": -9.37,
-   "expectancy_r": -0.218,
+   "trades": 45,
+   "win_rate": 26.7,
+   "total_points": -753.2,
+   "avg_win_points": 148.3,
+   "avg_loss_points": -76.7,
+   "total_r": -9.55,
+   "expectancy_r": -0.212,
    "profit_factor": 0.64,
    "max_drawdown_r": -15.04,
    "outcomes": {
-    "STOPLOSS": 24,
+    "STOPLOSS": 25,
     "BREAKEVEN": 5,
     "TARGET": 11,
-    "REVERSAL": 3
+    "REVERSAL": 3,
+    "TIME_EXIT": 1
    },
-   "from": "2026-07-29",
-   "to": "2026-10-23",
+   "from": "2026-07-30",
+   "to": "2026-10-26",
    "days": 60
   }
  },
  "trades": [
+  {
+   "id": "NIFTY-20260730-1355-CALL",
+   "index": "NIFTY",
+   "side": "CALL",
+   "option": "NIFTY 24300 CE",
+   "strike": 24300,
+   "entry_time": "2026-07-30T13:55:00",
+   "entry": 24295.5,
+   "risk": 27.6,
+   "sl": 24267.9,
+   "initial_sl": 24267.9,
+   "target": 24336.89,
+   "breakeven": false,
+   "status": "CLOSED",
+   "valid_until": "2026-07-30T14:05:00",
+   "chase_limit": 24303.78,
+   "reasons": [
+    "Breakout above opening range",
+    "EMA 9 above EMA 21",
+    "Supertrend bullish",
+    "RSI 55\u201375",
+    "ADX \u2265 20 (trending)",
+    "15-min trend up",
+    "Strong bullish candle",
+    "Not overextended"
+   ],
+   "indicators": {
+    "rsi": 58.7,
+    "adx": 20.5,
+    "ema_fast": 24283.85,
+    "ema_slow": 24280.04,
+    "supertrend": 24246.48
+   },
+   "exit_time": "2026-07-30T14:10:00",
+   "exit": 24267.9,
+   "outcome": "STOPLOSS",
+   "note": "Stop-loss hit",
+   "points": -27.6,
+   "r_multiple": -1.0
+  },
   {
    "id": "SENSEX-20260731-1350-CALL",
    "index": "SENSEX",
@@ -58,6 +99,8 @@
    "target": 78250.71,
    "breakeven": false,
    "status": "CLOSED",
+   "valid_until": "2026-07-31T14:00:00",
+   "chase_limit": 78195.43,
    "reasons": [
     "Breakout above opening range",
     "EMA 9 above EMA 21",
@@ -96,6 +139,8 @@
    "target": 24430.07,
    "breakeven": false,
    "status": "CLOSED",
+   "valid_until": "2026-07-31T14:05:00",
+   "chase_limit": 24409.13,
    "reasons": [
     "Breakout above opening range",
     "EMA 9 above EMA 21",
@@ -134,6 +179,8 @@
    "target": 24628.15,
    "breakeven": false,
    "status": "CLOSED",
+   "valid_until": "2026-08-03T12:20:00",
+   "chase_limit": 24603.23,
    "reasons": [
     "Breakout above opening range",
     "EMA 9 above EMA 21",
@@ -148,7 +195,7 @@
     "rsi": 63.1,
     "adx": 35.5,
     "ema_fast": 24593.39,
-    "ema_slow": 24582.2,
+    "ema_slow": 24582.18,
     "supertrend": 24560.19
    },
    "exit_time": "2026-08-03T12:50:00",
@@ -172,6 +219,8 @@
    "target": 24625.21,
    "breakeven": false,
    "status": "CLOSED",
+   "valid_until": "2026-08-03T13:45:00",
+   "chase_limit": 24603.28,
    "reasons": [
     "Breakout above opening range",
     "EMA 9 above EMA 21",
@@ -185,8 +234,8 @@
    "indicators": {
     "rsi": 58.1,
     "adx": 20.6,
-    "ema_fast": 24588.51,
-    "ema_slow": 24587.58,
+    "ema_fast": 24588.46,
+    "ema_slow": 24587.54,
     "supertrend": 24571.35
    },
    "exit_time": "2026-08-03T14:20:00",
@@ -210,6 +259,8 @@
    "target": 24533.45,
    "breakeven": false,
    "status": "CLOSED",
+   "valid_until": "2026-08-04T11:10:00",
+   "chase_limit": 24567.01,
    "reasons": [
     "Breakdown below opening range",
     "EMA 9 below EMA 21",
@@ -223,8 +274,8 @@
    "indicators": {
     "rsi": 42.5,
     "adx": 33.5,
-    "ema_fast": 24588.13,
-    "ema_slow": 24597.18,
+    "ema_fast": 24588.12,
+    "ema_slow": 24597.17,
     "supertrend": 24627.74
    },
    "exit_time": "2026-08-04T11:50:00",
@@ -235,44 +286,6 @@
    "r_multiple": 1.5
   },
   {
-   "id": "NIFTY-20260804-1430-PUT",
-   "index": "NIFTY",
-   "side": "PUT",
-   "option": "NIFTY 24450 PE",
-   "strike": 24450,
-   "entry_time": "2026-08-04T14:30:00",
-   "entry": 24469.6,
-   "risk": 20.65,
-   "sl": 24490.25,
-   "initial_sl": 24490.25,
-   "target": 24438.63,
-   "breakeven": false,
-   "status": "CLOSED",
-   "reasons": [
-    "Breakdown below opening range",
-    "EMA 9 below EMA 21",
-    "Supertrend bearish",
-    "RSI 25\u201345",
-    "ADX \u2265 20 (trending)",
-    "15-min trend down",
-    "Strong bearish candle",
-    "Not overextended"
-   ],
-   "indicators": {
-    "rsi": 43.8,
-    "adx": 41.4,
-    "ema_fast": 24466.93,
-    "ema_slow": 24477.01,
-    "supertrend": 24490.25
-   },
-   "exit_time": "2026-08-04T14:35:00",
-   "exit": 24490.25,
-   "outcome": "STOPLOSS",
-   "note": "Stop-loss hit",
-   "points": -20.65,
-   "r_multiple": -1.0
-  },
-  {
    "id": "SENSEX-20260804-1430-PUT",
    "index": "SENSEX",
    "side": "PUT",
@@ -280,12 +293,14 @@
    "strike": 78300,
    "entry_time": "2026-08-04T14:30:00",
    "entry": 78338.02,
-   "risk": 47.87,
-   "sl": 78385.89,
-   "initial_sl": 78385.89,
-   "target": 78266.22,
+   "risk": 47.55,
+   "sl": 78385.57,
+   "initial_sl": 78385.57,
+   "target": 78266.7,
    "breakeven": false,
    "status": "CLOSED",
+   "valid_until": "2026-08-04T14:40:00",
+   "chase_limit": 78323.76,
    "reasons": [
     "Breakdown below opening range",
     "EMA 9 below EMA 21",
@@ -301,14 +316,54 @@
     "adx": 43.3,
     "ema_fast": 78325.39,
     "ema_slow": 78352.17,
-    "supertrend": 78385.89
+    "supertrend": 78385.57
    },
    "exit_time": "2026-08-04T14:35:00",
-   "exit": 78385.89,
+   "exit": 78385.57,
    "outcome": "STOPLOSS",
    "note": "Stop-loss hit",
-   "points": -47.87,
+   "points": -47.55,
    "r_multiple": -1.0
+  },
+  {
+   "id": "NIFTY-20260804-1435-PUT",
+   "index": "NIFTY",
+   "side": "PUT",
+   "option": "NIFTY 24450 PE",
+   "strike": 24450,
+   "entry_time": "2026-08-04T14:35:00",
+   "entry": 24463.15,
+   "risk": 27.08,
+   "sl": 24490.23,
+   "initial_sl": 24490.23,
+   "target": 24422.54,
+   "breakeven": false,
+   "status": "CLOSED",
+   "valid_until": "2026-08-04T14:45:00",
+   "chase_limit": 24455.03,
+   "reasons": [
+    "Breakdown below opening range",
+    "EMA 9 below EMA 21",
+    "Supertrend bearish",
+    "RSI 25\u201345",
+    "ADX \u2265 20 (trending)",
+    "15-min trend down",
+    "Strong bearish candle",
+    "Not overextended"
+   ],
+   "indicators": {
+    "rsi": 41.6,
+    "adx": 38.6,
+    "ema_fast": 24466.32,
+    "ema_slow": 24475.83,
+    "supertrend": 24490.23
+   },
+   "exit_time": "2026-08-04T15:15:00",
+   "exit": 24462.95,
+   "outcome": "TIME_EXIT",
+   "note": "Square-off time",
+   "points": 0.2,
+   "r_multiple": 0.01
   },
   {
    "id": "NIFTY-20260805-1230-PUT",
@@ -324,6 +379,8 @@
    "target": 24530.42,
    "breakeven": true,
    "status": "CLOSED",
+   "valid_until": "2026-08-05T12:40:00",
+   "chase_limit": 24560.13,
    "reasons": [
     "Breakdown below opening range",
     "EMA 9 below EMA 21",
@@ -362,6 +419,8 @@
    "target": 24473.32,
    "breakeven": false,
    "status": "CLOSED",
+   "valid_until": "2026-08-05T14:05:00",
+   "chase_limit": 24508.46,
    "reasons": [
     "Breakdown below opening range",
     "EMA 9 below EMA 21",
@@ -375,8 +434,8 @@
    "indicators": {
     "rsi": 40.2,
     "adx": 24.9,
-    "ema_fast": 24523.45,
-    "ema_slow": 24537.12,
+    "ema_fast": 24523.47,
+    "ema_slow": 24537.15,
     "supertrend": 24566.45
    },
    "exit_time": "2026-08-05T15:10:00",
@@ -400,6 +459,8 @@
    "target": 78943.73,
    "breakeven": true,
    "status": "CLOSED",
+   "valid_until": "2026-08-06T12:05:00",
+   "chase_limit": 78826.85,
    "reasons": [
     "Breakout above opening range",
     "EMA 9 above EMA 21",
@@ -438,6 +499,8 @@
    "target": 24696.28,
    "breakeven": false,
    "status": "CLOSED",
+   "valid_until": "2026-08-06T12:10:00",
+   "chase_limit": 24667.18,
    "reasons": [
     "Breakout above opening range",
     "EMA 9 above EMA 21",
@@ -452,7 +515,7 @@
     "rsi": 60.2,
     "adx": 28.4,
     "ema_fast": 24649.14,
-    "ema_slow": 24641.41,
+    "ema_slow": 24641.42,
     "supertrend": 24625.11
    },
    "exit_time": "2026-08-06T12:25:00",
@@ -476,6 +539,8 @@
    "target": 78048.68,
    "breakeven": true,
    "status": "CLOSED",
+   "valid_until": "2026-08-11T11:10:00",
+   "chase_limit": 78139.85,
    "reasons": [
     "Breakdown below opening range",
     "EMA 9 below EMA 21",
@@ -508,12 +573,14 @@
    "strike": 24450,
    "entry_time": "2026-08-11T12:20:00",
    "entry": 24439.3,
-   "risk": 19.24,
+   "risk": 19.23,
    "sl": 24458.54,
    "initial_sl": 24458.54,
-   "target": 24410.44,
+   "target": 24410.45,
    "breakeven": false,
    "status": "CLOSED",
+   "valid_until": "2026-08-11T12:30:00",
+   "chase_limit": 24433.53,
    "reasons": [
     "Breakdown below opening range",
     "EMA 9 below EMA 21",
@@ -527,9 +594,9 @@
    "indicators": {
     "rsi": 37.3,
     "adx": 35.9,
-    "ema_fast": 24442.4,
-    "ema_slow": 24453.27,
-    "supertrend": 24469.13
+    "ema_fast": 24442.39,
+    "ema_slow": 24453.26,
+    "supertrend": 24469.11
    },
    "exit_time": "2026-08-11T12:50:00",
    "exit": 24458.54,
@@ -552,6 +619,8 @@
    "target": 77988.88,
    "breakeven": false,
    "status": "CLOSED",
+   "valid_until": "2026-08-11T12:35:00",
+   "chase_limit": 78063.64,
    "reasons": [
     "Breakdown below opening range",
     "EMA 9 below EMA 21",
@@ -590,6 +659,8 @@
    "target": 24343.38,
    "breakeven": true,
    "status": "CLOSED",
+   "valid_until": "2026-08-12T10:50:00",
+   "chase_limit": 24377.68,
    "reasons": [
     "Breakdown below opening range",
     "EMA 9 below EMA 21",
@@ -628,6 +699,8 @@
    "target": 24248.64,
    "breakeven": false,
    "status": "CLOSED",
+   "valid_until": "2026-08-12T12:55:00",
+   "chase_limit": 24276.21,
    "reasons": [
     "Breakdown below opening range",
     "EMA 9 below EMA 21",
@@ -642,7 +715,7 @@
     "rsi": 37.1,
     "adx": 37.4,
     "ema_fast": 24283.56,
-    "ema_slow": 24298.16,
+    "ema_slow": 24298.17,
     "supertrend": 24317.13
    },
    "exit_time": "2026-08-12T14:35:00",
@@ -666,6 +739,8 @@
    "target": 77450.06,
    "breakeven": false,
    "status": "CLOSED",
+   "valid_until": "2026-08-12T12:55:00",
+   "chase_limit": 77542.01,
    "reasons": [
     "Breakdown below opening range",
     "EMA 9 below EMA 21",
@@ -704,6 +779,8 @@
    "target": 24273.93,
    "breakeven": false,
    "status": "CLOSED",
+   "valid_until": "2026-08-13T10:40:00",
+   "chase_limit": 24310.11,
    "reasons": [
     "Breakdown below opening range",
     "EMA 9 below EMA 21",
@@ -717,7 +794,7 @@
    "indicators": {
     "rsi": 44.0,
     "adx": 29.2,
-    "ema_fast": 24336.51,
+    "ema_fast": 24336.5,
     "ema_slow": 24339.0,
     "supertrend": 24384.22
    },
@@ -742,6 +819,8 @@
    "target": 24168.48,
    "breakeven": false,
    "status": "CLOSED",
+   "valid_until": "2026-08-18T12:05:00",
+   "chase_limit": 24193.06,
    "reasons": [
     "Breakdown below opening range",
     "EMA 9 below EMA 21",
@@ -755,8 +834,8 @@
    "indicators": {
     "rsi": 38.2,
     "adx": 43.2,
-    "ema_fast": 24198.58,
-    "ema_slow": 24210.13,
+    "ema_fast": 24198.59,
+    "ema_slow": 24210.15,
     "supertrend": 24224.8
    },
    "exit_time": "2026-08-18T12:10:00",
@@ -780,6 +859,8 @@
    "target": 24170.49,
    "breakeven": false,
    "status": "CLOSED",
+   "valid_until": "2026-08-18T12:55:00",
+   "chase_limit": 24192.54,
    "reasons": [
     "Breakdown below opening range",
     "EMA 9 below EMA 21",
@@ -794,7 +875,7 @@
     "rsi": 39.6,
     "adx": 27.0,
     "ema_fast": 24207.04,
-    "ema_slow": 24209.51,
+    "ema_slow": 24209.52,
     "supertrend": 24224.8
    },
    "exit_time": "2026-08-18T14:55:00",
@@ -818,6 +899,8 @@
    "target": 77272.23,
    "breakeven": false,
    "status": "CLOSED",
+   "valid_until": "2026-08-18T13:10:00",
+   "chase_limit": 77341.9,
    "reasons": [
     "Breakdown below opening range",
     "EMA 9 below EMA 21",
@@ -850,12 +933,14 @@
    "strike": 24050,
    "entry_time": "2026-08-19T12:05:00",
    "entry": 24059.8,
-   "risk": 20.97,
+   "risk": 20.95,
    "sl": 24059.8,
-   "initial_sl": 24080.77,
-   "target": 24028.34,
+   "initial_sl": 24080.75,
+   "target": 24028.37,
    "breakeven": true,
    "status": "CLOSED",
+   "valid_until": "2026-08-19T12:15:00",
+   "chase_limit": 24053.52,
    "reasons": [
     "Breakdown below opening range",
     "EMA 9 below EMA 21",
@@ -867,11 +952,11 @@
     "Not overextended"
    ],
    "indicators": {
-    "rsi": 42.7,
+    "rsi": 42.6,
     "adx": 38.6,
-    "ema_fast": 24063.2,
-    "ema_slow": 24067.61,
-    "supertrend": 24083.97
+    "ema_fast": 24063.24,
+    "ema_slow": 24067.63,
+    "supertrend": 24083.91
    },
    "exit_time": "2026-08-19T14:10:00",
    "exit": 24059.8,
@@ -894,6 +979,8 @@
    "target": 76798.34,
    "breakeven": true,
    "status": "CLOSED",
+   "valid_until": "2026-08-19T12:15:00",
+   "chase_limit": 76885.44,
    "reasons": [
     "Breakdown below opening range",
     "EMA 9 below EMA 21",
@@ -932,6 +1019,8 @@
    "target": 24011.82,
    "breakeven": false,
    "status": "CLOSED",
+   "valid_until": "2026-08-19T14:30:00",
+   "chase_limit": 24034.12,
    "reasons": [
     "Breakdown below opening range",
     "EMA 9 below EMA 21",
@@ -943,10 +1032,10 @@
     "Not overextended"
    ],
    "indicators": {
-    "rsi": 40.5,
+    "rsi": 40.4,
     "adx": 22.3,
     "ema_fast": 24046.91,
-    "ema_slow": 24049.55,
+    "ema_slow": 24049.56,
     "supertrend": 24074.75
    },
    "exit_time": "2026-08-19T14:40:00",
@@ -970,6 +1059,8 @@
    "target": 24271.3,
    "breakeven": false,
    "status": "CLOSED",
+   "valid_until": "2026-08-20T13:55:00",
+   "chase_limit": 24251.1,
    "reasons": [
     "Breakout above opening range",
     "EMA 9 above EMA 21",
@@ -981,10 +1072,10 @@
     "Not overextended"
    ],
    "indicators": {
-    "rsi": 65.0,
+    "rsi": 65.1,
     "adx": 45.2,
-    "ema_fast": 24243.83,
-    "ema_slow": 24234.24,
+    "ema_fast": 24243.82,
+    "ema_slow": 24234.23,
     "supertrend": 24215.34
    },
    "exit_time": "2026-08-20T14:05:00",
@@ -1008,6 +1099,8 @@
    "target": 77660.43,
    "breakeven": false,
    "status": "CLOSED",
+   "valid_until": "2026-08-20T14:20:00",
+   "chase_limit": 77571.59,
    "reasons": [
     "Breakout above opening range",
     "EMA 9 above EMA 21",
@@ -1046,6 +1139,8 @@
    "target": 24140.9,
    "breakeven": true,
    "status": "CLOSED",
+   "valid_until": "2026-08-24T13:55:00",
+   "chase_limit": 24162.26,
    "reasons": [
     "Breakdown below opening range",
     "EMA 9 below EMA 21",
@@ -1084,6 +1179,8 @@
    "target": 77180.41,
    "breakeven": false,
    "status": "CLOSED",
+   "valid_until": "2026-08-24T13:55:00",
+   "chase_limit": 77248.71,
    "reasons": [
     "Breakdown below opening range",
     "EMA 9 below EMA 21",
@@ -1116,12 +1213,14 @@
    "strike": 24300,
    "entry_time": "2026-08-26T12:30:00",
    "entry": 24278.1,
-   "risk": 22.44,
+   "risk": 22.47,
    "sl": 24278.1,
-   "initial_sl": 24300.54,
-   "target": 24244.43,
+   "initial_sl": 24300.57,
+   "target": 24244.39,
    "breakeven": true,
    "status": "CLOSED",
+   "valid_until": "2026-08-26T12:40:00",
+   "chase_limit": 24271.36,
    "reasons": [
     "Breakdown below opening range",
     "EMA 9 below EMA 21",
@@ -1135,9 +1234,9 @@
    "indicators": {
     "rsi": 41.5,
     "adx": 23.8,
-    "ema_fast": 24286.83,
-    "ema_slow": 24295.82,
-    "supertrend": 24317.55
+    "ema_fast": 24286.8,
+    "ema_slow": 24295.8,
+    "supertrend": 24317.62
    },
    "exit_time": "2026-08-26T14:15:00",
    "exit": 24278.1,
@@ -1160,6 +1259,8 @@
    "target": 77114.81,
    "breakeven": false,
    "status": "CLOSED",
+   "valid_until": "2026-08-27T12:15:00",
+   "chase_limit": 77206.7,
    "reasons": [
     "Breakdown below opening range",
     "EMA 9 below EMA 21",
@@ -1198,6 +1299,8 @@
    "target": 24113.89,
    "breakeven": false,
    "status": "CLOSED",
+   "valid_until": "2026-08-27T12:30:00",
+   "chase_limit": 24139.98,
    "reasons": [
     "Breakdown below opening range",
     "EMA 9 below EMA 21",
@@ -1212,7 +1315,7 @@
     "rsi": 39.1,
     "adx": 47.9,
     "ema_fast": 24151.36,
-    "ema_slow": 24161.17,
+    "ema_slow": 24161.18,
     "supertrend": 24182.68
    },
    "exit_time": "2026-08-27T12:40:00",
@@ -1236,6 +1339,8 @@
    "target": 24108.13,
    "breakeven": false,
    "status": "CLOSED",
+   "valid_until": "2026-08-27T14:55:00",
+   "chase_limit": 24136.27,
    "reasons": [
     "Breakdown below opening range",
     "EMA 9 below EMA 21",
@@ -1249,7 +1354,7 @@
    "indicators": {
     "rsi": 43.1,
     "adx": 21.9,
-    "ema_fast": 24148.09,
+    "ema_fast": 24148.1,
     "ema_slow": 24153.48,
     "supertrend": 24170.99
    },
@@ -1274,6 +1379,8 @@
    "target": 77605.51,
    "breakeven": false,
    "status": "CLOSED",
+   "valid_until": "2026-08-28T10:25:00",
+   "chase_limit": 77349.46,
    "reasons": [
     "Breakout above opening range",
     "EMA 9 above EMA 21",
@@ -1312,6 +1419,8 @@
    "target": 24078.1,
    "breakeven": false,
    "status": "CLOSED",
+   "valid_until": "2026-08-28T13:05:00",
+   "chase_limit": 24099.86,
    "reasons": [
     "Breakdown below opening range",
     "EMA 9 below EMA 21",
@@ -1323,10 +1432,10 @@
     "Not overextended"
    ],
    "indicators": {
-    "rsi": 44.9,
+    "rsi": 45.0,
     "adx": 27.9,
     "ema_fast": 24102.32,
-    "ema_slow": 24108.98,
+    "ema_slow": 24108.97,
     "supertrend": 24127.74
    },
    "exit_time": "2026-08-28T14:35:00",
@@ -1350,6 +1459,8 @@
    "target": 76954.68,
    "breakeven": false,
    "status": "CLOSED",
+   "valid_until": "2026-08-28T13:10:00",
+   "chase_limit": 77036.65,
    "reasons": [
     "Breakdown below opening range",
     "EMA 9 below EMA 21",
@@ -1388,6 +1499,8 @@
    "target": 23971.81,
    "breakeven": false,
    "status": "CLOSED",
+   "valid_until": "2026-08-31T11:15:00",
+   "chase_limit": 24003.48,
    "reasons": [
     "Breakdown below opening range",
     "EMA 9 below EMA 21",
@@ -1401,8 +1514,8 @@
    "indicators": {
     "rsi": 38.6,
     "adx": 28.6,
-    "ema_fast": 24012.47,
-    "ema_slow": 24030.72,
+    "ema_fast": 24012.43,
+    "ema_slow": 24030.69,
     "supertrend": 24058.25
    },
    "exit_time": "2026-08-31T11:55:00",
@@ -1426,6 +1539,8 @@
    "target": 76671.14,
    "breakeven": false,
    "status": "CLOSED",
+   "valid_until": "2026-08-31T11:35:00",
+   "chase_limit": 76766.77,
    "reasons": [
     "Breakdown below opening range",
     "EMA 9 below EMA 21",
@@ -1464,6 +1579,8 @@
    "target": 24145.38,
    "breakeven": false,
    "status": "CLOSED",
+   "valid_until": "2026-09-01T12:40:00",
+   "chase_limit": 24116.8,
    "reasons": [
     "Breakout above opening range",
     "EMA 9 above EMA 21",
@@ -1475,9 +1592,9 @@
     "Not overextended"
    ],
    "indicators": {
-    "rsi": 55.1,
+    "rsi": 55.2,
     "adx": 29.2,
-    "ema_fast": 24111.6,
+    "ema_fast": 24111.62,
     "ema_slow": 24103.56,
     "supertrend": 24082.37
    },
@@ -1502,6 +1619,8 @@
    "target": 77284.93,
    "breakeven": false,
    "status": "CLOSED",
+   "valid_until": "2026-09-01T12:40:00",
+   "chase_limit": 77193.29,
    "reasons": [
     "Breakout above opening range",
     "EMA 9 above EMA 21",
@@ -1540,6 +1659,8 @@
    "target": 23918.47,
    "breakeven": true,
    "status": "CLOSED",
+   "valid_until": "2026-09-02T14:40:00",
+   "chase_limit": 23892.81,
    "reasons": [
     "Breakout above opening range",
     "EMA 9 above EMA 21",
@@ -1578,6 +1699,8 @@
    "target": 76455.04,
    "breakeven": false,
    "status": "CLOSED",
+   "valid_until": "2026-09-03T12:55:00",
+   "chase_limit": 76565.15,
    "reasons": [
     "Breakdown below opening range",
     "EMA 9 below EMA 21",
@@ -1616,6 +1739,8 @@
    "target": 23875.96,
    "breakeven": false,
    "status": "CLOSED",
+   "valid_until": "2026-09-03T13:35:00",
+   "chase_limit": 23904.35,
    "reasons": [
     "Breakdown below opening range",
     "EMA 9 below EMA 21",
@@ -1654,6 +1779,8 @@
    "target": 76958.42,
    "breakeven": false,
    "status": "CLOSED",
+   "valid_until": "2026-09-04T11:10:00",
+   "chase_limit": 76793.91,
    "reasons": [
     "Breakout above opening range",
     "EMA 9 above EMA 21",
@@ -1692,6 +1819,8 @@
    "target": 23733.77,
    "breakeven": false,
    "status": "CLOSED",
+   "valid_until": "2026-09-07T13:40:00",
+   "chase_limit": 23752.23,
    "reasons": [
     "Breakdown below opening range",
     "EMA 9 below EMA 21",
@@ -1724,12 +1853,14 @@
    "strike": 76000,
    "entry_time": "2026-09-07T13:30:00",
    "entry": 76033.65,
-   "risk": 51.04,
-   "sl": 76084.69,
-   "initial_sl": 76084.69,
-   "target": 75957.08,
+   "risk": 51.01,
+   "sl": 76084.66,
+   "initial_sl": 76084.66,
+   "target": 75957.13,
    "breakeven": false,
    "status": "CLOSED",
+   "valid_until": "2026-09-07T13:40:00",
+   "chase_limit": 76018.34,
    "reasons": [
     "Breakdown below opening range",
     "EMA 9 below EMA 21",
@@ -1745,13 +1876,13 @@
     "adx": 48.5,
     "ema_fast": 76033.61,
     "ema_slow": 76060.25,
-    "supertrend": 76104.08
+    "supertrend": 76104.05
    },
    "exit_time": "2026-09-07T13:55:00",
-   "exit": 76084.69,
+   "exit": 76084.66,
    "outcome": "STOPLOSS",
    "note": "Stop-loss hit",
-   "points": -51.04,
+   "points": -51.01,
    "r_multiple": -1.0
   },
   {
@@ -1768,6 +1899,8 @@
    "target": 23593.58,
    "breakeven": false,
    "status": "CLOSED",
+   "valid_until": "2026-09-09T13:50:00",
+   "chase_limit": 23563.04,
    "reasons": [
     "Breakout above opening range",
     "EMA 9 above EMA 21",
@@ -1781,7 +1914,7 @@
    "indicators": {
     "rsi": 56.6,
     "adx": 24.1,
-    "ema_fast": 23548.4,
+    "ema_fast": 23548.39,
     "ema_slow": 23539.6,
     "supertrend": 23510.03
    },
@@ -1800,12 +1933,14 @@
    "strike": 74600,
    "entry_time": "2026-09-11T12:00:00",
    "entry": 74557.56,
-   "risk": 105.83,
-   "sl": 74451.73,
-   "initial_sl": 74451.73,
-   "target": 74716.31,
+   "risk": 105.84,
+   "sl": 74451.72,
+   "initial_sl": 74451.72,
+   "target": 74716.32,
    "breakeven": false,
    "status": "CLOSED",
+   "valid_until": "2026-09-11T12:10:00",
+   "chase_limit": 74589.31,
    "reasons": [
     "Breakout above opening range",
     "EMA 9 above EMA 21",
@@ -1824,10 +1959,10 @@
     "supertrend": 74358.73
    },
    "exit_time": "2026-09-11T13:45:00",
-   "exit": 74451.73,
+   "exit": 74451.72,
    "outcome": "STOPLOSS",
    "note": "Stop-loss hit",
-   "points": -105.83,
+   "points": -105.84,
    "r_multiple": -1.0
   },
   {
@@ -1844,6 +1979,8 @@
    "target": 23343.34,
    "breakeven": false,
    "status": "CLOSED",
+   "valid_until": "2026-09-17T10:40:00",
+   "chase_limit": 23304.63,
    "reasons": [
     "Breakout above opening range",
     "EMA 9 above EMA 21",
@@ -1876,12 +2013,14 @@
    "strike": 23400,
    "entry_time": "2026-09-21T12:30:00",
    "entry": 23419.45,
-   "risk": 18.07,
-   "sl": 23401.38,
-   "initial_sl": 23401.38,
+   "risk": 18.08,
+   "sl": 23401.37,
+   "initial_sl": 23401.37,
    "target": 23446.56,
    "breakeven": false,
    "status": "CLOSED",
+   "valid_until": "2026-09-21T12:40:00",
+   "chase_limit": 23424.87,
    "reasons": [
     "Breakout above opening range",
     "EMA 9 above EMA 21",
@@ -1895,15 +2034,55 @@
    "indicators": {
     "rsi": 62.5,
     "adx": 30.9,
-    "ema_fast": 23414.69,
-    "ema_slow": 23405.04,
-    "supertrend": 23387.8
+    "ema_fast": 23414.66,
+    "ema_slow": 23405.01,
+    "supertrend": 23387.79
    },
    "exit_time": "2026-09-21T13:10:00",
-   "exit": 23401.38,
+   "exit": 23401.37,
    "outcome": "STOPLOSS",
    "note": "Stop-loss hit",
-   "points": -18.07,
+   "points": -18.08,
+   "r_multiple": -1.0
+  },
+  {
+   "id": "NIFTY-20260921-1445-CALL",
+   "index": "NIFTY",
+   "side": "CALL",
+   "option": "NIFTY 23450 CE",
+   "strike": 23450,
+   "entry_time": "2026-09-21T14:45:00",
+   "entry": 23450.75,
+   "risk": 16.7,
+   "sl": 23434.05,
+   "initial_sl": 23434.05,
+   "target": 23475.79,
+   "breakeven": false,
+   "status": "CLOSED",
+   "valid_until": "2026-09-21T14:55:00",
+   "chase_limit": 23455.76,
+   "reasons": [
+    "Breakout above opening range",
+    "EMA 9 above EMA 21",
+    "Supertrend bullish",
+    "RSI 55\u201375",
+    "ADX \u2265 20 (trending)",
+    "15-min trend up",
+    "Strong bullish candle",
+    "Not overextended"
+   ],
+   "indicators": {
+    "rsi": 61.0,
+    "adx": 26.2,
+    "ema_fast": 23448.93,
+    "ema_slow": 23440.33,
+    "supertrend": 23427.64
+   },
+   "exit_time": "2026-09-21T15:10:00",
+   "exit": 23434.05,
+   "outcome": "STOPLOSS",
+   "note": "Stop-loss hit",
+   "points": -16.7,
    "r_multiple": -1.0
   },
   {
@@ -1920,6 +2099,8 @@
    "target": 75024.17,
    "breakeven": false,
    "status": "CLOSED",
+   "valid_until": "2026-09-21T14:55:00",
+   "chase_limit": 74960.2,
    "reasons": [
     "Breakout above opening range",
     "EMA 9 above EMA 21",
@@ -1958,6 +2139,8 @@
    "target": 23354.63,
    "breakeven": true,
    "status": "CLOSED",
+   "valid_until": "2026-09-22T11:40:00",
+   "chase_limit": 23384.73,
    "reasons": [
     "Breakdown below opening range",
     "EMA 9 below EMA 21",
@@ -1969,10 +2152,10 @@
     "Not overextended"
    ],
    "indicators": {
-    "rsi": 40.8,
+    "rsi": 40.9,
     "adx": 26.8,
-    "ema_fast": 23393.37,
-    "ema_slow": 23408.1,
+    "ema_fast": 23393.42,
+    "ema_slow": 23408.14,
     "supertrend": 23425.83
    },
    "exit_time": "2026-09-22T11:55:00",
@@ -1996,6 +2179,8 @@
    "target": 74640.66,
    "breakeven": true,
    "status": "CLOSED",
+   "valid_until": "2026-09-22T11:40:00",
+   "chase_limit": 74736.59,
    "reasons": [
     "Breakdown below opening range",
     "EMA 9 below EMA 21",
@@ -2034,6 +2219,8 @@
    "target": 23326.77,
    "breakeven": true,
    "status": "CLOSED",
+   "valid_until": "2026-09-22T12:50:00",
+   "chase_limit": 23351.79,
    "reasons": [
     "Breakdown below opening range",
     "EMA 9 below EMA 21",
@@ -2045,10 +2232,10 @@
     "Not overextended"
    ],
    "indicators": {
-    "rsi": 38.1,
+    "rsi": 38.2,
     "adx": 32.9,
     "ema_fast": 23362.53,
-    "ema_slow": 23374.24,
+    "ema_slow": 23374.25,
     "supertrend": 23398.94
    },
    "exit_time": "2026-09-22T13:00:00",
@@ -2072,6 +2259,8 @@
    "target": 74513.05,
    "breakeven": true,
    "status": "CLOSED",
+   "valid_until": "2026-09-22T13:55:00",
+   "chase_limit": 74582.7,
    "reasons": [
     "Breakdown below opening range",
     "EMA 9 below EMA 21",
@@ -2103,13 +2292,15 @@
    "option": "NIFTY 23450 CE",
    "strike": 23450,
    "entry_time": "2026-09-23T12:00:00",
-   "entry": 23429.4,
+   "entry": 23429.55,
    "risk": 19.55,
-   "sl": 23429.4,
-   "initial_sl": 23409.85,
-   "target": 23458.72,
+   "sl": 23429.55,
+   "initial_sl": 23410.0,
+   "target": 23458.87,
    "breakeven": true,
    "status": "CLOSED",
+   "valid_until": "2026-09-23T12:10:00",
+   "chase_limit": 23435.42,
    "reasons": [
     "Breakout above opening range",
     "EMA 9 above EMA 21",
@@ -2121,14 +2312,14 @@
     "Not overextended"
    ],
    "indicators": {
-    "rsi": 59.6,
+    "rsi": 59.7,
     "adx": 28.9,
     "ema_fast": 23429.97,
-    "ema_slow": 23418.33,
+    "ema_slow": 23418.32,
     "supertrend": 23401.17
    },
    "exit_time": "2026-09-23T12:15:00",
-   "exit": 23458.72,
+   "exit": 23458.87,
    "outcome": "TARGET",
    "note": "Target hit",
    "points": 29.32,
@@ -2141,13 +2332,15 @@
    "option": "NIFTY 23450 CE",
    "strike": 23450,
    "entry_time": "2026-09-23T13:00:00",
-   "entry": 23453.15,
+   "entry": 23453.25,
    "risk": 17.6,
-   "sl": 23435.55,
-   "initial_sl": 23435.55,
-   "target": 23479.55,
+   "sl": 23435.65,
+   "initial_sl": 23435.65,
+   "target": 23479.65,
    "breakeven": false,
    "status": "CLOSED",
+   "valid_until": "2026-09-23T13:10:00",
+   "chase_limit": 23458.53,
    "reasons": [
     "Breakout above opening range",
     "EMA 9 above EMA 21",
@@ -2159,14 +2352,14 @@
     "Not overextended"
    ],
    "indicators": {
-    "rsi": 62.5,
+    "rsi": 62.6,
     "adx": 32.3,
-    "ema_fast": 23448.47,
-    "ema_slow": 23440.23,
+    "ema_fast": 23448.53,
+    "ema_slow": 23440.26,
     "supertrend": 23421.88
    },
    "exit_time": "2026-09-23T13:35:00",
-   "exit": 23435.55,
+   "exit": 23435.65,
    "outcome": "STOPLOSS",
    "note": "Stop-loss hit",
    "points": -17.6,
@@ -2186,6 +2379,8 @@
    "target": 75004.49,
    "breakeven": false,
    "status": "CLOSED",
+   "valid_until": "2026-09-23T13:10:00",
+   "chase_limit": 74938.47,
    "reasons": [
     "Breakout above opening range",
     "EMA 9 above EMA 21",
@@ -2224,6 +2419,8 @@
    "target": 74008.11,
    "breakeven": true,
    "status": "CLOSED",
+   "valid_until": "2026-09-24T11:35:00",
+   "chase_limit": 74127.4,
    "reasons": [
     "Breakdown below opening range",
     "EMA 9 below EMA 21",
@@ -2259,9 +2456,11 @@
    "risk": 25.47,
    "sl": 23205.85,
    "initial_sl": 23231.32,
-   "target": 23167.64,
+   "target": 23167.65,
    "breakeven": true,
    "status": "CLOSED",
+   "valid_until": "2026-09-24T12:20:00",
+   "chase_limit": 23198.21,
    "reasons": [
     "Breakdown below opening range",
     "EMA 9 below EMA 21",
@@ -2277,13 +2476,13 @@
     "adx": 36.9,
     "ema_fast": 23209.15,
     "ema_slow": 23223.39,
-    "supertrend": 23247.84
+    "supertrend": 23247.83
    },
    "exit_time": "2026-09-24T12:40:00",
-   "exit": 23167.64,
+   "exit": 23167.65,
    "outcome": "TARGET",
    "note": "Target hit",
-   "points": 38.21,
+   "points": 38.2,
    "r_multiple": 1.5
   },
   {
@@ -2300,6 +2499,8 @@
    "target": 23145.42,
    "breakeven": false,
    "status": "CLOSED",
+   "valid_until": "2026-09-24T13:20:00",
+   "chase_limit": 23173.04,
    "reasons": [
     "Breakdown below opening range",
     "EMA 9 below EMA 21",
@@ -2338,6 +2539,8 @@
    "target": 73896.32,
    "breakeven": false,
    "status": "CLOSED",
+   "valid_until": "2026-09-24T13:20:00",
+   "chase_limit": 73984.95,
    "reasons": [
     "Breakdown below opening range",
     "EMA 9 below EMA 21",
@@ -2370,12 +2573,14 @@
    "strike": 22850,
    "entry_time": "2026-09-28T11:50:00",
    "entry": 22838.95,
-   "risk": 26.75,
+   "risk": 26.76,
    "sl": 22838.95,
-   "initial_sl": 22865.7,
-   "target": 22798.83,
+   "initial_sl": 22865.71,
+   "target": 22798.81,
    "breakeven": true,
    "status": "CLOSED",
+   "valid_until": "2026-09-28T12:00:00",
+   "chase_limit": 22830.92,
    "reasons": [
     "Breakdown below opening range",
     "EMA 9 below EMA 21",
@@ -2387,11 +2592,11 @@
     "Not overextended"
    ],
    "indicators": {
-    "rsi": 39.5,
+    "rsi": 39.6,
     "adx": 45.7,
-    "ema_fast": 22832.77,
-    "ema_slow": 22850.44,
-    "supertrend": 22868.81
+    "ema_fast": 22832.74,
+    "ema_slow": 22850.41,
+    "supertrend": 22868.84
    },
    "exit_time": "2026-09-28T13:25:00",
    "exit": 22838.95,
@@ -2414,6 +2619,8 @@
    "target": 72837.21,
    "breakeven": true,
    "status": "CLOSED",
+   "valid_until": "2026-09-28T12:00:00",
+   "chase_limit": 72931.98,
    "reasons": [
     "Breakdown below opening range",
     "EMA 9 below EMA 21",
@@ -2452,6 +2659,8 @@
    "target": 72829.67,
    "breakeven": true,
    "status": "CLOSED",
+   "valid_until": "2026-09-28T12:45:00",
+   "chase_limit": 72919.37,
    "reasons": [
     "Breakdown below opening range",
     "EMA 9 below EMA 21",
@@ -2487,9 +2696,11 @@
    "risk": 22.24,
    "sl": 22853.24,
    "initial_sl": 22853.24,
-   "target": 22797.65,
+   "target": 22797.64,
    "breakeven": false,
    "status": "CLOSED",
+   "valid_until": "2026-09-28T13:45:00",
+   "chase_limit": 22824.33,
    "reasons": [
     "Breakdown below opening range",
     "EMA 9 below EMA 21",
@@ -2504,14 +2715,14 @@
     "rsi": 44.9,
     "adx": 22.8,
     "ema_fast": 22833.86,
-    "ema_slow": 22835.99,
-    "supertrend": 22856.34
+    "ema_slow": 22835.98,
+    "supertrend": 22856.35
    },
    "exit_time": "2026-09-28T14:20:00",
-   "exit": 22797.65,
+   "exit": 22797.64,
    "outcome": "TARGET",
    "note": "Target hit",
-   "points": 33.35,
+   "points": 33.36,
    "r_multiple": 1.5
   },
   {
@@ -2528,6 +2739,8 @@
    "target": 72872.42,
    "breakeven": false,
    "status": "CLOSED",
+   "valid_until": "2026-09-30T10:50:00",
+   "chase_limit": 72772.86,
    "reasons": [
     "Breakout above opening range",
     "EMA 9 above EMA 21",
@@ -2563,9 +2776,11 @@
    "risk": 45.9,
    "sl": 22468.85,
    "initial_sl": 22514.75,
-   "target": 22400.0,
+   "target": 22399.99,
    "breakeven": true,
    "status": "CLOSED",
+   "valid_until": "2026-10-05T11:55:00",
+   "chase_limit": 22455.08,
    "reasons": [
     "Breakdown below opening range",
     "EMA 9 below EMA 21",
@@ -2577,17 +2792,17 @@
     "Not overextended"
    ],
    "indicators": {
-    "rsi": 44.8,
+    "rsi": 44.9,
     "adx": 21.7,
-    "ema_fast": 22486.81,
-    "ema_slow": 22493.71,
+    "ema_fast": 22486.91,
+    "ema_slow": 22493.79,
     "supertrend": 22563.39
    },
    "exit_time": "2026-10-05T12:10:00",
-   "exit": 22400.0,
+   "exit": 22399.99,
    "outcome": "TARGET",
    "note": "Target hit",
-   "points": 68.85,
+   "points": 68.86,
    "r_multiple": 1.5
   },
   {
@@ -2604,6 +2819,8 @@
    "target": 71850.56,
    "breakeven": true,
    "status": "CLOSED",
+   "valid_until": "2026-10-05T11:55:00",
+   "chase_limit": 72035.29,
    "reasons": [
     "Breakdown below opening range",
     "EMA 9 below EMA 21",
@@ -2639,9 +2856,11 @@
    "risk": 44.7,
    "sl": 22488.45,
    "initial_sl": 22488.45,
-   "target": 22376.71,
+   "target": 22376.7,
    "breakeven": false,
    "status": "CLOSED",
+   "valid_until": "2026-10-05T12:45:00",
+   "chase_limit": 22430.34,
    "reasons": [
     "Breakdown below opening range",
     "EMA 9 below EMA 21",
@@ -2655,8 +2874,8 @@
    "indicators": {
     "rsi": 44.8,
     "adx": 27.4,
-    "ema_fast": 22445.81,
-    "ema_slow": 22461.06,
+    "ema_fast": 22445.82,
+    "ema_slow": 22461.09,
     "supertrend": 22516.29
    },
    "exit_time": "2026-10-05T13:40:00",
@@ -2680,6 +2899,8 @@
    "target": 71762.74,
    "breakeven": false,
    "status": "CLOSED",
+   "valid_until": "2026-10-05T12:45:00",
+   "chase_limit": 71930.0,
    "reasons": [
     "Breakdown below opening range",
     "EMA 9 below EMA 21",
@@ -2718,6 +2939,8 @@
    "target": 22724.91,
    "breakeven": true,
    "status": "CLOSED",
+   "valid_until": "2026-10-06T12:10:00",
+   "chase_limit": 22694.14,
    "reasons": [
     "Breakout above opening range",
     "EMA 9 above EMA 21",
@@ -2731,8 +2954,8 @@
    "indicators": {
     "rsi": 62.2,
     "adx": 43.5,
-    "ema_fast": 22683.28,
-    "ema_slow": 22668.37,
+    "ema_fast": 22683.26,
+    "ema_slow": 22668.36,
     "supertrend": 22646.47
    },
    "exit_time": "2026-10-06T12:45:00",
@@ -2756,6 +2979,8 @@
    "target": 72960.09,
    "breakeven": true,
    "status": "CLOSED",
+   "valid_until": "2026-10-06T12:30:00",
+   "chase_limit": 72857.24,
    "reasons": [
     "Breakout above opening range",
     "EMA 9 above EMA 21",
@@ -2794,6 +3019,8 @@
    "target": 22747.96,
    "breakeven": false,
    "status": "CLOSED",
+   "valid_until": "2026-10-06T13:20:00",
+   "chase_limit": 22718.43,
    "reasons": [
     "Breakout above opening range",
     "EMA 9 above EMA 21",
@@ -2807,8 +3034,8 @@
    "indicators": {
     "rsi": 61.9,
     "adx": 39.7,
-    "ema_fast": 22706.16,
-    "ema_slow": 22693.98,
+    "ema_fast": 22706.2,
+    "ema_slow": 22694.02,
     "supertrend": 22669.93
    },
    "exit_time": "2026-10-06T14:30:00",
@@ -2832,6 +3059,8 @@
    "target": 73031.56,
    "breakeven": false,
    "status": "CLOSED",
+   "valid_until": "2026-10-06T13:20:00",
+   "chase_limit": 72937.57,
    "reasons": [
     "Breakout above opening range",
     "EMA 9 above EMA 21",
@@ -2870,6 +3099,8 @@
    "target": 72407.92,
    "breakeven": false,
    "status": "CLOSED",
+   "valid_until": "2026-10-07T14:35:00",
+   "chase_limit": 72528.61,
    "reasons": [
     "Breakdown below opening range",
     "EMA 9 below EMA 21",
@@ -2908,6 +3139,8 @@
    "target": 22385.11,
    "breakeven": true,
    "status": "CLOSED",
+   "valid_until": "2026-10-08T11:20:00",
+   "chase_limit": 22431.02,
    "reasons": [
     "Breakdown below opening range",
     "EMA 9 below EMA 21",
@@ -2946,6 +3179,8 @@
    "target": 22164.19,
    "breakeven": true,
    "status": "CLOSED",
+   "valid_until": "2026-10-08T14:55:00",
+   "chase_limit": 22213.52,
    "reasons": [
     "Breakdown below opening range",
     "EMA 9 below EMA 21",
@@ -2984,6 +3219,8 @@
    "target": 71307.95,
    "breakeven": true,
    "status": "CLOSED",
+   "valid_until": "2026-10-08T14:55:00",
+   "chase_limit": 71463.72,
    "reasons": [
     "Breakdown below opening range",
     "EMA 9 below EMA 21",
@@ -3022,6 +3259,8 @@
    "target": 22550.32,
    "breakeven": true,
    "status": "CLOSED",
+   "valid_until": "2026-10-09T12:20:00",
+   "chase_limit": 22505.5,
    "reasons": [
     "Breakout above opening range",
     "EMA 9 above EMA 21",
@@ -3036,7 +3275,7 @@
     "rsi": 57.7,
     "adx": 34.0,
     "ema_fast": 22481.63,
-    "ema_slow": 22474.4,
+    "ema_slow": 22474.42,
     "supertrend": 22443.86
    },
    "exit_time": "2026-10-09T14:00:00",
@@ -3060,6 +3299,8 @@
    "target": 72564.37,
    "breakeven": true,
    "status": "CLOSED",
+   "valid_until": "2026-10-09T12:20:00",
+   "chase_limit": 72423.17,
    "reasons": [
     "Breakout above opening range",
     "EMA 9 above EMA 21",
@@ -3092,12 +3333,14 @@
    "strike": 22550,
    "entry_time": "2026-10-09T14:40:00",
    "entry": 22548.7,
-   "risk": 28.42,
+   "risk": 28.41,
    "sl": 22520.28,
    "initial_sl": 22520.28,
    "target": 22591.32,
    "breakeven": false,
    "status": "CLOSED",
+   "valid_until": "2026-10-09T14:50:00",
+   "chase_limit": 22557.22,
    "reasons": [
     "Breakout above opening range",
     "EMA 9 above EMA 21",
@@ -3109,10 +3352,10 @@
     "Not overextended"
    ],
    "indicators": {
-    "rsi": 58.3,
+    "rsi": 58.2,
     "adx": 33.5,
-    "ema_fast": 22546.43,
-    "ema_slow": 22530.28,
+    "ema_fast": 22546.44,
+    "ema_slow": 22530.29,
     "supertrend": 22506.47
    },
    "exit_time": "2026-10-09T15:15:00",
@@ -3136,6 +3379,8 @@
    "target": 72694.66,
    "breakeven": false,
    "status": "CLOSED",
+   "valid_until": "2026-10-09T14:50:00",
+   "chase_limit": 72596.14,
    "reasons": [
     "Breakout above opening range",
     "EMA 9 above EMA 21",
@@ -3174,6 +3419,8 @@
    "target": 72068.73,
    "breakeven": true,
    "status": "CLOSED",
+   "valid_until": "2026-10-12T10:15:00",
+   "chase_limit": 72272.42,
    "reasons": [
     "Breakdown below opening range",
     "EMA 9 below EMA 21",
@@ -3212,6 +3459,8 @@
    "target": 71786.63,
    "breakeven": true,
    "status": "CLOSED",
+   "valid_until": "2026-10-12T12:35:00",
+   "chase_limit": 71904.86,
    "reasons": [
     "Breakdown below opening range",
     "EMA 9 below EMA 21",
@@ -3250,6 +3499,8 @@
    "target": 22331.81,
    "breakeven": true,
    "status": "CLOSED",
+   "valid_until": "2026-10-12T12:40:00",
+   "chase_limit": 22371.32,
    "reasons": [
     "Breakdown below opening range",
     "EMA 9 below EMA 21",
@@ -3288,6 +3539,8 @@
    "target": 22555.16,
    "breakeven": false,
    "status": "CLOSED",
+   "valid_until": "2026-10-13T10:55:00",
+   "chase_limit": 22519.71,
    "reasons": [
     "Breakout above opening range",
     "EMA 9 above EMA 21",
@@ -3326,6 +3579,8 @@
    "target": 72550.81,
    "breakeven": true,
    "status": "CLOSED",
+   "valid_until": "2026-10-13T10:55:00",
+   "chase_limit": 72423.34,
    "reasons": [
     "Breakout above opening range",
     "EMA 9 above EMA 21",
@@ -3357,13 +3612,15 @@
    "option": "NIFTY 22500 CE",
    "strike": 22500,
    "entry_time": "2026-10-13T12:00:00",
-   "entry": 22520.25,
+   "entry": 22520.1,
    "risk": 33.8,
-   "sl": 22520.25,
-   "initial_sl": 22486.45,
-   "target": 22570.95,
+   "sl": 22520.1,
+   "initial_sl": 22486.3,
+   "target": 22570.8,
    "breakeven": true,
    "status": "CLOSED",
+   "valid_until": "2026-10-13T12:10:00",
+   "chase_limit": 22530.24,
    "reasons": [
     "Breakout above opening range",
     "EMA 9 above EMA 21",
@@ -3377,12 +3634,12 @@
    "indicators": {
     "rsi": 56.2,
     "adx": 20.9,
-    "ema_fast": 22507.55,
-    "ema_slow": 22502.78,
+    "ema_fast": 22507.52,
+    "ema_slow": 22502.76,
     "supertrend": 22481.31
    },
    "exit_time": "2026-10-13T14:05:00",
-   "exit": 22570.95,
+   "exit": 22570.8,
    "outcome": "TARGET",
    "note": "Target hit",
    "points": 50.7,
@@ -3402,6 +3659,8 @@
    "target": 22554.31,
    "breakeven": false,
    "status": "CLOSED",
+   "valid_until": "2026-10-14T14:30:00",
+   "chase_limit": 22600.74,
    "reasons": [
     "Breakdown below opening range",
     "EMA 9 below EMA 21",
@@ -3415,8 +3674,8 @@
    "indicators": {
     "rsi": 40.6,
     "adx": 28.1,
-    "ema_fast": 22625.17,
-    "ema_slow": 22637.35,
+    "ema_fast": 22625.18,
+    "ema_slow": 22637.36,
     "supertrend": 22662.3
    },
    "exit_time": "2026-10-14T15:15:00",
@@ -3437,9 +3696,11 @@
    "risk": 30.19,
    "sl": 23010.06,
    "initial_sl": 23010.06,
-   "target": 23085.53,
+   "target": 23085.54,
    "breakeven": false,
    "status": "CLOSED",
+   "valid_until": "2026-10-15T14:30:00",
+   "chase_limit": 23049.31,
    "reasons": [
     "Breakout above opening range",
     "EMA 9 above EMA 21",
@@ -3452,10 +3713,10 @@
    ],
    "indicators": {
     "rsi": 66.3,
-    "adx": 28.9,
+    "adx": 29.0,
     "ema_fast": 23034.05,
     "ema_slow": 23017.31,
-    "supertrend": 22985.07
+    "supertrend": 22985.06
    },
    "exit_time": "2026-10-15T14:25:00",
    "exit": 23010.06,
@@ -3478,6 +3739,8 @@
    "target": 74395.39,
    "breakeven": false,
    "status": "CLOSED",
+   "valid_until": "2026-10-15T14:30:00",
+   "chase_limit": 74280.45,
    "reasons": [
     "Breakout above opening range",
     "EMA 9 above EMA 21",
@@ -3516,6 +3779,8 @@
    "target": 23165.58,
    "breakeven": false,
    "status": "CLOSED",
+   "valid_until": "2026-10-16T11:05:00",
+   "chase_limit": 23109.36,
    "reasons": [
     "Breakout above opening range",
     "EMA 9 above EMA 21",
@@ -3528,10 +3793,10 @@
    ],
    "indicators": {
     "rsi": 60.4,
-    "adx": 41.6,
+    "adx": 41.7,
     "ema_fast": 23098.21,
-    "ema_slow": 23062.76,
-    "supertrend": 23045.01
+    "ema_slow": 23062.77,
+    "supertrend": 23045.0
    },
    "exit_time": "2026-10-16T14:25:00",
    "exit": 23082.5,
@@ -3554,6 +3819,8 @@
    "target": 74854.2,
    "breakeven": false,
    "status": "CLOSED",
+   "valid_until": "2026-10-16T11:05:00",
+   "chase_limit": 74642.46,
    "reasons": [
     "Breakout above opening range",
     "EMA 9 above EMA 21",
@@ -3592,6 +3859,8 @@
    "target": 22814.48,
    "breakeven": false,
    "status": "CLOSED",
+   "valid_until": "2026-10-19T14:25:00",
+   "chase_limit": 22860.22,
    "reasons": [
     "Breakdown below opening range",
     "EMA 9 below EMA 21",
@@ -3603,18 +3872,18 @@
     "Not overextended"
    ],
    "indicators": {
-    "rsi": 35.4,
+    "rsi": 35.2,
     "adx": 38.7,
-    "ema_fast": 22878.77,
-    "ema_slow": 22901.99,
+    "ema_fast": 22878.73,
+    "ema_slow": 22901.95,
     "supertrend": 22940.8
    },
    "exit_time": "2026-10-19T15:15:00",
-   "exit": 22873.55,
+   "exit": 22873.75,
    "outcome": "TIME_EXIT",
    "note": "Square-off time",
-   "points": -1.9,
-   "r_multiple": -0.05
+   "points": -2.1,
+   "r_multiple": -0.06
   },
   {
    "id": "SENSEX-20261021-1440-PUT",
@@ -3630,6 +3899,8 @@
    "target": 73154.8,
    "breakeven": false,
    "status": "CLOSED",
+   "valid_until": "2026-10-21T14:50:00",
+   "chase_limit": 73288.51,
    "reasons": [
     "Breakdown below opening range",
     "EMA 9 below EMA 21",
@@ -3668,6 +3939,8 @@
    "target": 22403.26,
    "breakeven": true,
    "status": "CLOSED",
+   "valid_until": "2026-10-23T11:35:00",
+   "chase_limit": 22474.77,
    "reasons": [
     "Breakdown below opening range",
     "EMA 9 below EMA 21",
@@ -3681,8 +3954,8 @@
    "indicators": {
     "rsi": 42.2,
     "adx": 28.2,
-    "ema_fast": 22484.42,
-    "ema_slow": 22519.12,
+    "ema_fast": 22484.45,
+    "ema_slow": 22519.18,
     "supertrend": 22572.18
    },
    "exit_time": "2026-10-23T12:50:00",
@@ -3706,6 +3979,8 @@
    "target": 72362.57,
    "breakeven": false,
    "status": "CLOSED",
+   "valid_until": "2026-10-23T12:35:00",
+   "chase_limit": 72560.95,
    "reasons": [
     "Breakdown below opening range",
     "EMA 9 below EMA 21",
@@ -3744,6 +4019,8 @@
    "target": 22333.84,
    "breakeven": false,
    "status": "CLOSED",
+   "valid_until": "2026-10-23T13:20:00",
+   "chase_limit": 22387.13,
    "reasons": [
     "Breakdown below opening range",
     "EMA 9 below EMA 21",
@@ -3757,8 +4034,8 @@
    "indicators": {
     "rsi": 37.6,
     "adx": 27.7,
-    "ema_fast": 22415.29,
-    "ema_slow": 22434.51,
+    "ema_fast": 22415.35,
+    "ema_slow": 22434.56,
     "supertrend": 22469.78
    },
    "exit_time": "2026-10-23T13:35:00",
@@ -3767,24 +4044,184 @@
    "note": "Stop-loss hit",
    "points": -44.4,
    "r_multiple": -1.0
+  },
+  {
+   "id": "NIFTY-20261026-1045-CALL",
+   "index": "NIFTY",
+   "side": "CALL",
+   "option": "NIFTY 22600 CE",
+   "strike": 22600,
+   "entry_time": "2026-10-26T10:45:00",
+   "entry": 22620.9,
+   "risk": 79.17,
+   "sl": 22541.73,
+   "initial_sl": 22541.73,
+   "target": 22739.65,
+   "breakeven": false,
+   "status": "CLOSED",
+   "valid_until": "2026-10-26T10:55:00",
+   "chase_limit": 22644.65,
+   "reasons": [
+    "Breakout above opening range",
+    "EMA 9 above EMA 21",
+    "Supertrend bullish",
+    "RSI 55\u201375",
+    "ADX \u2265 20 (trending)",
+    "15-min trend up",
+    "Strong bullish candle",
+    "Not overextended"
+   ],
+   "indicators": {
+    "rsi": 55.8,
+    "adx": 27.3,
+    "ema_fast": 22624.8,
+    "ema_slow": 22585.77,
+    "supertrend": 22510.68
+   },
+   "exit_time": "2026-10-26T11:35:00",
+   "exit": 22541.73,
+   "outcome": "STOPLOSS",
+   "note": "Stop-loss hit",
+   "points": -79.17,
+   "r_multiple": -1.0
+  },
+  {
+   "id": "SENSEX-20261026-1050-CALL",
+   "index": "SENSEX",
+   "side": "CALL",
+   "option": "SENSEX 73200 CE",
+   "strike": 73200,
+   "entry_time": "2026-10-26T10:50:00",
+   "entry": 73249.55,
+   "risk": 244.92,
+   "sl": 73004.62,
+   "initial_sl": 73004.62,
+   "target": 73616.93,
+   "breakeven": false,
+   "status": "CLOSED",
+   "valid_until": "2026-10-26T11:00:00",
+   "chase_limit": 73323.02,
+   "reasons": [
+    "Breakout above opening range",
+    "EMA 9 above EMA 21",
+    "Supertrend bullish",
+    "RSI 55\u201375",
+    "ADX \u2265 20 (trending)",
+    "15-min trend up",
+    "Strong bullish candle",
+    "Not overextended"
+   ],
+   "indicators": {
+    "rsi": 56.5,
+    "adx": 28.1,
+    "ema_fast": 73230.69,
+    "ema_slow": 73123.63,
+    "supertrend": 72862.61
+   },
+   "exit_time": "2026-10-26T11:35:00",
+   "exit": 73004.62,
+   "outcome": "STOPLOSS",
+   "note": "Stop-loss hit",
+   "points": -244.93,
+   "r_multiple": -1.0
+  },
+  {
+   "id": "NIFTY-20261026-1405-CALL",
+   "index": "NIFTY",
+   "side": "CALL",
+   "option": "NIFTY 22650 CE",
+   "strike": 22650,
+   "entry_time": "2026-10-26T14:05:00",
+   "entry": 22662.95,
+   "risk": 40.99,
+   "sl": 22662.95,
+   "initial_sl": 22621.96,
+   "target": 22724.43,
+   "breakeven": true,
+   "status": "CLOSED",
+   "valid_until": "2026-10-26T14:15:00",
+   "chase_limit": 22675.25,
+   "reasons": [
+    "Breakout above opening range",
+    "EMA 9 above EMA 21",
+    "Supertrend bullish",
+    "RSI 55\u201375",
+    "ADX \u2265 20 (trending)",
+    "15-min trend up",
+    "Strong bullish candle",
+    "Not overextended"
+   ],
+   "indicators": {
+    "rsi": 61.5,
+    "adx": 23.4,
+    "ema_fast": 22649.63,
+    "ema_slow": 22631.72,
+    "supertrend": 22581.3
+   },
+   "exit_time": "2026-10-26T15:15:00",
+   "exit": 22719.2,
+   "outcome": "TIME_EXIT",
+   "note": "Square-off time",
+   "points": 56.25,
+   "r_multiple": 1.37
+  },
+  {
+   "id": "SENSEX-20261026-1430-CALL",
+   "index": "SENSEX",
+   "side": "CALL",
+   "option": "SENSEX 73400 CE",
+   "strike": 73400,
+   "entry_time": "2026-10-26T14:30:00",
+   "entry": 73395.48,
+   "risk": 122.58,
+   "sl": 73272.9,
+   "initial_sl": 73272.9,
+   "target": 73579.35,
+   "breakeven": false,
+   "status": "CLOSED",
+   "valid_until": "2026-10-26T14:40:00",
+   "chase_limit": 73432.25,
+   "reasons": [
+    "Breakout above opening range",
+    "EMA 9 above EMA 21",
+    "Supertrend bullish",
+    "RSI 55\u201375",
+    "ADX \u2265 20 (trending)",
+    "15-min trend up",
+    "Strong bullish candle",
+    "Not overextended"
+   ],
+   "indicators": {
+    "rsi": 59.7,
+    "adx": 28.3,
+    "ema_fast": 73370.2,
+    "ema_slow": 73305.85,
+    "supertrend": 73209.03
+   },
+   "exit_time": "2026-10-26T15:15:00",
+   "exit": 73496.18,
+   "outcome": "TIME_EXIT",
+   "note": "Square-off time",
+   "points": 100.7,
+   "r_multiple": 0.82
   }
  ],
  "overall": {
-  "trades": 98,
-  "win_rate": 29.6,
-  "total_points": -580.3,
-  "avg_win_points": 84.0,
-  "avg_loss_points": -43.7,
-  "total_r": -14.33,
+  "trades": 104,
+  "win_rate": 30.8,
+  "total_points": -770.8,
+  "avg_win_points": 81.1,
+  "avg_loss_points": -46.7,
+  "total_r": -15.14,
   "expectancy_r": -0.146,
   "profit_factor": 0.74,
-  "max_drawdown_r": -32.16,
+  "max_drawdown_r": -33.15,
   "outcomes": {
-   "STOPLOSS": 53,
+   "STOPLOSS": 56,
    "TARGET": 27,
+   "TIME_EXIT": 7,
    "BREAKEVEN": 10,
-   "REVERSAL": 4,
-   "TIME_EXIT": 4
+   "REVERSAL": 4
   }
  }
 }
