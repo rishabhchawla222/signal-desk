@@ -389,6 +389,7 @@ async function loadQuotes() {
 function needChains() {
   if (route.name === "fno" || (sheet && sheet.inst.startsWith("OPT:"))) return true;
   if (Object.values(acct.positions).some(p => p.qty && p.inst.startsWith("OPT:"))) return true;
+  if (route.name === "portfolio" && portfolioTab === "auto" && D.auto && Object.keys(D.auto.open || {}).length) return true;
   return acct.orders.some(o => (o.status === "OPEN" || o.status === "TRIGGER_PENDING") && o.inst.startsWith("OPT:"));
 }
 async function ensureChains(force) {
@@ -414,6 +415,11 @@ async function loadSignals() {
   if (!SIG_BASE || Date.now() - signalsAt < 55000) return;
   signalsAt = Date.now();
   try { D.signals = await getJSON(SIG_BASE + "signals.json"); } catch (e) {}
+  try { D.auto = await getJSON(SIG_BASE + "autotrade.json"); } catch (e) {}
+  if (route.name === "portfolio" && portfolioTab === "auto") {
+    if (D.auto && Object.keys(D.auto.open || {}).length && (!D.chains || Date.now() - chainsAt > 14000)) await ensureChains(true);
+    render();
+  }
 }
 const engineData = () => ({quotes: D.quotes, chains: D.chains, universe: D.universe});
 
@@ -580,7 +586,8 @@ function signalCard() {
     return `<div class="sig ${s.side.toLowerCase()}">
       <div class="grow"><div class="k ${s.side === "CALL" ? "up" : "down"}">Signal · buy ${s.side.toLowerCase()} · ${esc(s.entry_time.slice(11, 16))} IST</div>
       <div class="o">${esc(s.option)}${p.price ? ` <span class="muted" style="font-size:14px">@ ${p.estimated ? "≈" : ""}₹${fmt(p.price)}</span>` : ""}</div>
-      <div class="sub">${valid ? `Buy window open till ${esc(s.valid_until.slice(11, 16))}` : "Buy window closed"}${p.sl ? ` · SL ₹${fmt(p.sl)} · Target ₹${fmt(p.target)}` : ""}</div></div>
+      <div class="sub">${valid ? `Buy window open till ${esc(s.valid_until.slice(11, 16))}` : "Buy window closed"}${p.sl ? ` · SL ₹${fmt(p.sl)} · Target ₹${fmt(p.target)}` : ""}</div>
+      ${s.auto ? `<div class="sub" style="margin-top:2px">${s.auto.status === "bought" ? `Auto-trader bought ${s.auto.qty} @ ₹${fmt(s.auto.price)}` : `Auto-trader skipped: ${esc(s.auto.reason)}`}</div>` : ""}</div>
       ${key ? `<button class="btn ${tradable ? "buy" : ""}" data-trade="${esc(key)}" data-side="BUY" ${tradable ? "" : "disabled title='Option chain not loaded'"}>Paper trade</button>` : ""}
     </div>`;
   }).join("");
@@ -791,7 +798,7 @@ function holdingRow(s, h) {
 }
 function viewPortfolio() {
   const sm = E.summary(acct, engineData());
-  const tabs = `<div class="seg" style="margin:16px 0 14px"><button class="${portfolioTab === "positions" ? "on" : ""}" data-ptab="positions">Positions</button><button class="${portfolioTab === "holdings" ? "on" : ""}" data-ptab="holdings">Holdings</button><button class="${portfolioTab === "funds" ? "on" : ""}" data-ptab="funds">Funds</button></div>`;
+  const tabs = `<div class="seg" style="margin:16px 0 14px"><button class="${portfolioTab === "positions" ? "on" : ""}" data-ptab="positions">Positions</button><button class="${portfolioTab === "holdings" ? "on" : ""}" data-ptab="holdings">Holdings</button><button class="${portfolioTab === "funds" ? "on" : ""}" data-ptab="funds">Funds</button><button class="${portfolioTab === "auto" ? "on" : ""}" data-ptab="auto">Auto-trader</button></div>`;
   let body = "";
   if (portfolioTab === "positions") {
     const ps = Object.values(acct.positions);
@@ -800,6 +807,8 @@ function viewPortfolio() {
     body = `<div class="sum"><div><span>Total P&amp;L (today's positions)</span><b class="${cls(total)}">${sgn(total)}</b></div><div><span>Open positions</span><b>${openN}</b></div><div><span>Margin used</span><b>${rs(sm.used)}</b></div></div>
     ${openN > 1 ? `<div class="row" style="justify-content:flex-end;margin-top:10px"><button class="btn sm ghost" data-exitall="1">Exit all</button></div>` : ""}
     <div class="card" style="margin-top:12px">${ps.length ? ps.sort((a, b) => Math.abs(b.qty) - Math.abs(a.qty)).map(positionRow).join("") : `<div class="empty"><b>No positions</b>Intraday trades and F&amp;O positions show here. Intraday positions close automatically at 3:20 PM.</div>`}</div>`;
+  } else if (portfolioTab === "auto") {
+    body = viewAuto();
   } else if (portfolioTab === "holdings") {
     const hs = Object.entries(acct.holdings);
     body = `<div class="sum"><div><span>Current value</span><b>${rs(sm.current)}</b></div><div><span>Invested</span><b>${rs(sm.invested)}</b></div>
@@ -817,6 +826,45 @@ function viewPortfolio() {
     <h2>Reset</h2><div class="card pad" id="resetBox"><div class="row" style="flex-wrap:wrap"><div class="grow sub">Start again with ₹10,00,000 and no orders or positions.</div><button class="btn ghost" id="resetAsk">Reset account</button></div></div>`;
   }
   return `<h1>Portfolio</h1><div class="sub">Virtual money · ${marketPill()}</div>${tabs}${body}`;
+}
+
+// ---------------------------------------------------------- auto-trader
+function viewAuto() {
+  const A = D.auto;
+  if (!A) return `<div class="card empty"><b>Auto-trader starts with the next signal</b>Every market day it buys each NIFTY signal (1 lot) at the live price and sells it when the signal exits. Results appear here and in your emails.</div>`;
+  const open = Object.values(A.open || {});
+  let openVal = 0, openPnl = 0;
+  const openRows = open.map(p => {
+    const q = E.quote(p.key, engineData());
+    const px = q ? E.execPrice(q, "SELL") : null;
+    const pnl = px != null ? (px - p.buy_price) * p.qty : null;
+    openVal += (px != null ? px : p.buy_price) * p.qty; if (pnl != null) openPnl += pnl;
+    return `<div class="list-item"><div class="li-main"><b>${esc(p.option)} <span class="pill acc">OPEN</span></b>
+      <span>${p.qty} qty · bought ₹${fmt(p.buy_price)} at ${esc(p.buy_time.slice(11, 16))} · now ${px != null ? "₹" + fmt(px) : "—"}${p.sl ? ` · SL ₹${fmt(p.sl)} · target ₹${fmt(p.target)}` : ""}</span></div>
+      <div class="li-end"><b class="${cls(pnl)}">${pnl == null ? "—" : sgn(pnl)}</b><span class="muted">live</span></div></div>`;
+  }).join("");
+  const tr = (A.trades || []).slice().reverse();
+  const net = tr.reduce((a, t) => a + t.net, 0);
+  const wins = tr.filter(t => t.net > 0).length;
+  const value = A.cash + openVal;
+  const total = value - A.start_cash;
+  const today = E.ist(new Date()).date;
+  const todayNet = tr.filter(t => t.sell_time.slice(0, 10) === today).reduce((a, t) => a + t.net, 0);
+  return `<div class="sum">
+      <div><span>Account value</span><b>${rs(value)}</b></div>
+      <div><span>Total P&amp;L since ${esc(A.started || "start")}</span><b class="${cls(total)}">${sgn(total)} <small style="font-size:12px">(${sgn(total / A.start_cash * 100)}%)</small></b></div>
+      <div><span>Today</span><b class="${cls(todayNet + openPnl)}">${sgn(todayNet + openPnl)}</b></div>
+      <div><span>Closed trades</span><b>${tr.length}</b></div>
+      <div><span>Win rate</span><b>${tr.length ? fmt(wins / tr.length * 100, 0) + "%" : "—"}</b></div>
+    </div>
+    <div class="sub" style="margin-top:10px">Runs on its own every market day: buys each NIFTY signal (1 lot) at the live ask and sells at the live bid when the signal exits. Charges included. SENSEX signals are skipped because their option prices are only estimates. Updated ${esc((A.updated || "").slice(11, 16))} IST.</div>
+    ${open.length ? `<h2>Open now</h2><div class="card">${openRows}</div>` : ""}
+    <h2>Trade history</h2>
+    <div class="card tbl-wrap">${tr.length ? `<table><thead><tr><th>Date</th><th>Option</th><th class="r">Qty</th><th class="r">Bought</th><th class="r">Sold</th><th class="r">Net P&amp;L</th><th>Why it closed</th></tr></thead><tbody>
+      ${tr.slice(0, 200).map(t => `<tr><td class="num">${esc(t.buy_time.slice(5, 10))} ${esc(t.buy_time.slice(11, 16))}–${esc(t.sell_time.slice(11, 16))}</td><td><b>${esc(t.option)}</b></td><td class="r num">${t.qty}</td>
+        <td class="r num">${fmt(t.buy_price)}</td><td class="r num">${fmt(t.sell_price)}</td><td class="r num ${cls(t.net)}">${sgn(t.net)}</td><td class="muted">${esc(t.reason || "")}</td></tr>`).join("")}
+      </tbody></table>` : `<div class="empty"><b>No closed trades yet</b>The first one appears after the next signal exits.</div>`}</div>
+    ${(A.skipped || []).length ? `<h2>Skipped signals</h2><div class="card">${A.skipped.slice(-10).reverse().map(x => `<div class="list-item"><div class="li-main"><b>${esc(x.option)}</b><span style="white-space:normal">${esc(x.time.slice(0, 16).replace("T", " "))} · ${esc(x.reason)}</span></div></div>`).join("")}</div>` : ""}`;
 }
 
 // --------------------------------------------------------- order sheet
@@ -939,7 +987,7 @@ document.addEventListener("click", e => {
   if (ds.exp) { fnoExp = ds.exp; return render(); }
   if (ds.star) { watch = watch.includes(ds.star) ? watch.filter(x => x !== ds.star) : watch.concat(ds.star); store.set(WATCH_KEY, watch); toast(watch.includes(ds.star) ? "Added to watchlist" : "Removed from watchlist", ds.star); return render(); }
   if (ds.otab) { ordersTab = ds.otab; return render(); }
-  if (ds.ptab) { portfolioTab = ds.ptab; store.set("signaldesk.paper.ptab", portfolioTab); return render(); }
+  if (ds.ptab) { portfolioTab = ds.ptab; store.set("signaldesk.paper.ptab", portfolioTab); if (ds.ptab === "auto") { signalsAt = 0; loadSignals(); } return render(); }
   if (ds.cancel) { if (E.cancelOrder(acct, ds.cancel)) { save(); toast("Order cancelled", ""); } return render(); }
   if (ds.modify) { const o = acct.orders.find(x => x.id === ds.modify); if (o) openSheet(o.inst, o.side, o.product, o); return; }
   if (ds.exit) { const r = E.exitPosition(acct, ds.exit, engineData(), new Date()); save(); if (!r.ok) toast("Couldn't exit", r.error); else if (r.order.status !== "COMPLETE") toast("Exit order placed", r.order.amo ? "Runs at next open" : "Waiting to fill"); (r.events || []).forEach(toastEvent); renderTop(); return render(); }

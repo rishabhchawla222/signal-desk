@@ -151,3 +151,14 @@ To add option chains for more stocks, edit `stock_chains` in `feed_config.json`.
 
 Nothing here places real orders. To trade for real later, the order screen would need to be connected to a broker API
 (which needs a fixed IP address under SEBI's 2026 rules).
+
+### Auto-trader (paper)
+
+Every market day the signal engine also trades its own signals in a **virtual account** (₹10,00,000 to start):
+it buys each NIFTY signal (1 lot) at the live NSE ask price and sells at the live bid when the signal exits
+(target, stop-loss, trend flip or 3:15 PM). Charges are included. SENSEX signals are skipped because their option
+prices are only estimates. Signals where the price already ran past the don't-chase level are skipped too.
+
+See it in the app under **Portfolio → Auto-trader**; every signal email and the daily summary say what it did.
+Settings are in `config.json` → `autotrade` (`lots`, `indices`, `start_cash`, `enabled`).
+The account is stored in `autotrade.json` on the `signals-data` branch; delete that file to start over.

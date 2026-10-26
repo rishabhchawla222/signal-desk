@@ -227,3 +227,41 @@ def current_premium(index: str, strike: int, side: str, expiry: str, spot: float
     if iv:
         return r05(bs_price(spot, strike, years_to(exp, now), iv / 100, side)), True
     return None
+
+
+def live_quote(index: str, strike: int, side: str, expiry: str) -> dict | None:
+    """Live bid / ask / last price for one NSE option (None when unavailable)."""
+    if index == "SENSEX":
+        return None
+    exp = date.fromisoformat(expiry)
+    got_exp, rec = _nse.chain(index, exp - timedelta(days=1))
+    if got_exp != exp:
+        return None
+    q = _row(rec, strike, side)
+    if not q:
+        return None
+    return {"bid": q.get("buyPrice1") or 0, "ask": q.get("sellPrice1") or 0, "ltp": q.get("lastPrice") or 0}
+
+
+_LOTS = {"date": None, "lots": {}}
+_LOT_FALLBACK = {"NIFTY": 65, "BANKNIFTY": 30, "FINNIFTY": 60, "MIDCPNIFTY": 120, "SENSEX": 20}
+
+
+def lot_size(symbol: str) -> int:
+    """Current F&O lot size from NSE's official lot-size file (cached for the day)."""
+    today = now_ist().date().isoformat()
+    if _LOTS["date"] != today:
+        try:
+            txt = _nse._session().get("https://nsearchives.nseindia.com/content/fo/fo_mktlots.csv", timeout=20).text
+            lots = {}
+            for line in txt.splitlines()[1:]:
+                cols = [c.strip() for c in line.split(",")]
+                if len(cols) > 2 and cols[1]:
+                    v = next((int(float(c)) for c in cols[2:] if c.replace(".", "", 1).isdigit()), None)
+                    if v:
+                        lots[cols[1]] = v
+            if lots:
+                _LOTS.update(date=today, lots=lots)
+        except Exception as e:  # noqa: BLE001
+            print(f"[lot size] {e}")
+    return _LOTS["lots"].get(symbol) or _LOT_FALLBACK.get(symbol, 1)

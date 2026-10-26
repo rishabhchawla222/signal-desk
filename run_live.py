@@ -17,6 +17,7 @@ from pathlib import Path
 
 from data import BAR, fetch_candles, now_ist
 from notify import event_email, send_email, summary_email
+from autotrade import AutoTrader
 from options import current_premium, entry_quote
 from strategy import IndexEngine, prepare, snapshot
 
@@ -79,6 +80,8 @@ class Runner:
             for i in self.indices
         }
         self.status = {"indices": {}, "errors": []}
+        at = self.cfg.get("autotrade", {})
+        self.auto = AutoTrader(data_dir / "autotrade.json", at) if at.get("enabled") and premiums else None
 
     # ---------------------------------------------------------------- store
     def add_premium(self, ev: dict, eng: IndexEngine, spot: float):
@@ -133,6 +136,8 @@ class Runner:
         save_json(self.dir / "state.json", self.state)
         save_json(self.dir / "signals.json", self.signals)
         save_json(self.dir / "status.json", self.status)
+        if self.auto:
+            self.auto.save(now)
         if self.use_git:
             git_push(self.dir, f"signals {now:%Y-%m-%d %H:%M}")
 
@@ -166,6 +171,13 @@ class Runner:
                 for ev in eng.on_bar(ts.to_pydatetime(), p.iloc[pos], prev, allow_entry=fresh):
                     if fresh and self.premiums:
                         self.add_premium(ev, eng, float(p.iloc[pos].close))
+                    if self.auto and (fresh or ev["type"] == "EXIT"):
+                        try:
+                            note = self.auto.on_event(ev, self.clock())
+                            if note:
+                                ev["trade"]["auto"] = note
+                        except Exception as e:  # noqa: BLE001
+                            print(f"[auto error] {e}")
                     self.apply(ev)
             prev_days = p[p.index.date < today] if not todays.empty else p[p.index.date < p.index[-1].date()]
             prev_close = float(prev_days["close"].iloc[-1]) if not prev_days.empty else None
@@ -180,7 +192,8 @@ class Runner:
             return
         trades = [t for t in self.signals if t["entry_time"].startswith(day)]
         if self.notify:
-            send_email(*summary_email(day, trades))
+            send_email(*summary_email(day, trades, self.auto.summary(day) if self.auto else None,
+                                      self.auto.summary() if self.auto else None))
         self.state["summary_sent"] = day
 
 

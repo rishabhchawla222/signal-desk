@@ -68,8 +68,20 @@ def _wrap(title: str, color: str, rows: list[tuple[str, str]], extra: str = "") 
             f"{extra}{btn}<p style='color:#888;font-size:12px;'>{DISCLAIMER}</p></div>")
 
 
+def _inr(x: float, nd: int = 2) -> str:
+    """Indian digit grouping: 1002519.48 -> 10,02,519.48"""
+    neg = x < 0
+    whole, _, frac = f"{abs(x):.{nd}f}".partition(".")
+    head, tail = whole[:-3], whole[-3:]
+    while len(head) > 2:
+        tail = head[-2:] + "," + tail
+        head = head[:-2]
+    out = (head + "," + tail if head else tail) + ("." + frac if nd else "")
+    return ("-" if neg else "") + out
+
+
 def _rs(x):
-    return f"₹{x:,.2f}" if isinstance(x, (int, float)) else "—"
+    return f"₹{_inr(x)}" if isinstance(x, (int, float)) else "—"
 
 
 def _exp(p):
@@ -108,6 +120,11 @@ def event_email(ev: dict) -> tuple[str, str, str]:
             subject = f"{emoji} BUY {t['option']} | spot {_fmt(t['entry'])} | SL {_fmt(t['sl'])} | TGT {_fmt(t['target'])}"
             rows = [("Action", f"Buy {t['option']} (nearest expiry)"), *window,
                     ("Buy price (premium)", "Live price unavailable – check your broker app")]
+        a = t.get("auto")
+        if a and a.get("status") == "bought":
+            rows.insert(1, ("Auto-trader (paper)", f"Bought {a['qty']} @ {_rs(a['price'])} in the virtual account"))
+        elif a and a.get("status") == "skipped":
+            rows.insert(1, ("Auto-trader (paper)", f"Skipped – {a['reason']}"))
         rows += [("Signal time", t["entry_time"].replace("T", " ")[:16] + " IST"),
                  (f"{t['index']} spot at signal", _fmt(t["entry"])),
                  ("Stop-loss / target (spot)", f"{_fmt(t['sl'])} / {_fmt(t['target'])}")]
@@ -160,6 +177,10 @@ def event_email(ev: dict) -> tuple[str, str, str]:
     else:
         subject = f"⚪ EXIT {t['option']} — {t['note']} ({sign}{pts} pts)"
         rows = [("Action", f"Sell / exit {t['option']} now"), ("Reason", t["note"])]
+    a = t.get("auto")
+    if a and a.get("status") == "sold":
+        rows.insert(1, ("Auto-trader (paper)", f"Sold {a['qty']} @ {_rs(a['price'])} (bought {_rs(a['buy_price'])}) · "
+                                               f"net {'+' if a['net'] >= 0 else '−'}₹{_inr(abs(a['net']))} after charges"))
     rows += [("Entry → Exit (spot)", f"{_fmt(t['entry'])} → {_fmt(t['exit'])}"),
              ("Result (index points)", f"{sign}{pts}  ({sign}{t['r_multiple']}R)"),
              ("Exit time", t["exit_time"].replace("T", " ")[:16] + " IST")]
@@ -167,7 +188,8 @@ def event_email(ev: dict) -> tuple[str, str, str]:
     return subject, text, _wrap(f"EXIT {t['option']}", "#455a64", rows)
 
 
-def summary_email(day: str, trades: list[dict]) -> tuple[str, str, str]:
+def summary_email(day: str, trades: list[dict], auto_day: dict | None = None,
+                  auto_all: dict | None = None) -> tuple[str, str, str]:
     closed = [t for t in trades if t.get("status") == "CLOSED"]
     total_r = round(sum(t.get("r_multiple", 0) for t in closed), 2)
     wins = sum(1 for t in closed if t.get("points", 0) > 0)
@@ -176,6 +198,11 @@ def summary_email(day: str, trades: list[dict]) -> tuple[str, str, str]:
         text = "No setup met all conditions today. No trade is also a decision."
         return subject, text, _wrap(f"Daily summary · {day}", "#37474f", [("Signals", "0"), ("Note", text)])
     rows = [("Signals", str(len(trades))), ("Winners", f"{wins}/{len(closed)}"), ("Net result", f"{total_r:+}R")]
+    if auto_day is not None:
+        rows.append(("Auto-trader today", f"{auto_day['trades']} trade(s), net {'+' if auto_day['net'] >= 0 else '−'}₹{_inr(abs(auto_day['net']))}"))
+    if auto_all is not None:
+        tot = auto_all["value"] - auto_all["start_cash"]
+        rows.append(("Auto-trader account", f"{_rs(auto_all['value'])} ({'+' if tot >= 0 else '−'}₹{_inr(abs(tot), 0)} since start)"))
     for t in trades:
         res = f"{t.get('points', 0):+} pts ({t.get('outcome', 'OPEN')})" if t.get("status") == "CLOSED" else "open"
         rows.append((f"{t['entry_time'][11:16]} {t['option']}", res))
