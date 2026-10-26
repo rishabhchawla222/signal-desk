@@ -1,0 +1,15 @@
+{
+  "index_chains": {
+    "NIFTY":      { "expiries": 2, "strikes_each_side": 20 },
+    "BANKNIFTY":  { "expiries": 2, "strikes_each_side": 15 },
+    "FINNIFTY":   { "expiries": 1, "strikes_each_side": 12 },
+    "MIDCPNIFTY": { "expiries": 1, "strikes_each_side": 12 }
+  },
+  "stock_chains": [
+    "RELIANCE", "HDFCBANK", "ICICIBANK", "INFY", "TCS", "SBIN", "AXISBANK", "KOTAKBANK",
+    "BHARTIARTL", "ITC", "LT", "BAJFINANCE", "MARUTI", "TATASTEEL", "SUNPHARMA", "HINDUNILVR",
+    "M&M", "ADANIENT", "TITAN", "HCLTECH"
+  ],
+  "stock_strikes_each_side": 10,
+  "update_seconds": 60
+}

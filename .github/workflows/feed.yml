@@ -1,0 +1,68 @@
+name: Market feed
+
+on:
+  schedule:
+    # Times are UTC (IST = UTC + 5:30), Mon–Fri.
+    # 08:40 IST start with a 09:00 backup (GitHub often starts late), then
+    # 12:00 and 13:30 IST restarts because a GitHub job can run at most 6 hours.
+    # A new run replaces the old one (cancel-in-progress), so there is only
+    # a short gap of about a minute at each restart.
+    - cron: "10 3 * * 1-5"
+    - cron: "30 3 * * 1-5"
+    - cron: "30 6 * * 1-5"
+    - cron: "0 8 * * 1-5"
+  workflow_dispatch: {}
+  push:
+    branches: [main]
+    paths:
+      - feed.py
+      - feed_config.json
+      - .github/workflows/feed.yml
+
+permissions:
+  contents: write
+
+concurrency:
+  group: feed
+  cancel-in-progress: true
+
+jobs:
+  feed:
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Checkout market-data branch
+        id: md
+        continue-on-error: true
+        uses: actions/checkout@v4
+        with:
+          ref: market-data
+          path: market-branch
+
+      - name: Create market-data branch (first run only)
+        if: steps.md.outcome == 'failure'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          rm -rf market-branch && mkdir market-branch && cd market-branch
+          git init -q -b market-data
+          git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+
+      - name: Configure git
+        run: |
+          git -C market-branch config user.name "market-bot"
+          git -C market-branch config user.email "market-bot@users.noreply.github.com"
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - run: pip install -r requirements.txt
+
+      - name: Run market feed
+        env:
+          PYTHONUNBUFFERED: "1"
+        run: python feed.py --out market-branch
