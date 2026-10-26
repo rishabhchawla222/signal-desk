@@ -138,7 +138,7 @@ footer{margin-top:36px;padding-top:16px;border-top:1px solid var(--line);color:v
 
   <footer>
     Personal tool. Signals are automated technical setups on 5-minute candles from free Yahoo Finance data (can lag 1–3 minutes).
-    Entry, stop-loss and target are <b>index (spot) levels</b>; the suggested option is the at-the-money strike for the nearest expiry. An at-the-money option moves roughly half as many points as the index, and loses value with time.
+    Entry, stop-loss and target columns are <b>index (spot) levels</b>; the Premium column is the option price (buy → exit). NIFTY premiums are live from NSE when the signal fires; SENSEX premiums are estimated, so check your broker app. The option is the at-the-money strike for the nearest expiry (the next one on expiry day).
     Past results don't guarantee future ones. Not investment advice.
   </footer>
 </div>
@@ -213,11 +213,18 @@ function render(){
     return `<div class="sig ${s.side.toLowerCase()}">
       <div>
         <div class="act">Buy ${s.side==="CALL"?"call":"put"} · since ${hm(s.entry_time)} IST</div>
-        <div class="opt">${esc(s.option)}</div>
+        <div class="opt">${esc(s.option)}${s.premium ? ` <span style="font-size:.7em;color:var(--muted)">@ ${s.premium.estimated?"≈":""}₹${fmt(s.premium.price)}</span>` : ""}</div>
+        ${s.premium ? `<div class="levels">
+          <div class="lv"><span>Buy price${s.premium.estimated?" (est.)":""}</span><b>₹${fmt(s.premium.price)}</b></div>
+          <div class="lv"><span>Don't pay above</span><b>₹${fmt(s.premium.buy_upto)}</b></div>
+          <div class="lv"><span>Premium SL</span><b>₹${fmt(s.breakeven ? s.premium.price : s.premium.sl)}</b></div>
+          <div class="lv"><span>Premium target</span><b>₹${fmt(s.premium.target)}</b></div>
+          <div class="lv"><span>Expiry</span><b>${dm(s.premium.expiry)}</b></div>
+        </div>` : ""}
         <div class="levels">
           <div class="lv"><span>Entry (spot)</span><b>${fmt(s.entry)}</b></div>
-          <div class="lv"><span>Stop-loss${s.breakeven?" · at cost":""}</span><b>${fmt(s.sl)}</b></div>
-          <div class="lv"><span>Target</span><b>${fmt(s.target)}</b></div>
+          <div class="lv"><span>Spot SL${s.breakeven?" · at cost":""}</span><b>${fmt(s.sl)}</b></div>
+          <div class="lv"><span>Spot target</span><b>${fmt(s.target)}</b></div>
           <div class="lv"><span>Now</span><b class="${live>=0?"pos":"neg"}">${fmt(price)} (${live>=0?"+":""}${fmt(live,1)})</b></div>
         </div>
       </div>
@@ -266,13 +273,14 @@ function render(){
 function table(rows, emptyMsg, withDate){
   if (!rows.length) return `<div class="tbl-wrap"><div class="empty">${emptyMsg}</div></div>`;
   return `<div class="tbl-wrap"><table><thead><tr>
-    ${withDate?"<th>Date</th>":""}<th>Time</th><th>Signal</th><th>Option</th><th class="r">Entry</th><th class="r">SL</th><th class="r">Target</th><th>Result</th><th class="r">Points</th></tr></thead><tbody>
+    ${withDate?"<th>Date</th>":""}<th>Time</th><th>Signal</th><th>Option</th><th class="r">Entry</th><th class="r">SL</th><th class="r">Target</th><th class="r">Premium</th><th>Result</th><th class="r">Points</th></tr></thead><tbody>
     ${rows.map(s => {
       const res = s.status==="OPEN" ? `<span class="tag" style="color:var(--amber);background:var(--amber-bg)">OPEN</span>` : esc(s.note || s.outcome);
       const p = s.points;
       return `<tr>${withDate?`<td>${dm(s.entry_time)}</td>`:""}<td class="mono">${hm(s.entry_time)}${s.exit_time?" → "+hm(s.exit_time):""}</td>
         <td><span class="tag ${s.side}">${s.side}</span></td><td class="mono">${esc(s.option)}</td>
         <td class="num">${fmt(s.entry)}</td><td class="num">${fmt(s.initial_sl ?? s.sl)}</td><td class="num">${fmt(s.target)}</td>
+        <td class="num">${s.premium ? (s.premium.estimated?"≈":"")+"₹"+fmt(s.premium.price)+(s.premium.exit_price!=null?" → ₹"+fmt(s.premium.exit_price):"") : "—"}</td>
         <td>${res}</td><td class="num ${p>0?"pos":p<0?"neg":""}">${p==null?"—":(p>0?"+":"")+fmt(p,1)}</td></tr>`;
     }).join("")}</tbody></table></div>`;
 }
