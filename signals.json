@@ -46,10 +46,10 @@
   "entry_time": "2026-10-26T14:05:00",
   "entry": 22662.95,
   "risk": 40.99,
-  "sl": 22621.96,
+  "sl": 22662.95,
   "initial_sl": 22621.96,
   "target": 22724.43,
-  "breakeven": false,
+  "breakeven": true,
   "status": "OPEN",
   "reasons": [
    "Breakout above opening range",

@@ -13,10 +13,10 @@
     "entry_time": "2026-10-26T14:05:00",
     "entry": 22662.95,
     "risk": 40.99,
-    "sl": 22621.96,
+    "sl": 22662.95,
     "initial_sl": 22621.96,
     "target": 22724.43,
-    "breakeven": false,
+    "breakeven": true,
     "status": "OPEN",
     "reasons": [
      "Breakout above opening range",
@@ -36,14 +36,14 @@
      "supertrend": 22581.3
     }
    },
-   "last_bar": "2026-10-26T14:00:00"
+   "last_bar": "2026-10-26T14:05:00"
   },
   "SENSEX": {
    "date": "2026-10-26",
    "trades_today": 0,
    "last_loss_end": null,
    "open": null,
-   "last_bar": "2026-10-26T13:50:25"
+   "last_bar": "2026-10-26T13:55:25"
   }
  },
  "summary_sent": null
