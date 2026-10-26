@@ -368,6 +368,22 @@ class Feed:
             "intraday": {"ts": ts, "series": intraday},
         }
 
+    def write_live(self, now: datetime, snap: dict):
+        """Minute-stamped copies (live/YYYYMMDD-HHMM-q.json / -c.json).
+
+        GitHub's raw file server caches each URL for up to 5 minutes, so a new
+        file name every minute is the only way for the app to always get fresh
+        prices. Only the last 15 minutes are kept.
+        """
+        live = self.out / "live"
+        stamp = now.strftime("%Y%m%d-%H%M")
+        write(live / f"{stamp}-q.json", snap["quotes"])
+        write(live / f"{stamp}-c.json", snap["chains"])
+        cutoff = (now - timedelta(minutes=15)).strftime("%Y%m%d-%H%M")
+        for f in live.glob("*.json"):
+            if f.name[:13] < cutoff:
+                f.unlink()
+
     def tick(self):
         now = now_ist()
         self.ensure_daily(now.date())
@@ -376,6 +392,7 @@ class Feed:
         for name, obj in snap.items():
             write(self.out / f"{name}.json", obj)
         write(self.out / "universe.json", self.uni)
+        self.write_live(now, snap)
         q = snap["quotes"]
         log(f"snapshot: {len(q['stocks'])} stocks, {len(snap['chains']['chains'])} chains, "
             f"{len(q['futures'])} futures, market {q['market'].get('status')} ({_time.time() - t0:.1f}s)")
