@@ -125,3 +125,29 @@ SMTP_USER=you@gmail.com SMTP_PASS=xxxx python run_live.py --no-git --data-dir da
 ---
 *Personal tool. Automated technical signals, not investment advice. Intraday option buying is high risk;
 size positions so a stop-loss never hurts badly.*
+
+---
+
+## Paper trading app
+
+Your site also has a Groww-style **paper trading app** at `https://<your-username>.github.io/signal-desk/trade/`.
+Trade with virtual money (₹10,00,000 to start) on live prices:
+
+- **Stocks:** all ~210 F&O stocks, Delivery or Intraday, Market / Limit / Stop-loss / SL-Market orders
+- **F&O:** option chains for NIFTY, BANKNIFTY, FINNIFTY, MIDCPNIFTY and 20 popular stocks; index and stock futures
+- **Portfolio:** positions with live P&L, holdings, funds, orders (open / today / history), charges
+- Real lot sizes from NSE, approximate margins and 2026 charges (incl. the new F&O STT)
+- Intraday positions close at 3:20 PM; unfilled orders lapse at 3:30 PM; F&O settles on expiry
+- Orders placed while the market is closed run at the next open
+- Today's Signal Desk signal shows up with a one-tap "Paper trade" button
+
+**How prices get there:** the *Market feed* workflow runs on weekdays from ~8:40 AM to 3:40 PM and saves a snapshot every
+minute to the `market-data` branch (NSE for indices, futures, option chains and lot sizes; Yahoo Finance for stock prices).
+Prices can lag 1–2 minutes. Orders don't fill on prices older than 5 minutes.
+
+**Your account lives in your browser.** Use *Portfolio → Funds → Download backup* to move it to another device.
+
+To add option chains for more stocks, edit `stock_chains` in `feed_config.json`.
+
+Nothing here places real orders. To trade for real later, the order screen would need to be connected to a broker API
+(which needs a fixed IP address under SEBI's 2026 rules).

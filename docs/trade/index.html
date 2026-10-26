@@ -1,0 +1,946 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Signal Desk Trade</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#f5f6f8">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%23163a70'/><path d='M7 21l6-6 4 3 8-9' stroke='%2334d399' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* Layout: sticky top bar + index ticker, sidebar nav on desktop / bottom nav on phones, sheet for orders */
+:root{
+  --bg:#f5f6f8; --surface:#ffffff; --surface2:#f0f2f5; --ink:#141a24; --muted:#667085; --faint:#98a2b3;
+  --line:#e4e7ec; --accent:#1f4fd6; --accent-ink:#ffffff; --accent-soft:#e8eefc;
+  --up:#0b9a5f; --up-soft:#e6f6ee; --down:#d9363e; --down-soft:#fdecec; --warn:#b26b00; --warn-soft:#fff4e0;
+  --shadow:0 1px 2px rgba(16,24,40,.06),0 8px 24px rgba(16,24,40,.06);
+  --sans:"Manrope",system-ui,-apple-system,"Segoe UI",sans-serif; --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  --r:14px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0c1016; --surface:#141a22; --surface2:#1b222c; --ink:#e7ebf1; --muted:#97a1b1; --faint:#677285;
+  --line:#252d39; --accent:#7aa2ff; --accent-ink:#0c1016; --accent-soft:#1b2640;
+  --up:#33d391; --up-soft:rgba(51,211,145,.12); --down:#ff6b72; --down-soft:rgba(255,107,114,.12); --warn:#f2b44c; --warn-soft:rgba(242,180,76,.12);
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.25); color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0c1016; --surface:#141a22; --surface2:#1b222c; --ink:#e7ebf1; --muted:#97a1b1; --faint:#677285;
+  --line:#252d39; --accent:#7aa2ff; --accent-ink:#0c1016; --accent-soft:#1b2640;
+  --up:#33d391; --up-soft:rgba(51,211,145,.12); --down:#ff6b72; --down-soft:rgba(255,107,114,.12); --warn:#f2b44c; --warn-soft:rgba(242,180,76,.12);
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.25); color-scheme:dark}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:14.5px;-webkit-font-smoothing:antialiased}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer}
+a{color:var(--accent);text-decoration:none}
+.num{font-family:var(--mono);font-variant-numeric:tabular-nums;letter-spacing:-.2px}
+.up{color:var(--up)} .down{color:var(--down)} .muted{color:var(--muted)} .faint{color:var(--faint)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* top bar */
+.top{position:sticky;top:0;z-index:30;background:var(--surface);border-bottom:1px solid var(--line);padding-top:env(safe-area-inset-top,0px)}
+.top-in{display:flex;align-items:center;gap:14px;padding:10px max(16px,env(safe-area-inset-right,0px)) 10px max(16px,env(safe-area-inset-left,0px));max-width:1320px;margin:0 auto}
+.brand{display:flex;align-items:center;gap:9px;font-weight:800;font-size:16.5px;letter-spacing:-.2px;white-space:nowrap}
+.brand svg{width:26px;height:26px;flex:none}
+.paper{font:600 10px var(--mono);letter-spacing:1px;color:var(--warn);background:var(--warn-soft);padding:3px 7px;border-radius:6px}
+.search{position:relative;flex:1;max-width:460px}
+.search input{width:100%;background:var(--surface2);border:1px solid transparent;border-radius:10px;padding:9px 12px 9px 34px;outline:none}
+.search input:focus{border-color:var(--accent);background:var(--surface)}
+.search svg{position:absolute;left:11px;top:50%;transform:translateY(-50%);width:15px;height:15px;color:var(--faint)}
+.results{position:absolute;left:0;right:0;top:calc(100% + 6px);background:var(--surface);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);max-height:60vh;overflow:auto;z-index:40}
+.results button{display:flex;width:100%;justify-content:space-between;gap:12px;padding:10px 12px;background:none;border:0;text-align:left}
+.results button:hover,.results button.sel{background:var(--surface2)}
+.funds-pill{margin-left:auto;display:flex;flex-direction:column;align-items:flex-end;line-height:1.15;background:none;border:0;padding:2px 4px}
+.funds-pill span{font-size:11px;color:var(--muted)} .funds-pill b{font:600 14px var(--mono)}
+.ticker{display:flex;gap:8px;overflow-x:auto;padding:0 max(16px,env(safe-area-inset-right,0px)) 10px max(16px,env(safe-area-inset-left,0px));max-width:1320px;margin:0 auto;scrollbar-width:none}
+.ticker::-webkit-scrollbar{display:none}
+.tick{flex:none;display:flex;gap:8px;align-items:baseline;background:var(--surface2);border:0;border-radius:9px;padding:6px 10px;white-space:nowrap}
+.tick b{font-weight:700;font-size:12.5px} .tick .num{font-size:12.5px}
+
+/* shell */
+.shell{max-width:1320px;margin:0 auto;display:grid;grid-template-columns:200px minmax(0,1fr);gap:24px;padding:20px max(16px,env(safe-area-inset-right,0px)) 40px max(16px,env(safe-area-inset-left,0px))}
+.side{position:sticky;top:120px;align-self:start;display:flex;flex-direction:column;gap:2px}
+.nav-btn{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;background:none;border:0;font-weight:600;color:var(--muted);text-align:left}
+.nav-btn svg{width:18px;height:18px}
+.nav-btn:hover{background:var(--surface2);color:var(--ink)}
+.nav-btn.on{background:var(--accent-soft);color:var(--accent)}
+.data-note{margin-top:14px;padding:10px 12px;font-size:12px;color:var(--muted);line-height:1.5;border-top:1px solid var(--line)}
+.bottom{display:none}
+main{min-width:0}
+h1{font-size:22px;letter-spacing:-.3px;margin:0 0 4px;text-wrap:balance}
+h2{font-size:15.5px;margin:26px 0 12px;letter-spacing:-.1px}
+.sub{color:var(--muted);font-size:13px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r)}
+.pad{padding:16px}
+.row{display:flex;align-items:center;gap:12px}
+.grow{flex:1;min-width:0}
+.pill{display:inline-flex;align-items:center;gap:5px;font:600 11px var(--mono);letter-spacing:.4px;padding:3px 7px;border-radius:6px;background:var(--surface2);color:var(--muted);white-space:nowrap}
+.pill.up{background:var(--up-soft);color:var(--up)} .pill.down{background:var(--down-soft);color:var(--down)}
+.pill.warn{background:var(--warn-soft);color:var(--warn)} .pill.acc{background:var(--accent-soft);color:var(--accent)}
+.dot{width:7px;height:7px;border-radius:50%;background:currentColor}
+.live .dot{animation:pulse 1.6s infinite}
+@keyframes pulse{50%{opacity:.25}}
+@media (prefers-reduced-motion:reduce){.live .dot{animation:none}}
+
+.grid{display:grid;gap:12px}
+.g-idx{grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}
+.g-tiles{grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}
+.tile{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px;text-align:left;display:flex;flex-direction:column;gap:6px;min-width:0}
+.tile:hover{border-color:var(--faint)}
+.tile .nm{font-weight:700;font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tile .px{font:600 16px var(--mono)}
+.tile .ch{font:500 12.5px var(--mono)}
+.tabs{display:flex;gap:6px;flex-wrap:wrap}
+.tab{border:1px solid var(--line);background:var(--surface);padding:7px 12px;border-radius:999px;font-weight:600;font-size:13px;color:var(--muted)}
+.tab.on{background:var(--ink);color:var(--surface);border-color:var(--ink)}
+.seg{display:inline-flex;background:var(--surface2);border-radius:10px;padding:3px;gap:2px}
+.seg button{border:0;background:none;padding:7px 12px;border-radius:8px;font-weight:600;font-size:13px;color:var(--muted)}
+.seg button.on{background:var(--surface);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.08)}
+
+/* tables & lists */
+.tbl-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse}
+th,td{padding:10px 12px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap;font-size:13.5px}
+th{font-size:11.5px;color:var(--muted);font-weight:600;letter-spacing:.3px;text-transform:uppercase;background:var(--surface)}
+tr:last-child td{border-bottom:0}
+td.r,th.r{text-align:right}
+tbody tr.click{cursor:pointer} tbody tr.click:hover td{background:var(--surface2)}
+.list-item{display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid var(--line);background:none;border-left:0;border-right:0;border-top:0;width:100%;text-align:left}
+.list-item:last-child{border-bottom:0}
+.list-item:hover{background:var(--surface2)}
+.li-main{flex:1;min-width:0}
+.li-main b{display:block;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.li-main > span{font-size:12.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
+.li-end{text-align:right}
+.li-end b{display:block;font:600 14px var(--mono)}
+.li-end span{font:500 12.5px var(--mono)}
+.empty{padding:28px 16px;text-align:center;color:var(--muted)}
+.empty b{display:block;color:var(--ink);margin-bottom:4px}
+
+/* buttons */
+.btn{border:0;border-radius:10px;padding:10px 16px;font-weight:700;background:var(--surface2);color:var(--ink)}
+.btn:hover{filter:brightness(.97)}
+.btn.buy{background:var(--up);color:#fff} .btn.sell{background:var(--down);color:#fff}
+.btn.pri{background:var(--accent);color:var(--accent-ink)}
+.btn.ghost{background:none;border:1px solid var(--line)}
+.btn.sm{padding:6px 10px;font-size:12.5px;border-radius:8px}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.icon-btn{border:1px solid var(--line);background:var(--surface);border-radius:10px;width:38px;height:38px;display:inline-grid;place-items:center}
+.icon-btn svg{width:18px;height:18px}
+.icon-btn.on{color:var(--warn);border-color:var(--warn)}
+
+/* stock page */
+.quote-head{display:flex;flex-wrap:wrap;gap:16px;align-items:flex-end;justify-content:space-between}
+.big{font:600 30px var(--mono);letter-spacing:-.6px}
+.chart{position:relative;margin-top:14px}
+.chart svg{display:block;width:100%;height:240px}
+.chart .tip{position:absolute;top:0;pointer-events:none;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:4px 8px;font:500 12px var(--mono);box-shadow:var(--shadow);white-space:nowrap;transform:translateX(-50%)}
+.range{display:grid;gap:6px}
+.range .bar{position:relative;height:6px;background:var(--surface2);border-radius:3px}
+.range .bar i{position:absolute;top:-3px;width:3px;height:12px;border-radius:2px;background:var(--ink);transform:translateX(-1px)}
+.range .ends{display:flex;justify-content:space-between;font:500 12px var(--mono);color:var(--muted)}
+.stats{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px 20px}
+.stat span{display:block;font-size:12px;color:var(--muted);margin-bottom:3px}
+.stat b{font:600 15px var(--mono)}
+.trade-bar{display:flex;gap:10px}
+.trade-bar .btn{flex:1;padding:12px}
+
+/* option chain */
+.oc th,.oc td{padding:7px 10px;font-size:13px}
+.oc td.k{font-weight:700;text-align:center;background:var(--surface2);font-family:var(--mono)}
+.oc th.k{text-align:center}
+.oc td.itm{background:var(--warn-soft)}
+.oc .px-btn{border:1px solid transparent;background:none;border-radius:7px;padding:4px 7px;font:600 13px var(--mono)}
+.oc .px-btn:hover{border-color:var(--accent);color:var(--accent)}
+.oc tr.spot td{padding:0;border-bottom:2px solid var(--accent);height:0}
+.oc .spot-tag{position:relative}
+.oc .spot-tag span{position:absolute;left:50%;transform:translate(-50%,-50%);background:var(--accent);color:var(--accent-ink);font:600 11px var(--mono);padding:2px 8px;border-radius:999px}
+.oi{font-size:12px;color:var(--muted)}
+
+/* signal card */
+.sig{display:flex;flex-wrap:wrap;gap:12px 20px;align-items:center;padding:14px 16px;border-radius:var(--r);border:1px solid var(--line);background:var(--surface)}
+.sig.call{border-color:var(--up);background:linear-gradient(110deg,var(--up-soft),var(--surface) 55%)}
+.sig.put{border-color:var(--down);background:linear-gradient(110deg,var(--down-soft),var(--surface) 55%)}
+.sig .k{font-size:11px;letter-spacing:.8px;text-transform:uppercase;font-weight:700}
+.sig .o{font:600 18px var(--mono)}
+
+/* sheet */
+.scrim{position:fixed;inset:0;background:rgba(10,14,20,.42);z-index:50;display:flex;justify-content:flex-end}
+.sheet{width:min(440px,100%);height:100%;background:var(--surface);display:flex;flex-direction:column;box-shadow:var(--shadow);padding-top:env(safe-area-inset-top,0px)}
+.sheet-h{padding:16px 18px;border-bottom:1px solid var(--line)}
+.sheet-b{padding:16px 18px;overflow:auto;flex:1;display:flex;flex-direction:column;gap:16px}
+.sheet-f{padding:14px 18px calc(14px + env(safe-area-inset-bottom,0px));border-top:1px solid var(--line);display:flex;flex-direction:column;gap:10px}
+.side-toggle{display:grid;grid-template-columns:1fr 1fr;background:var(--surface2);border-radius:10px;padding:3px}
+.side-toggle button{border:0;background:none;padding:9px;border-radius:8px;font-weight:700;color:var(--muted)}
+.side-toggle button.on.b{background:var(--up);color:#fff} .side-toggle button.on.s{background:var(--down);color:#fff}
+.field{display:flex;flex-direction:column;gap:6px}
+.field label{font-size:12.5px;color:var(--muted);font-weight:600}
+.field input{border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:10px 12px;font:600 15px var(--mono);outline:none;width:100%}
+.field input:focus{border-color:var(--accent)}
+.field input:disabled{background:var(--surface2);color:var(--muted)}
+.stepper{display:flex;gap:6px}
+.stepper button{width:42px;border:1px solid var(--line);background:var(--surface2);border-radius:10px;font-weight:700}
+.kv{display:flex;justify-content:space-between;font-size:13px;gap:10px}
+.kv b{font:600 13px var(--mono)}
+.err{background:var(--down-soft);color:var(--down);border-radius:10px;padding:9px 12px;font-size:13px}
+.info{background:var(--warn-soft);color:var(--warn);border-radius:10px;padding:9px 12px;font-size:13px}
+.confirm{background:var(--surface2);border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:10px}
+
+/* toasts */
+.toasts{position:fixed;right:max(16px,env(safe-area-inset-right,0px));bottom:calc(16px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:8px;z-index:60;max-width:min(380px,calc(100% - 32px))}
+.toast{background:var(--ink);color:var(--surface);border-radius:12px;padding:11px 14px;font-size:13.5px;box-shadow:var(--shadow);animation:in .2s ease-out}
+.toast b{display:block}
+@keyframes in{from{transform:translateY(8px);opacity:0}}
+
+/* summary strip */
+.sum{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.sum div{background:var(--surface);padding:14px 16px}
+.sum span{display:block;font-size:12px;color:var(--muted);margin-bottom:4px}
+.sum b{font:600 18px var(--mono)}
+
+@media (max-width:860px){
+  .shell{grid-template-columns:minmax(0,1fr);padding-bottom:calc(84px + env(safe-area-inset-bottom,0px));padding-top:14px}
+  .side{display:none}
+  .bottom{display:grid;grid-template-columns:repeat(5,1fr);position:fixed;left:0;right:0;bottom:0;z-index:30;background:var(--surface);border-top:1px solid var(--line);padding:6px max(6px,env(safe-area-inset-right,0px)) calc(6px + env(safe-area-inset-bottom,0px)) max(6px,env(safe-area-inset-left,0px))}
+  .bottom .nav-btn{flex-direction:column;gap:3px;font-size:11px;padding:6px 2px;justify-content:center;align-items:center}
+  .bottom .nav-btn.on{background:none}
+  .brand .word{display:none}
+  .funds-pill span{display:none}
+  .sheet{width:100%;height:auto;max-height:92%;margin-top:auto;border-radius:18px 18px 0 0}
+  .scrim{align-items:flex-end}
+  .toasts{bottom:calc(84px + env(safe-area-inset-bottom,0px))}
+  .big{font-size:26px}
+  .oc .c-chg{display:none}
+  .oc th,.oc td{padding:7px 6px}
+  .chart svg{height:200px}
+}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="top-in">
+    <div class="brand">
+      <svg viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="8" fill="#163a70"/><path d="M7 21l6-6 4 3 8-9" stroke="#34d399" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span class="word">Signal Desk</span><span class="paper" title="Virtual money – no real orders are placed">PAPER</span>
+    </div>
+    <div class="search">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5" stroke-linecap="round"/></svg>
+      <input id="q" type="search" placeholder="Search stocks, e.g. Reliance" autocomplete="off" aria-label="Search stocks">
+      <div id="results" class="results" hidden></div>
+    </div>
+    <button class="funds-pill" id="fundsPill" title="Available to trade"><span>Available</span><b id="availTop">—</b></button>
+  </div>
+  <div class="ticker" id="ticker"></div>
+</header>
+
+<div class="shell">
+  <nav class="side" id="sideNav"></nav>
+  <main id="view"></main>
+</div>
+<nav class="bottom" id="bottomNav"></nav>
+<div id="sheetRoot"></div>
+<div class="toasts" id="toasts" aria-live="polite"></div>
+
+<script src="engine.js"></script>
+<script>
+"use strict";
+const E = window.PaperEngine;
+const $ = s => document.querySelector(s);
+const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const fmt = (x, d = 2) => x == null || isNaN(x) ? "—" : Number(x).toLocaleString("en-IN", {minimumFractionDigits: d, maximumFractionDigits: d});
+const rs = (x, d = 2) => x == null || isNaN(x) ? "—" : (x < 0 ? "−₹" : "₹") + fmt(Math.abs(x), d);
+const sgn = (x, d = 2) => x == null || isNaN(x) ? "—" : (x > 0 ? "+" : x < 0 ? "−" : "") + fmt(Math.abs(x), d);
+const cls = x => x > 0 ? "up" : x < 0 ? "down" : "muted";
+const compact = x => x == null ? "—" : x >= 1e7 ? fmt(x / 1e7, 2) + " Cr" : x >= 1e5 ? fmt(x / 1e5, 2) + " L" : x >= 1e3 ? fmt(x / 1e3, 1) + " K" : fmt(x, 0);
+const store = {
+  get(k, d) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+};
+const ICON = {
+  explore: '<path d="M3 11l9-7 9 7v9a1 1 0 01-1 1h-5v-6H9v6H4a1 1 0 01-1-1z"/>',
+  watchlist: '<path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/>',
+  fno: '<path d="M4 19V9M10 19V5M16 19v-7M22 19H2"/>',
+  orders: '<path d="M7 3h10a2 2 0 012 2v16l-3-2-2 2-2-2-2 2-2-2-3 2V5a2 2 0 012-2zM9 8h6M9 12h6"/>',
+  portfolio: '<path d="M3 7h18v12a1 1 0 01-1 1H4a1 1 0 01-1-1zM8 7V5a2 2 0 012-2h4a2 2 0 012 2v2M3 12h18"/>',
+  star: '<path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/>',
+  back: '<path d="M15 18l-6-6 6-6"/>'
+};
+const svg = (name, extra = "") => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" ${extra}>${ICON[name]}</svg>`;
+const NAV = [["explore", "Explore"], ["watchlist", "Watchlist"], ["fno", "F&O"], ["orders", "Orders"], ["portfolio", "Portfolio"]];
+const INDEX_ORDER = ["NIFTY", "SENSEX", "BANKNIFTY", "FINNIFTY", "MIDCPNIFTY", "INDIAVIX"];
+const INDEX_LABEL = {NIFTY: "NIFTY 50", SENSEX: "SENSEX", BANKNIFTY: "BANK NIFTY", FINNIFTY: "FIN NIFTY", MIDCPNIFTY: "MIDCAP SELECT", INDIAVIX: "INDIA VIX"};
+
+// ------------------------------------------------------------------ state
+const ACCT_KEY = "signaldesk.paper.account.v1", WATCH_KEY = "signaldesk.paper.watch.v1";
+let acct = store.get(ACCT_KEY, null) || E.newAccount(1000000);
+let watch = store.get(WATCH_KEY, ["RELIANCE", "HDFCBANK", "ICICIBANK", "INFY", "TCS", "SBIN", "ITC", "LT"]);
+const D = {quotes: null, chains: null, universe: null, intraday: null, signals: null, history: {}};
+let chainsAt = 0, intradayAt = 0, signalsAt = 0, loadError = "";
+const save = () => store.set(ACCT_KEY, acct);
+
+function dataBase() {
+  const p = new URLSearchParams(location.search).get("data");
+  if (p) return p.replace(/\/?$/, "/");
+  const h = location.hostname;
+  if (h.endsWith(".github.io")) {
+    const owner = h.split(".")[0], seg = location.pathname.split("/").filter(Boolean)[0];
+    return `https://raw.githubusercontent.com/${owner}/${seg || owner + ".github.io"}/market-data/`;
+  }
+  return null;
+}
+const BASE = dataBase();
+const SIG_BASE = BASE && BASE.replace(/market-data\/$/, "signals-data/");
+async function getJSON(url) {
+  const r = await fetch(url + (url.includes("?") ? "&" : "?") + "t=" + Date.now(), {cache: "no-store"});
+  if (!r.ok) throw new Error(r.status + " " + url.split("/").pop());
+  return r.json();
+}
+
+// --------------------------------------------------------------- routing
+let route = {name: "explore", arg: null}, portfolioTab = store.get("signaldesk.paper.ptab", "positions"), ordersTab = "open";
+let lastChainView = null, fnoU = "NIFTY", fnoExp = null, chartRange = "1D", exploreSort = {k: "chp", dir: -1}, exploreFilter = "";
+function parseHash() {
+  const h = decodeURIComponent(location.hash.slice(1) || "explore");
+  const [name, ...rest] = h.split("-");
+  const arg = rest.join("-") || null;
+  if (["explore", "watchlist", "fno", "orders", "portfolio", "stock", "index"].includes(name)) return {name, arg};
+  return {name: "explore", arg: null};
+}
+function go(hash) { if (location.hash.slice(1) !== hash) location.hash = hash; else onRoute(); }
+function onRoute() {
+  route = parseHash();
+  if (route.name === "fno" && route.arg) { fnoU = route.arg; fnoExp = null; }
+  if (route.name !== "fno") lastChainView = null;
+  if (route.name === "stock" || route.name === "index") chartRange = "1D";
+  renderNav(); render(); window.scrollTo(0, 0);
+  if (route.name === "fno") ensureChains();
+  if (route.name === "stock" || route.name === "index") { ensureIntraday(); }
+}
+window.addEventListener("hashchange", onRoute);
+
+function renderNav() {
+  const active = {stock: "explore", index: "explore"}[route.name] || route.name;
+  const html = NAV.map(([k, label]) => `<button class="nav-btn ${active === k ? "on" : ""}" data-go="${k}">${svg(k)}<span>${label}</span></button>`).join("");
+  $("#sideNav").innerHTML = html + `<div class="data-note" id="dataNote"></div>`;
+  $("#bottomNav").innerHTML = html;
+  renderDataNote();
+}
+function renderDataNote() {
+  const el = $("#dataNote"); if (!el) return;
+  const q = D.quotes;
+  el.innerHTML = q ? `Prices from NSE &amp; Yahoo, updated ${esc(q.ts.slice(11, 16))} IST · can lag 1–2 min.<br>Paper trading with virtual money. No real orders are placed.` : esc(loadError || "Loading prices…");
+}
+
+// ------------------------------------------------------------ data load
+async function loadQuotes() {
+  if (!BASE) { loadError = "Open this page from your GitHub Pages site to load live prices."; render(); return; }
+  try {
+    const [q, u] = await Promise.all([getJSON(BASE + "quotes.json"), D.universe ? Promise.resolve(D.universe) : getJSON(BASE + "universe.json")]);
+    D.quotes = q; D.universe = u; loadError = "";
+  } catch (e) { loadError = "Couldn't load prices (" + e.message + "). Retrying…"; }
+  if (needChains() && Date.now() - chainsAt > 25000) await ensureChains(true);
+  tick();
+}
+function needChains() {
+  if (route.name === "fno" || (sheet && sheet.inst.startsWith("OPT:"))) return true;
+  if (Object.values(acct.positions).some(p => p.qty && p.inst.startsWith("OPT:"))) return true;
+  return acct.orders.some(o => (o.status === "OPEN" || o.status === "TRIGGER_PENDING") && o.inst.startsWith("OPT:"));
+}
+async function ensureChains(force) {
+  if (!BASE || (!force && D.chains && Date.now() - chainsAt < 25000)) { if (route.name === "fno") render(); return; }
+  try { D.chains = await getJSON(BASE + "chains.json"); chainsAt = Date.now(); } catch (e) {}
+  if (route.name === "fno" || sheet) render();
+}
+async function ensureIntraday() {
+  if (!BASE) return;
+  if (!D.intraday || Date.now() - intradayAt > 60000) {
+    try { D.intraday = await getJSON(BASE + "intraday.json"); intradayAt = Date.now(); } catch (e) {}
+  }
+  const sym = route.arg;
+  if (chartRange !== "1D" && sym && !D.history[sym]) {
+    try { D.history[sym] = await getJSON(BASE + "history/" + encodeURIComponent(sym) + ".json"); } catch (e) { D.history[sym] = {t: [], c: []}; }
+  }
+  if (route.name === "stock" || route.name === "index") render();
+}
+async function loadSignals() {
+  if (!SIG_BASE || Date.now() - signalsAt < 55000) return;
+  signalsAt = Date.now();
+  try { D.signals = await getJSON(SIG_BASE + "signals.json"); } catch (e) {}
+}
+const engineData = () => ({quotes: D.quotes, chains: D.chains, universe: D.universe});
+
+function tick() {
+  if (D.quotes) {
+    const evs = E.process(acct, engineData(), new Date());
+    if (evs.length) { save(); evs.forEach(toastEvent); }
+  }
+  renderTop();
+  const a = document.activeElement;
+  const typing = a && a.tagName === "INPUT" && a.closest("#view");
+  if (!typing) render();
+  if (sheet) renderSheet();
+}
+
+// ------------------------------------------------------------ helpers
+const stocks = () => (D.quotes && D.quotes.stocks) || {};
+const uniStock = s => (D.universe && D.universe.stocks && D.universe.stocks[s]) || {};
+const nameOf = s => uniStock(s).full || uniStock(s).name || s;
+const chg = q => q && q.pc ? {abs: q.p - q.pc, pct: (q.p / q.pc - 1) * 100} : {abs: null, pct: null};
+function idxQuote(k) { return D.quotes && D.quotes.indices && D.quotes.indices[k]; }
+function marketPill() {
+  const ph = D.quotes ? E.sessionPhase(engineData(), new Date()) : "loading";
+  const open = D.quotes && E.marketOpen(engineData(), new Date());
+  if (open) return `<span class="pill up live"><span class="dot"></span>Market open</span>`;
+  if (ph === "open" && D.quotes) return `<span class="pill warn">Prices delayed</span>`;
+  return `<span class="pill">${ph === "pre" ? "Pre-open" : ph === "loading" ? "Loading" : "Market closed"}</span>`;
+}
+
+function renderTop() {
+  const t = $("#ticker");
+  t.innerHTML = INDEX_ORDER.map(k => {
+    const q = idxQuote(k); if (!q) return "";
+    const c = chg(q);
+    return `<button class="tick" data-go="index-${k}"><b>${INDEX_LABEL[k]}</b><span class="num">${fmt(q.p)}</span><span class="num ${cls(c.abs)}">${sgn(c.pct)}%</span></button>`;
+  }).join("");
+  const s = E.summary(acct, engineData());
+  $("#availTop").textContent = rs(s.available, 0);
+  renderDataNote();
+}
+
+// ----------------------------------------------------------- charts
+function chartSVG(xs, ys, opts = {}) {
+  if (!ys || ys.length < 2) return `<div class="empty"><b>No chart data yet</b>The line appears once trading starts.</div>`;
+  const W = 800, H = 240, pad = {t: 14, r: 8, b: 22, l: 8};
+  const ref = opts.ref;
+  let lo = Math.min(...ys, ref != null ? ref : Infinity), hi = Math.max(...ys, ref != null ? ref : -Infinity);
+  if (hi === lo) { hi += 1; lo -= 1; }
+  const span = hi - lo; lo -= span * .08; hi += span * .08;
+  const x0 = opts.xmin != null ? opts.xmin : xs[0], x1 = opts.xmax != null ? opts.xmax : xs[xs.length - 1];
+  const X = x => pad.l + (x - x0) / ((x1 - x0) || 1) * (W - pad.l - pad.r);
+  const Y = y => pad.t + (hi - y) / (hi - lo) * (H - pad.t - pad.b);
+  const up = ys[ys.length - 1] >= (ref != null ? ref : ys[0]);
+  const col = up ? "var(--up)" : "var(--down)";
+  const pts = xs.map((x, i) => `${X(x).toFixed(1)},${Y(ys[i]).toFixed(1)}`);
+  const area = `M${pts[0]} L${pts.join(" L")} L${X(xs[xs.length - 1]).toFixed(1)},${H - pad.b} L${X(xs[0]).toFixed(1)},${H - pad.b} Z`;
+  const gid = "g" + Math.random().toString(36).slice(2, 7);
+  const refLine = ref != null ? `<line x1="${pad.l}" x2="${W - pad.r}" y1="${Y(ref)}" y2="${Y(ref)}" stroke="var(--faint)" stroke-dasharray="4 4" stroke-width="1"/>` : "";
+  const labels = (opts.labels || []).map(([x, t]) => { const px = X(x), a = px < 40 ? "start" : px > W - 40 ? "end" : "middle";
+    return `<text x="${px}" y="${H - 5}" font-size="11" fill="var(--faint)" text-anchor="${a}" font-family="var(--mono)">${t}</text>`; }).join("");
+  const last = `<circle cx="${X(xs[xs.length - 1])}" cy="${Y(ys[ys.length - 1])}" r="3.5" fill="${col}"/>`;
+  return `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" data-x0="${x0}" data-x1="${x1}" data-w="${W}" data-pl="${pad.l}" data-pr="${pad.r}">
+    <defs><linearGradient id="${gid}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${col}" stop-opacity=".18"/><stop offset="1" stop-color="${col}" stop-opacity="0"/></linearGradient></defs>
+    ${refLine}<path d="${area}" fill="url(#${gid})"/><polyline points="${pts.join(" ")}" fill="none" stroke="${col}" stroke-width="2" vector-effect="non-scaling-stroke" stroke-linejoin="round"/>${last}${labels}
+    <line class="cursor" x1="0" x2="0" y1="${pad.t}" y2="${H - pad.b}" stroke="var(--faint)" stroke-width="1" vector-effect="non-scaling-stroke" visibility="hidden"/></svg><div class="tip" hidden></div>`;
+}
+function wireChart(el, xs, ys, fmtX) {
+  if (!el || !ys || ys.length < 2) return;
+  const svgEl = el.querySelector("svg"), tip = el.querySelector(".tip"), cur = el.querySelector(".cursor");
+  const move = ev => {
+    const r = svgEl.getBoundingClientRect();
+    const fx = (ev.clientX - r.left) / r.width;
+    const W = +svgEl.dataset.w, pl = +svgEl.dataset.pl, pr = +svgEl.dataset.pr, x0 = +svgEl.dataset.x0, x1 = +svgEl.dataset.x1;
+    const xv = x0 + ((fx * W - pl) / (W - pl - pr)) * (x1 - x0);
+    let best = 0; xs.forEach((x, i) => { if (Math.abs(x - xv) < Math.abs(xs[best] - xv)) best = i; });
+    const px = pl + (xs[best] - x0) / ((x1 - x0) || 1) * (W - pl - pr);
+    cur.setAttribute("x1", px); cur.setAttribute("x2", px); cur.setAttribute("visibility", "visible");
+    tip.hidden = false; tip.style.left = (px / W * 100) + "%";
+    tip.textContent = `${fmtX(xs[best])} · ₹${fmt(ys[best])}`;
+  };
+  svgEl.addEventListener("pointermove", move);
+  svgEl.addEventListener("pointerleave", () => { tip.hidden = true; cur.setAttribute("visibility", "hidden"); });
+}
+const minToTime = m => { const t = 555 + m; return String(Math.floor(t / 60)).padStart(2, "0") + ":" + String(t % 60).padStart(2, "0"); };
+const ymd = n => { const s = String(n); return new Date(`${s.slice(0, 4)}-${s.slice(4, 6)}-${s.slice(6)}T00:00:00Z`); };
+const dShort = n => { const d = ymd(n); return d.getUTCDate() + " " + ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][d.getUTCMonth()] + (chartRange === "1Y" || chartRange === "6M" ? " " + String(d.getUTCFullYear()).slice(2) : ""); };
+function chartBlock(sym, q) {
+  let xs = [], ys = [], opts = {}, fx = minToTime;
+  if (chartRange === "1D") {
+    const s = D.intraday && D.intraday.series && D.intraday.series[sym];
+    if (s) { xs = s[0].slice(); ys = s[1].slice(); }
+    if (q && q.p && xs.length) { xs.push(Math.max(xs[xs.length - 1], Math.min(375, xs[xs.length - 1] + 1))); ys.push(q.p); }
+    opts = {ref: q && q.pc, xmin: 0, xmax: 375, labels: [[0, "09:15"], [105, "11:00"], [225, "13:00"], [375, "15:30"]]};
+  } else {
+    const h = D.history[sym];
+    if (!h) return `<div class="empty">Loading chart…</div>`;
+    const n = {"1W": 5, "1M": 22, "3M": 66, "6M": 128, "1Y": 260}[chartRange];
+    xs = h.t.slice(-n).map((_, i) => i); ys = h.c.slice(-n); const ts = h.t.slice(-n);
+    if (q && q.p && ts.length && String(ts[ts.length - 1]) !== (D.quotes.ts || "").slice(0, 10).replace(/-/g, "")) { xs.push(xs.length); ys.push(q.p); ts.push(+D.quotes.ts.slice(0, 10).replace(/-/g, "")); }
+    fx = i => dShort(ts[i]);
+    const L = Math.max(1, Math.floor(xs.length / 4));
+    opts = {labels: [0, L, 2 * L, 3 * L].filter(i => i < xs.length).map(i => [i, dShort(ts[i])])};
+  }
+  return {html: chartSVG(xs, ys, opts), xs, ys, fx};
+}
+
+// ------------------------------------------------------------- views
+function render() {
+  const v = $("#view");
+  if (!D.quotes) {
+    v.innerHTML = `<div class="card empty" style="margin-top:40px"><b>${loadError ? "Prices unavailable" : "Loading live prices…"}</b>${esc(loadError || "This takes a moment the first time.")}</div>`;
+    return;
+  }
+  const fn = {explore: viewExplore, watchlist: viewWatch, fno: viewFno, orders: viewOrders, portfolio: viewPortfolio, stock: viewStock, index: viewIndex}[route.name] || viewExplore;
+  v.innerHTML = fn();
+  afterRender();
+}
+let afterHooks = [];
+function afterRender() { const h = afterHooks; afterHooks = []; h.forEach(f => f()); }
+
+function stockItem(s, extra = "") {
+  const q = stocks()[s]; const c = chg(q || {});
+  return `<button class="list-item" data-go="stock-${esc(s)}"><div class="li-main"><b>${esc(s)}</b><span>${esc(nameOf(s))}${extra}</span></div>
+    <div class="li-end"><b>${q ? fmt(q.p) : "—"}</b><span class="${cls(c.abs)}">${sgn(c.abs)} (${sgn(c.pct)}%)</span></div></button>`;
+}
+function tile(s) {
+  const q = stocks()[s]; const c = chg(q || {});
+  return `<button class="tile" data-go="stock-${esc(s)}"><span class="nm">${esc(s)}</span><span class="muted" style="font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(nameOf(s))}</span>
+    <span class="px">₹${fmt(q.p)}</span><span class="ch ${cls(c.abs)}">${sgn(c.abs)} (${sgn(c.pct)}%)</span></button>`;
+}
+
+function signalCard() {
+  const sigs = (D.signals || []).filter(s => s.status === "OPEN");
+  if (!sigs.length) return "";
+  return sigs.map(s => {
+    const p = s.premium || {};
+    const exp = p.expiry;
+    const right = s.side === "CALL" ? "CE" : "PE";
+    const key = exp ? `OPT:${s.index}:${exp}:${s.strike}:${right}` : null;
+    const valid = s.valid_until && Date.now() < new Date(s.valid_until + "+05:30").getTime();
+    const tradable = key && D.chains && E.chainRow(engineData(), s.index, exp, s.strike);
+    return `<div class="sig ${s.side.toLowerCase()}">
+      <div class="grow"><div class="k ${s.side === "CALL" ? "up" : "down"}">Signal · buy ${s.side.toLowerCase()} · ${esc(s.entry_time.slice(11, 16))} IST</div>
+      <div class="o">${esc(s.option)}${p.price ? ` <span class="muted" style="font-size:14px">@ ${p.estimated ? "≈" : ""}₹${fmt(p.price)}</span>` : ""}</div>
+      <div class="sub">${valid ? `Buy window open till ${esc(s.valid_until.slice(11, 16))}` : "Buy window closed"}${p.sl ? ` · SL ₹${fmt(p.sl)} · Target ₹${fmt(p.target)}` : ""}</div></div>
+      ${key ? `<button class="btn ${tradable ? "buy" : ""}" data-trade="${esc(key)}" data-side="BUY" ${tradable ? "" : "disabled title='Option chain not loaded'"}>Paper trade</button>` : ""}
+    </div>`;
+  }).join("");
+}
+
+function viewExplore() {
+  const all = Object.keys(stocks()).filter(s => stocks()[s].p && stocks()[s].pc);
+  const withC = all.map(s => ({s, q: stocks()[s], pct: chg(stocks()[s]).pct, val: (stocks()[s].v || 0) * stocks()[s].p}));
+  const gain = [...withC].sort((a, b) => b.pct - a.pct).slice(0, 6);
+  const lose = [...withC].sort((a, b) => a.pct - b.pct).slice(0, 6);
+  const active = [...withC].sort((a, b) => b.val - a.val).slice(0, 6);
+  const f = exploreFilter.toLowerCase();
+  let rows = withC.filter(x => !f || x.s.toLowerCase().includes(f) || nameOf(x.s).toLowerCase().includes(f));
+  const k = exploreSort.k;
+  rows.sort((a, b) => (k === "s" ? a.s.localeCompare(b.s) : k === "p" ? a.q.p - b.q.p : k === "val" ? a.val - b.val : a.pct - b.pct) * exploreSort.dir);
+  const th = (key, label, r) => `<th class="${r ? "r" : ""}"><button class="tab" style="border:0;padding:0;background:none;font:inherit;color:inherit;text-transform:inherit;letter-spacing:inherit" data-sort="${key}">${label}${exploreSort.k === key ? (exploreSort.dir > 0 ? " ↑" : " ↓") : ""}</button></th>`;
+  afterHooks.push(() => {
+    const inp = $("#exploreFilter");
+    if (inp) inp.addEventListener("input", e => { exploreFilter = e.target.value; const pos = e.target.selectionStart; render(); const n = $("#exploreFilter"); n.focus(); n.setSelectionRange(pos, pos); });
+  });
+  return `
+  <div class="row" style="justify-content:space-between;flex-wrap:wrap;gap:10px"><div><h1>Explore</h1><div class="sub">F&amp;O stocks and indices · prices as of ${esc(D.quotes.ts.slice(11, 16))} IST</div></div>${marketPill()}</div>
+  ${signalCard() ? `<h2>Today's signal</h2>${signalCard()}` : ""}
+  <h2>Indices</h2>
+  <div class="grid g-idx">${INDEX_ORDER.map(k => { const q = idxQuote(k); if (!q) return ""; const c = chg(q);
+    return `<button class="tile" data-go="index-${k}"><span class="nm">${INDEX_LABEL[k]}</span><span class="px">${fmt(q.p)}</span><span class="ch ${cls(c.abs)}">${sgn(c.abs)} (${sgn(c.pct)}%)</span></button>`; }).join("")}</div>
+  <h2>Top gainers</h2><div class="grid g-tiles">${gain.map(x => tile(x.s)).join("")}</div>
+  <h2>Top losers</h2><div class="grid g-tiles">${lose.map(x => tile(x.s)).join("")}</div>
+  <h2>Most traded today</h2><div class="grid g-tiles">${active.map(x => tile(x.s)).join("")}</div>
+  <h2>All F&amp;O stocks <span class="muted" style="font-weight:500">(${all.length})</span></h2>
+  <div class="card"><div class="pad" style="padding-bottom:6px"><div class="field"><input id="exploreFilter" placeholder="Filter by name or symbol" value="${esc(exploreFilter)}" style="font-family:var(--sans);font-weight:500"></div></div>
+  <div class="tbl-wrap"><table><thead><tr>${th("s", "Company")}${th("p", "Price", 1)}${th("chp", "Change", 1)}${th("val", "Traded value", 1)}</tr></thead><tbody>
+  ${rows.slice(0, 250).map(x => `<tr class="click" data-go="stock-${esc(x.s)}"><td><b>${esc(x.s)}</b><div class="muted" style="font-size:12px;max-width:260px;overflow:hidden;text-overflow:ellipsis">${esc(nameOf(x.s))}</div></td>
+    <td class="r num">${fmt(x.q.p)}</td><td class="r num ${cls(x.pct)}">${sgn(x.pct)}%</td><td class="r num muted">₹${compact(x.val)}</td></tr>`).join("") || `<tr><td colspan="4" class="empty">No stocks match “${esc(exploreFilter)}”.</td></tr>`}
+  </tbody></table></div></div>`;
+}
+
+function viewWatch() {
+  return `<h1>Watchlist</h1><div class="sub">Tap ☆ on any stock page to add it here.</div>
+  <div class="card" style="margin-top:16px">${watch.length ? watch.map(s => `<div class="row" style="border-bottom:1px solid var(--line)"><div class="grow">${stockItem(s).replace('class="list-item"', 'class="list-item" style="border:0"')}</div>
+    <button class="btn sm buy" data-trade="EQ:${esc(s)}" data-side="BUY">B</button><button class="btn sm sell" data-trade="EQ:${esc(s)}" data-side="SELL" style="margin-right:12px">S</button></div>`).join("")
+    : `<div class="empty"><b>Your watchlist is empty</b>Search for a stock and tap the star.</div>`}</div>`;
+}
+
+function rangeBar(lo, hi, v, l1, l2) {
+  if (lo == null || hi == null || v == null || hi <= lo) return "";
+  const p = Math.max(0, Math.min(100, (v - lo) / (hi - lo) * 100));
+  return `<div class="range"><div class="ends"><span>${l1} ${fmt(lo)}</span><span>${l2} ${fmt(hi)}</span></div><div class="bar"><i style="left:${p}%"></i></div></div>`;
+}
+function rangeTabs() {
+  return `<div class="tabs" style="margin-top:12px">${["1D", "1W", "1M", "3M", "6M", "1Y"].map(r => `<button class="tab ${chartRange === r ? "on" : ""}" data-range="${r}">${r}</button>`).join("")}</div>`;
+}
+
+function viewStock() {
+  const s = route.arg; const q = stocks()[s];
+  if (!q) return `<button class="btn ghost sm" onclick="history.back()">← Back</button><div class="card empty" style="margin-top:16px"><b>${esc(s)}</b>No live price for this symbol.</div>`;
+  const c = chg(q); const u = uniStock(s);
+  const ch = chartBlock(s, q);
+  afterHooks.push(() => wireChart($("#chart"), ch.xs, ch.ys, ch.fx));
+  const h = acct.holdings[s];
+  const poss = Object.values(acct.positions).filter(p => p.qty && E.parse(p.inst).u === s);
+  const chains = D.chains && Object.keys(D.chains.chains || {}).filter(k => k.startsWith(s + "|"));
+  const futs = Object.entries((D.quotes && D.quotes.futures) || {}).filter(([k, f]) => f.u === s);
+  const starred = watch.includes(s);
+  return `
+  <div class="row" style="gap:10px"><button class="icon-btn" onclick="history.back()" aria-label="Back">${svg("back")}</button>
+    <div class="grow"><h1 style="margin:0">${esc(nameOf(s))}</h1><div class="sub">NSE: ${esc(s)}${u.lot ? ` · F&amp;O lot ${u.lot}` : ""}</div></div>
+    <button class="icon-btn ${starred ? "on" : ""}" data-star="${esc(s)}" aria-label="${starred ? "Remove from" : "Add to"} watchlist">${svg("star", starred ? 'fill="currentColor"' : "")}</button></div>
+  <div class="card pad" style="margin-top:16px">
+    <div class="quote-head"><div><div class="big">₹${fmt(q.p)}</div><div class="num ${cls(c.abs)}" style="font-weight:600">${sgn(c.abs)} (${sgn(c.pct)}%) <span class="muted" style="font-weight:500">today</span></div></div>${marketPill()}</div>
+    <div class="chart" id="chart">${typeof ch === "string" ? ch : ch.html}</div>
+    ${rangeTabs()}
+  </div>
+  <div class="trade-bar" style="margin-top:14px"><button class="btn buy" data-trade="EQ:${esc(s)}" data-side="BUY">Buy</button><button class="btn sell" data-trade="EQ:${esc(s)}" data-side="SELL">Sell</button></div>
+  ${h || poss.length ? `<h2>Your investment</h2><div class="card">${h ? holdingRow(s, h) : ""}${poss.map(positionRow).join("")}</div>` : ""}
+  <h2>Performance</h2>
+  <div class="card pad" style="display:grid;gap:18px">
+    ${rangeBar(q.l, q.h, q.p, "Today's low", "Today's high")}
+    ${rangeBar(q.yl, q.yh, q.p, "52W low", "52W high")}
+    <div class="stats"><div class="stat"><span>Previous close</span><b>${fmt(q.pc)}</b></div><div class="stat"><span>Volume</span><b>${compact(q.v)}</b></div>
+    <div class="stat"><span>Traded value</span><b>₹${compact((q.v || 0) * q.p)}</b></div><div class="stat"><span>Lot size</span><b>${u.lot || "—"}</b></div></div>
+  </div>
+  ${(chains && chains.length) || futs.length ? `<h2>Futures &amp; options</h2><div class="card">
+    ${chains && chains.length ? `<button class="list-item" data-go="fno-${esc(s)}"><div class="li-main"><b>Option chain</b><span>${chains.length} expir${chains.length > 1 ? "ies" : "y"} available</span></div><span class="muted">→</span></button>` : ""}
+    ${futs.map(([k, f]) => futRow(k, f)).join("")}</div>` : (u.lot ? `<h2>Futures &amp; options</h2><div class="card empty">Live F&amp;O prices for ${esc(s)} aren't in the feed. Add it to <span class="num">stock_chains</span> in feed_config.json to trade its options.</div>` : "")}
+  `;
+}
+function futRow(k, f) {
+  return `<div class="list-item"><div class="li-main"><b>${esc(E.label(k))}</b><span>OI ${compact(f.oi)} · Lot ${E.lotSize(E.parse(k), engineData())}</span></div>
+    <div class="li-end" style="margin-right:8px"><b>${fmt(f.p)}</b><span class="${cls(f.ch)}">${sgn(f.ch)} (${sgn(f.chp)}%)</span></div>
+    <button class="btn sm buy" data-trade="${esc(k)}" data-side="BUY">B</button><button class="btn sm sell" data-trade="${esc(k)}" data-side="SELL">S</button></div>`;
+}
+
+function viewIndex() {
+  const k = route.arg; const q = idxQuote(k);
+  if (!q) return `<div class="empty">Unknown index.</div>`;
+  const c = chg(q); const ch = chartBlock(k, q);
+  afterHooks.push(() => wireChart($("#chart"), ch.xs, ch.ys, ch.fx));
+  const futs = Object.entries((D.quotes && D.quotes.futures) || {}).filter(([kk, f]) => f.u === k);
+  const hasChain = D.chains && Object.keys(D.chains.chains || {}).some(x => x.startsWith(k + "|"));
+  const fnoable = ["NIFTY", "BANKNIFTY", "FINNIFTY", "MIDCPNIFTY"].includes(k);
+  return `
+  <div class="row" style="gap:10px"><button class="icon-btn" onclick="history.back()" aria-label="Back">${svg("back")}</button><div class="grow"><h1 style="margin:0">${INDEX_LABEL[k]}</h1><div class="sub">Index</div></div></div>
+  <div class="card pad" style="margin-top:16px"><div class="quote-head"><div><div class="big">${fmt(q.p)}</div><div class="num ${cls(c.abs)}" style="font-weight:600">${sgn(c.abs)} (${sgn(c.pct)}%)</div></div>${marketPill()}</div>
+    <div class="chart" id="chart">${typeof ch === "string" ? ch : ch.html}</div>${rangeTabs()}</div>
+  ${fnoable ? `<div class="trade-bar" style="margin-top:14px"><button class="btn pri" data-go="fno-${k}">Option chain</button></div>` : ""}
+  <h2>Performance</h2><div class="card pad" style="display:grid;gap:18px">${rangeBar(q.l, q.h, q.p, "Today's low", "Today's high")}${rangeBar(q.yl, q.yh, q.p, "52W low", "52W high")}
+    <div class="stats"><div class="stat"><span>Open</span><b>${fmt(q.o)}</b></div><div class="stat"><span>Previous close</span><b>${fmt(q.pc)}</b></div></div></div>
+  ${futs.length ? `<h2>Futures</h2><div class="card">${futs.map(([kk, f]) => futRow(kk, f)).join("")}</div>` : ""}
+  ${k === "SENSEX" ? `<div class="info" style="margin-top:14px">SENSEX options trade on BSE, which has no free live feed, so they can't be paper-traded here.</div>` : ""}`;
+}
+
+// F&O ------------------------------------------------------------------
+function chainUnderlyings() {
+  const keys = Object.keys((D.chains && D.chains.chains) || {});
+  const u = [...new Set(keys.map(k => k.split("|")[0]))];
+  const idx = ["NIFTY", "BANKNIFTY", "FINNIFTY", "MIDCPNIFTY"].filter(x => u.includes(x));
+  return idx.concat(u.filter(x => !idx.includes(x)).sort());
+}
+function viewFno() {
+  if (!D.chains) return `<h1>F&amp;O</h1><div class="card empty" style="margin-top:16px">Loading option chains…</div>`;
+  const us = chainUnderlyings();
+  if (!us.includes(fnoU)) fnoU = us[0];
+  const exps = Object.keys(D.chains.chains).filter(k => k.startsWith(fnoU + "|")).map(k => k.split("|")[1]).sort();
+  if (!fnoExp || !exps.includes(fnoExp)) fnoExp = exps[0];
+  const ch = D.chains.chains[fnoU + "|" + fnoExp];
+  const lot = E.lotSize({kind: "OPT", u: fnoU}, engineData());
+  const spot = E.underlyingSpot(fnoU, engineData()) || ch.spot;
+  const futs = Object.entries(D.quotes.futures || {}).filter(([k, f]) => f.u === fnoU);
+  let spotDone = false;
+  const rows = ch.rows.map(r => {
+    const [K] = r; let pre = "";
+    if (!spotDone && K > spot) { spotDone = true; pre = `<tr class="spot" id="spotRow"><td colspan="7" class="spot-tag"><span>${fnoU} ${fmt(spot)}</span></td></tr>`; }
+    const ce = `OPT:${fnoU}:${fnoExp}:${K}:CE`, pe = `OPT:${fnoU}:${fnoExp}:${K}:PE`;
+    const cIt = K < spot, pIt = K > spot;
+    const pct = (l, c) => l != null && l - c ? (c / (l - c) * 100) : null;
+    const cp = pct(r[1], r[2]), pp = pct(r[9], r[10]);
+    return pre + `<tr>
+      <td class="r ${cIt ? "itm" : ""}"><span class="oi">${compact(r[5])}</span></td>
+      <td class="c-chg r ${cIt ? "itm" : ""} num ${cls(cp)}" style="font-size:12px">${cp == null ? "" : sgn(cp, 1) + "%"}</td>
+      <td class="r ${cIt ? "itm" : ""}"><button class="px-btn" data-trade="${ce}" data-side="BUY" title="Trade ${fnoU} ${K} CE">${fmt(r[1])}</button></td>
+      <td class="k">${K}</td>
+      <td class="${pIt ? "itm" : ""}"><button class="px-btn" data-trade="${pe}" data-side="BUY" title="Trade ${fnoU} ${K} PE">${fmt(r[9])}</button></td>
+      <td class="c-chg ${pIt ? "itm" : ""} num ${cls(pp)}" style="font-size:12px">${pp == null ? "" : sgn(pp, 1) + "%"}</td>
+      <td class="${pIt ? "itm" : ""}"><span class="oi">${compact(r[13])}</span></td></tr>`;
+  }).join("");
+  const sel = `<select id="fnoU" style="border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:8px 10px;font-weight:700">${us.map(u => `<option ${u === fnoU ? "selected" : ""}>${u}</option>`).join("")}</select>`;
+  afterHooks.push(() => {
+    const s = $("#fnoU"); if (s) s.onchange = e => go("fno-" + e.target.value);
+    const view = fnoU + "|" + fnoExp;
+    if (lastChainView !== view) { lastChainView = view; const r = $("#spotRow"); if (r) r.scrollIntoView({block: "center"}); }
+  });
+  return `
+  <div class="row" style="justify-content:space-between;flex-wrap:wrap;gap:10px"><div><h1>F&amp;O</h1><div class="sub">Tap a price to buy or sell · lot size ${lot} · chain as of ${esc(D.chains.ts.slice(11, 16))} IST</div></div>${marketPill()}</div>
+  ${signalCard() ? `<div style="margin-top:14px">${signalCard()}</div>` : ""}
+  <div class="row" style="margin:16px 0 12px;flex-wrap:wrap;gap:10px">${sel}<div class="tabs">${exps.map(e => `<button class="tab ${e === fnoExp ? "on" : ""}" data-exp="${e}">${E.fmtExp(e)}</button>`).join("")}</div>
+    <div class="grow"></div><div class="num" style="font-weight:600">${fnoU} ${fmt(spot)}</div></div>
+  <div class="card tbl-wrap"><table class="oc"><thead><tr><th class="r">Call OI</th><th class="r c-chg">Chg</th><th class="r">Call LTP</th><th class="k">Strike</th><th>Put LTP</th><th class="c-chg">Chg</th><th>Put OI</th></tr></thead><tbody>${rows}</tbody></table></div>
+  <div class="sub" style="margin-top:8px">Shaded cells are in the money. Orders fill at the live bid/ask when available.</div>
+  ${futs.length ? `<h2>${fnoU} futures</h2><div class="card">${futs.map(([k, f]) => futRow(k, f)).join("")}</div>` : ""}`;
+}
+
+// Orders / portfolio --------------------------------------------------
+const statusPill = o => {
+  const m = {COMPLETE: "up", REJECTED: "down", CANCELLED: "", OPEN: "acc", TRIGGER_PENDING: "warn"};
+  const t = {TRIGGER_PENDING: "TRIGGER PENDING", OPEN: o.amo ? "AMO" : "OPEN"}[o.status] || o.status;
+  return `<span class="pill ${m[o.status] || ""}">${t}</span>`;
+};
+const prodName = p => ({CNC: "Delivery", MIS: "Intraday", NRML: "Carry fwd"}[p] || p);
+function orderRow(o, actions) {
+  const px = o.fillPrice != null ? `@ ₹${fmt(o.fillPrice)}` : o.type === "MARKET" ? "Market" : o.type === "SL-M" ? `SL-M trig ₹${fmt(o.trigger)}` : o.type === "SL" ? `₹${fmt(o.price)} · trig ₹${fmt(o.trigger)}` : `Limit ₹${fmt(o.price)}`;
+  return `<div class="list-item" style="align-items:flex-start"><div class="li-main">
+    <b><span class="${o.side === "BUY" ? "up" : "down"}">${o.side}</span> ${esc(E.label(o.inst))}</b>
+    <span>${o.qty} qty · ${prodName(o.product)} · ${esc(px)} · ${esc(o.ts.slice(11, 16))}${o.tag === "SQUAREOFF" ? " · auto" : ""}</span>
+    ${o.msg && o.status !== "COMPLETE" || o.tag === "EXPIRY" || o.tag === "SQUAREOFF" ? `<span class="${o.status === "REJECTED" ? "down" : "muted"}" style="white-space:normal">${esc(o.msg || "")}</span>` : ""}</div>
+    <div class="li-end" style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">${statusPill(o)}
+    ${actions && (o.status === "OPEN" || o.status === "TRIGGER_PENDING") ? `<div class="row" style="gap:6px"><button class="btn sm ghost" data-modify="${o.id}">Modify</button><button class="btn sm ghost" data-cancel="${o.id}">Cancel</button></div>` : ""}</div></div>`;
+}
+function viewOrders() {
+  const today = E.ist(new Date()).date;
+  const open = acct.orders.filter(o => o.status === "OPEN" || o.status === "TRIGGER_PENDING");
+  const todays = acct.orders.filter(o => o.ts.slice(0, 10) === today && !(o.status === "OPEN" || o.status === "TRIGGER_PENDING"));
+  const hist = acct.orders.filter(o => o.ts.slice(0, 10) !== today && !(o.status === "OPEN" || o.status === "TRIGGER_PENDING"));
+  const lists = {open, today: todays, history: hist};
+  const L = lists[ordersTab].slice().reverse();
+  return `<h1>Orders</h1><div class="sub">Day orders lapse at 3:30 PM. Orders placed when the market is closed run at the next open.</div>
+  <div class="seg" style="margin:16px 0 12px"><button class="${ordersTab === "open" ? "on" : ""}" data-otab="open">Open (${open.length})</button><button class="${ordersTab === "today" ? "on" : ""}" data-otab="today">Today (${todays.length})</button><button class="${ordersTab === "history" ? "on" : ""}" data-otab="history">History</button></div>
+  <div class="card">${L.length ? L.slice(0, 200).map(o => orderRow(o, true)).join("") : `<div class="empty"><b>No orders here</b>${ordersTab === "open" ? "Pending limit, stop-loss and after-market orders show up here." : "Executed and cancelled orders show up here."}</div>`}</div>`;
+}
+function positionRow(p) {
+  const px = E.lastPrice(acct, p.inst, engineData());
+  const pnl = p.qty ? (px - p.avg) * p.qty + p.realized : p.realized;
+  const k = E.posKey(p.inst, p.product);
+  const pct = p.qty && p.avg ? ((px - p.avg) / p.avg * 100 * Math.sign(p.qty)) : null;
+  return `<div class="list-item" style="align-items:flex-start"><div class="li-main">
+    <b>${esc(E.label(p.inst))} <span class="pill" style="margin-left:4px">${prodName(p.product)}</span></b>
+    <span>${p.qty ? `${p.qty > 0 ? "+" : ""}${p.qty} qty · avg ₹${fmt(p.avg)} · LTP ₹${fmt(px)}` : `Closed · bought ${p.buyQty} · sold ${p.sellQty}`}</span></div>
+    <div class="li-end" style="display:flex;flex-direction:column;align-items:flex-end;gap:6px"><b class="${cls(pnl)}">${sgn(pnl)}</b>
+    ${pct != null ? `<span class="${cls(pct)}">${sgn(pct)}%</span>` : ""}
+    ${p.qty ? `<div class="row" style="gap:6px"><button class="btn sm ghost" data-trade="${esc(p.inst)}" data-side="${p.qty > 0 ? "BUY" : "SELL"}" data-product="${p.product}">Add</button><button class="btn sm ${p.qty > 0 ? "sell" : "buy"}" data-exit="${esc(k)}">Exit</button></div>` : ""}</div></div>`;
+}
+function holdingRow(s, h) {
+  const q = stocks()[s]; const px = q ? q.p : h.avg;
+  const pnl = (px - h.avg) * h.qty; const pct = (px / h.avg - 1) * 100;
+  const day = q && q.pc ? (q.p - q.pc) * h.qty : null;
+  return `<button class="list-item" data-go="stock-${esc(s)}"><div class="li-main"><b>${esc(s)}</b><span>${h.qty} shares · avg ₹${fmt(h.avg)} · LTP ₹${fmt(px)}</span></div>
+    <div class="li-end"><b class="${cls(pnl)}">${sgn(pnl)}</b><span class="${cls(pct)}">${sgn(pct)}%${day != null ? ` · today ${sgn(day, 0)}` : ""}</span></div></button>`;
+}
+function viewPortfolio() {
+  const sm = E.summary(acct, engineData());
+  const tabs = `<div class="seg" style="margin:16px 0 14px"><button class="${portfolioTab === "positions" ? "on" : ""}" data-ptab="positions">Positions</button><button class="${portfolioTab === "holdings" ? "on" : ""}" data-ptab="holdings">Holdings</button><button class="${portfolioTab === "funds" ? "on" : ""}" data-ptab="funds">Funds</button></div>`;
+  let body = "";
+  if (portfolioTab === "positions") {
+    const ps = Object.values(acct.positions);
+    const total = ps.reduce((a, p) => a + (p.qty ? (E.lastPrice(acct, p.inst, engineData()) - p.avg) * p.qty : 0) + p.realized, 0);
+    const openN = ps.filter(p => p.qty).length;
+    body = `<div class="sum"><div><span>Total P&amp;L (today's positions)</span><b class="${cls(total)}">${sgn(total)}</b></div><div><span>Open positions</span><b>${openN}</b></div><div><span>Margin used</span><b>${rs(sm.used)}</b></div></div>
+    ${openN > 1 ? `<div class="row" style="justify-content:flex-end;margin-top:10px"><button class="btn sm ghost" data-exitall="1">Exit all</button></div>` : ""}
+    <div class="card" style="margin-top:12px">${ps.length ? ps.sort((a, b) => Math.abs(b.qty) - Math.abs(a.qty)).map(positionRow).join("") : `<div class="empty"><b>No positions</b>Intraday trades and F&amp;O positions show here. Intraday positions close automatically at 3:20 PM.</div>`}</div>`;
+  } else if (portfolioTab === "holdings") {
+    const hs = Object.entries(acct.holdings);
+    body = `<div class="sum"><div><span>Current value</span><b>${rs(sm.current)}</b></div><div><span>Invested</span><b>${rs(sm.invested)}</b></div>
+      <div><span>Total returns</span><b class="${cls(sm.holdingsPnl)}">${sgn(sm.holdingsPnl)}</b></div><div><span>1D returns</span><b class="${cls(sm.holdingsDayPnl)}">${sgn(sm.holdingsDayPnl)}</b></div></div>
+      <div class="card" style="margin-top:12px">${hs.length ? hs.map(([s, h]) => holdingRow(s, h)).join("") : `<div class="empty"><b>No holdings yet</b>Stocks bought with <b style="display:inline">Delivery</b> appear here.</div>`}</div>`;
+  } else {
+    body = `<div class="sum"><div><span>Available to trade</span><b>${rs(sm.available)}</b></div><div><span>Margin used</span><b>${rs(sm.used)}</b></div><div><span>Blocked for open orders</span><b>${rs(sm.pending)}</b></div>
+      <div><span>Cash balance</span><b>${rs(sm.cash)}</b></div><div><span>Realized P&amp;L (all time)</span><b class="${cls(sm.realized)}">${sgn(sm.realized)}</b></div><div><span>Charges paid</span><b>${rs(sm.charges)}</b></div></div>
+    <h2>Virtual money</h2><div class="card pad" style="display:grid;gap:12px">
+      <div class="row" style="flex-wrap:wrap"><div class="field grow"><label for="addAmt">Add virtual funds (₹)</label><input id="addAmt" type="number" min="1000" step="1000" value="100000"></div><button class="btn pri" id="addFunds" style="align-self:flex-end">Add funds</button></div>
+      <div class="sub">Total added so far: ${rs(acct.deposits)}. Net worth now: <b class="num">${rs(sm.cash + sm.current + sm.unrealized)}</b> (cash + holdings + open P&amp;L).</div></div>
+    <h2>Backup</h2><div class="card pad" style="display:grid;gap:12px">
+      <div class="sub">Your paper account is saved in this browser only. Download a backup to move it to another device.</div>
+      <div class="row" style="flex-wrap:wrap"><button class="btn ghost" id="backupBtn">Download backup</button><label class="btn ghost" for="restoreFile">Restore from file</label><input id="restoreFile" type="file" accept="application/json" hidden></div></div>
+    <h2>Reset</h2><div class="card pad" id="resetBox"><div class="row" style="flex-wrap:wrap"><div class="grow sub">Start again with ₹10,00,000 and no orders or positions.</div><button class="btn ghost" id="resetAsk">Reset account</button></div></div>`;
+  }
+  return `<h1>Portfolio</h1><div class="sub">Virtual money · ${marketPill()}</div>${tabs}${body}`;
+}
+
+// --------------------------------------------------------- order sheet
+let sheet = null; // {inst, side, product, type, qty, price, trigger, error, confirm, modifyId}
+function openSheet(inst, side, product, modifyOrder) {
+  const i = E.parse(inst);
+  const lot = E.lotSize(i, engineData());
+  const q = E.quote(inst, engineData());
+  sheet = {inst, side: side || "BUY", product: product || (i.kind === "EQ" ? "CNC" : "NRML"), type: "MARKET",
+           qty: i.kind === "EQ" ? 1 : lot, price: q ? q.ltp : "", trigger: "", error: "", confirm: false, modifyId: null};
+  if (modifyOrder) Object.assign(sheet, {side: modifyOrder.side, product: modifyOrder.product, type: modifyOrder.type, qty: modifyOrder.qty,
+    price: modifyOrder.price || (q ? q.ltp : ""), trigger: modifyOrder.trigger || "", modifyId: modifyOrder.id});
+  if (i.kind === "OPT") ensureChains(true);
+  renderSheet();
+  setTimeout(() => { const f = $("#sheetQty"); if (f) f.focus({preventScroll: true}); }, 30);
+}
+function closeSheet() { sheet = null; $("#sheetRoot").innerHTML = ""; }
+function sheetOrder() {
+  return {inst: sheet.inst, side: sheet.side, qty: +sheet.qty, product: sheet.product, type: sheet.type,
+          price: (sheet.type === "LIMIT" || sheet.type === "SL") ? +sheet.price : null,
+          trigger: (sheet.type === "SL" || sheet.type === "SL-M") ? +sheet.trigger : null};
+}
+function renderSheet() {
+  if (!sheet) return;
+  const i = E.parse(sheet.inst); const d = engineData();
+  const lot = E.lotSize(i, d); const q = E.quote(sheet.inst, d);
+  const o = sheetOrder();
+  const need = q || sheet.price ? E.orderMargin(acct, {...o, price: o.price || (q && q.ltp)}, d) : 0;
+  const estPx = o.price || E.execPrice(q, sheet.side) || 0;
+  const ch = estPx && o.qty ? E.charges(sheet.inst, sheet.side, o.qty, estPx, sheet.product) : null;
+  const sm = E.summary(acct, d);
+  const isEq = i.kind === "EQ";
+  const prods = isEq ? [["CNC", "Delivery"], ["MIS", "Intraday"]] : [["NRML", "Carry forward"], ["MIS", "Intraday"]];
+  const open = E.marketOpen(d, new Date());
+  const c = q ? {abs: q.ch, pct: q.pc ? q.ch / q.pc * 100 : null} : {};
+  const held = isEq ? (acct.holdings[i.u] || {}).qty || 0 : 0;
+  const pos = acct.positions[E.posKey(sheet.inst, sheet.product)];
+  const typeBtn = (t, label) => `<button class="${sheet.type === t ? "on" : ""}" data-stype="${t}">${label}</button>`;
+  const html = `<div class="scrim" id="scrim"><div class="sheet" role="dialog" aria-label="Place order">
+    <div class="sheet-h"><div class="row"><div class="grow"><div style="font-weight:800;font-size:16px">${esc(E.label(sheet.inst))}</div>
+      <div class="num" style="margin-top:2px">${q ? `₹${fmt(q.ltp)} <span class="${cls(c.abs)}">${sgn(c.abs)} (${sgn(c.pct)}%)</span>` : "No live price"}${q && q.bid && q.ask ? ` <span class="muted" style="font-size:12px">bid ${fmt(q.bid)} · ask ${fmt(q.ask)}</span>` : ""}</div></div>
+      <button class="icon-btn" id="sheetClose" aria-label="Close">✕</button></div></div>
+    <div class="sheet-b">
+      ${sheet.modifyId ? `<div class="info">Modifying open order ${esc(sheet.modifyId)}</div>` : `<div class="side-toggle"><button class="b ${sheet.side === "BUY" ? "on" : ""}" data-sside="BUY">Buy</button><button class="s ${sheet.side === "SELL" ? "on" : ""}" data-sside="SELL">Sell</button></div>`}
+      <div class="seg" style="align-self:flex-start">${prods.map(([k, l]) => `<button class="${sheet.product === k ? "on" : ""}" data-sprod="${k}" ${sheet.modifyId ? "disabled" : ""}>${l}</button>`).join("")}</div>
+      <div class="field"><label for="sheetQty">${isEq ? "Quantity (shares)" : `Quantity (lot size ${lot})`}</label>
+        <div class="stepper"><button data-step="-1" aria-label="Decrease">−</button><input id="sheetQty" type="number" inputmode="numeric" min="${lot}" step="${lot}" value="${esc(sheet.qty)}"><button data-step="1" aria-label="Increase">+</button></div>
+        ${!isEq ? `<span class="sub">${o.qty && o.qty % lot === 0 ? o.qty / lot + " lot" + (o.qty / lot > 1 ? "s" : "") : "Must be a multiple of " + lot}</span>` : held ? `<span class="sub">You hold ${held} shares</span>` : ""}
+        ${pos && pos.qty ? `<span class="sub">Open position: ${pos.qty > 0 ? "+" : ""}${pos.qty} @ ₹${fmt(pos.avg)}</span>` : ""}</div>
+      <div class="field"><label>Order type</label><div class="seg" style="align-self:flex-start;flex-wrap:wrap">${typeBtn("MARKET", "Market")}${typeBtn("LIMIT", "Limit")}${typeBtn("SL", "Stop-loss")}${typeBtn("SL-M", "SL-Market")}</div></div>
+      ${sheet.type === "SL" || sheet.type === "SL-M" ? `<div class="field"><label for="sheetTrig">Trigger price</label><input id="sheetTrig" type="number" step="0.05" inputmode="decimal" value="${esc(sheet.trigger)}" placeholder="${sheet.side === "BUY" ? "Above" : "Below"} ${q ? fmt(q.ltp) : "current price"}"></div>` : ""}
+      ${sheet.type === "LIMIT" || sheet.type === "SL" ? `<div class="field"><label for="sheetPx">${sheet.type === "SL" ? "Limit price after trigger" : "Limit price"}</label><input id="sheetPx" type="number" step="0.05" inputmode="decimal" value="${esc(sheet.price)}"></div>` : ""}
+      ${sheet.type === "MARKET" ? `<div class="sub">Fills at the live ${q && q.bid && q.ask ? (sheet.side === "BUY" ? "ask" : "bid") : "price"}${open ? "" : " when the market opens"}.</div>` : ""}
+      ${!open ? `<div class="info">Market is closed. This becomes an after-market order and runs at the next open.</div>` : ""}
+      ${sheet.error ? `<div class="err">${esc(sheet.error)}</div>` : ""}
+    </div>
+    <div class="sheet-f">
+      <div class="kv"><span class="muted">${isEq && sheet.product === "CNC" && sheet.side === "BUY" ? "Amount required" : "Margin required"}</span><b>${rs(need)}</b></div>
+      <div class="kv"><span class="muted">Approx. charges</span><b title="${ch ? `Brokerage ${ch.brokerage} · STT ${ch.stt} · Exchange ${ch.txn} · Stamp ${ch.stamp} · GST ${ch.gst}` : ""}">${ch ? rs(ch.total) : "—"}</b></div>
+      <div class="kv"><span class="muted">Available</span><b>${rs(sm.available)}</b></div>
+      ${sheet.confirm ? `<div class="confirm"><div style="font-weight:700">${sheet.modifyId ? "Update order" : sheet.side === "BUY" ? "Buy" : "Sell"} ${o.qty} × ${esc(E.label(sheet.inst))} at ${sheet.type === "MARKET" ? "market" : "₹" + fmt(o.price || o.trigger)}?</div>
+        <div class="row"><button class="btn ghost grow" id="sheetBack">Edit</button><button class="btn ${sheet.side === "BUY" ? "buy" : "sell"} grow" id="sheetGo">Confirm</button></div></div>`
+      : `<button class="btn ${sheet.side === "BUY" ? "buy" : "sell"}" id="sheetPlace" style="padding:13px">${sheet.modifyId ? "Review change" : (sheet.side === "BUY" ? "Buy" : "Sell") + (open ? "" : " (after-market)")}</button>`}
+    </div></div></div>`;
+  const root = $("#sheetRoot");
+  const focusId = document.activeElement && document.activeElement.id;
+  const pos0 = focusId && document.activeElement.selectionStart;
+  root.innerHTML = html;
+  if (focusId && $("#" + focusId)) { const el = $("#" + focusId); el.focus({preventScroll: true}); try { el.setSelectionRange(pos0, pos0); } catch (e) {} }
+}
+function sheetInput(e) {
+  if (!sheet) return;
+  if (e.target.id === "sheetQty") sheet.qty = e.target.value;
+  if (e.target.id === "sheetPx") sheet.price = e.target.value;
+  if (e.target.id === "sheetTrig") sheet.trigger = e.target.value;
+  sheet.error = ""; sheet.confirm = false;
+  renderSheet();
+}
+function submitSheet() {
+  const o = sheetOrder(); const d = engineData();
+  if (sheet.modifyId) {
+    const r = E.modifyOrder(acct, sheet.modifyId, {qty: o.qty, price: o.price, trigger: o.trigger, type: o.type}, d, new Date());
+    if (!r.ok) { sheet.error = r.error; sheet.confirm = false; renderSheet(); return; }
+    save(); toast("Order updated", E.label(sheet.inst)); (r.events || []).forEach(toastEvent); closeSheet(); render(); return;
+  }
+  const r = E.placeOrder(acct, o, d, new Date());
+  save();
+  if (!r.ok) { sheet.error = r.error; sheet.confirm = false; renderSheet(); return; }
+  const filled = r.order.status === "COMPLETE";
+  if (!filled) toast(r.order.amo ? "After-market order placed" : r.order.status === "TRIGGER_PENDING" ? "Stop-loss order placed" : "Order placed",
+    `${o.side} ${o.qty} ${E.label(o.inst)} · ${r.order.amo ? "runs at next open" : "waiting to fill"}`);
+  (r.events || []).forEach(toastEvent);
+  closeSheet(); renderTop(); render();
+}
+
+// ------------------------------------------------------------- toasts
+function toast(title, body) {
+  const t = document.createElement("div"); t.className = "toast";
+  t.innerHTML = `<b>${esc(title)}</b>${esc(body || "")}`;
+  $("#toasts").appendChild(t); setTimeout(() => t.remove(), 5000);
+}
+function toastEvent(ev) {
+  if (ev.type === "FILL") {
+    const o = ev.order;
+    const head = o.tag === "SQUAREOFF" ? "Auto square-off" : o.tag === "EXPIRY" ? "Contract expired" : "Order executed";
+    toast(head, `${o.side} ${o.qty} ${E.label(o.inst)} @ ₹${fmt(ev.price)}${ev.realized ? ` · P&L ${sgn(ev.realized)}` : ""}`);
+  } else if (ev.type === "EXPIRED_ORDER") toast("Order lapsed", `${E.label(ev.order.inst)} wasn't filled today`);
+}
+
+// ------------------------------------------------------------- events
+document.addEventListener("click", e => {
+  const t = e.target.closest("[data-go],[data-trade],[data-range],[data-exp],[data-star],[data-otab],[data-ptab],[data-cancel],[data-modify],[data-exit],[data-exitall],[data-sort],[data-sside],[data-sprod],[data-stype],[data-step],#sheetClose,#sheetPlace,#sheetGo,#sheetBack,#scrim,#addFunds,#resetAsk,#resetYes,#resetNo,#backupBtn,#fundsPill");
+  if (!t) { if (!e.target.closest(".search")) $("#results").hidden = true; return; }
+  const ds = t.dataset;
+  if (t.id === "scrim" && e.target === t) return closeSheet();
+  if (t.id === "fundsPill") { portfolioTab = "funds"; return go("portfolio"); }
+  if (ds.go) { $("#results").hidden = true; $("#q").value = ""; return go(ds.go); }
+  if (ds.trade) return openSheet(ds.trade, ds.side, ds.product);
+  if (ds.range) { chartRange = ds.range; render(); return ensureIntraday(); }
+  if (ds.exp) { fnoExp = ds.exp; return render(); }
+  if (ds.star) { watch = watch.includes(ds.star) ? watch.filter(x => x !== ds.star) : watch.concat(ds.star); store.set(WATCH_KEY, watch); toast(watch.includes(ds.star) ? "Added to watchlist" : "Removed from watchlist", ds.star); return render(); }
+  if (ds.otab) { ordersTab = ds.otab; return render(); }
+  if (ds.ptab) { portfolioTab = ds.ptab; store.set("signaldesk.paper.ptab", portfolioTab); return render(); }
+  if (ds.cancel) { if (E.cancelOrder(acct, ds.cancel)) { save(); toast("Order cancelled", ""); } return render(); }
+  if (ds.modify) { const o = acct.orders.find(x => x.id === ds.modify); if (o) openSheet(o.inst, o.side, o.product, o); return; }
+  if (ds.exit) { const r = E.exitPosition(acct, ds.exit, engineData(), new Date()); save(); if (!r.ok) toast("Couldn't exit", r.error); else if (r.order.status !== "COMPLETE") toast("Exit order placed", r.order.amo ? "Runs at next open" : "Waiting to fill"); (r.events || []).forEach(toastEvent); renderTop(); return render(); }
+  if (ds.exitall) { Object.keys(acct.positions).forEach(k => { if (acct.positions[k].qty) { const r = E.exitPosition(acct, k, engineData(), new Date()); (r.events || []).forEach(toastEvent); } }); save(); renderTop(); return render(); }
+  if (ds.sort) { exploreSort = exploreSort.k === ds.sort ? {k: ds.sort, dir: -exploreSort.dir} : {k: ds.sort, dir: ds.sort === "s" ? 1 : -1}; return render(); }
+  if (ds.sside) { sheet.side = ds.sside; sheet.error = ""; sheet.confirm = false; return renderSheet(); }
+  if (ds.sprod) { sheet.product = ds.sprod; sheet.error = ""; sheet.confirm = false; return renderSheet(); }
+  if (ds.stype) { sheet.type = ds.stype; sheet.error = ""; sheet.confirm = false; if (!sheet.price) { const q = E.quote(sheet.inst, engineData()); if (q) sheet.price = q.ltp; } return renderSheet(); }
+  if (ds.step) { const lot = E.lotSize(E.parse(sheet.inst), engineData()); sheet.qty = Math.max(lot, (+sheet.qty || 0) + (+ds.step) * lot); sheet.confirm = false; return renderSheet(); }
+  if (t.id === "sheetClose") return closeSheet();
+  if (t.id === "sheetPlace") { const v = E.validate(acct, sheetOrder(), engineData(), new Date()); if (v) { sheet.error = v; return renderSheet(); } sheet.confirm = true; return renderSheet(); }
+  if (t.id === "sheetBack") { sheet.confirm = false; return renderSheet(); }
+  if (t.id === "sheetGo") return submitSheet();
+  if (t.id === "addFunds") { const v = +$("#addAmt").value; if (v > 0 && v <= 1e9) { acct.cash += v; acct.deposits += v; save(); toast("Funds added", rs(v) + " virtual money"); renderTop(); render(); } return; }
+  if (t.id === "resetAsk") { $("#resetBox").innerHTML = `<div class="confirm"><div style="font-weight:700">Erase all orders, positions and holdings and start with ₹10,00,000?</div><div class="row"><button class="btn ghost grow" id="resetNo">Keep my account</button><button class="btn sell grow" id="resetYes">Reset</button></div></div>`; return; }
+  if (t.id === "resetNo") return render();
+  if (t.id === "resetYes") { acct = E.newAccount(1000000); save(); toast("Account reset", "₹10,00,000 virtual money"); renderTop(); return render(); }
+  if (t.id === "backupBtn") {
+    const blob = new Blob([JSON.stringify({kind: "signal-desk-paper", saved: new Date().toISOString(), acct, watch})], {type: "application/json"});
+    const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = `paper-account-${E.ist(new Date()).date}.json`;
+    document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 2000); return;
+  }
+});
+document.addEventListener("input", e => { if (e.target.closest && e.target.closest(".sheet")) sheetInput(e); });
+document.addEventListener("keydown", e => { if (e.key === "Escape" && sheet) closeSheet(); });
+document.addEventListener("change", e => {
+  if (e.target.id !== "restoreFile" || !e.target.files[0]) return;
+  const fr = new FileReader();
+  fr.onload = () => {
+    try { const j = JSON.parse(fr.result); if (j.kind !== "signal-desk-paper" || !j.acct || !j.acct.orders) throw new Error("not a backup");
+      acct = j.acct; if (Array.isArray(j.watch)) { watch = j.watch; store.set(WATCH_KEY, watch); } save(); toast("Account restored", "Backup from " + (j.saved || "").slice(0, 10)); renderTop(); render();
+    } catch (err) { toast("Couldn't restore", "That file isn't a paper-account backup."); }
+  };
+  fr.readAsText(e.target.files[0]);
+});
+
+// search
+let sel = 0;
+function searchResults(v) {
+  v = v.trim().toLowerCase(); if (!v) return [];
+  const syms = Object.keys(stocks());
+  const score = s => { const n = nameOf(s).toLowerCase(), l = s.toLowerCase(); return l === v ? 0 : l.startsWith(v) ? 1 : n.startsWith(v) ? 2 : l.includes(v) ? 3 : n.includes(v) ? 4 : 9; };
+  const idx = INDEX_ORDER.filter(k => INDEX_LABEL[k].toLowerCase().includes(v) || k.toLowerCase().includes(v)).map(k => ({k: "index-" + k, a: INDEX_LABEL[k], b: "Index", q: idxQuote(k)}));
+  return idx.concat(syms.map(s => [s, score(s)]).filter(x => x[1] < 9).sort((a, b) => a[1] - b[1] || a[0].localeCompare(b[0])).slice(0, 12)
+    .map(([s]) => ({k: "stock-" + s, a: s, b: nameOf(s), q: stocks()[s]})));
+}
+function paintResults() {
+  const r = searchResults($("#q").value); const box = $("#results");
+  if (!r.length) { box.hidden = !$("#q").value; box.innerHTML = `<div class="empty" style="padding:14px">No matches</div>`; if (!$("#q").value) box.hidden = true; return; }
+  sel = Math.min(sel, r.length - 1);
+  box.innerHTML = r.map((x, i) => { const c = chg(x.q || {}); return `<button data-go="${esc(x.k)}" class="${i === sel ? "sel" : ""}"><span><b>${esc(x.a)}</b><br><span class="muted" style="font-size:12px">${esc(x.b)}</span></span><span class="num" style="text-align:right">${x.q ? fmt(x.q.p) : ""}<br><span class="${cls(c.abs)}" style="font-size:12px">${x.q ? sgn(c.pct) + "%" : ""}</span></span></button>`; }).join("");
+  box.hidden = false;
+}
+$("#q").addEventListener("input", () => { sel = 0; paintResults(); });
+$("#q").addEventListener("focus", paintResults);
+$("#q").addEventListener("keydown", e => {
+  const r = searchResults($("#q").value);
+  if (e.key === "ArrowDown") { sel = Math.min(sel + 1, r.length - 1); paintResults(); e.preventDefault(); }
+  if (e.key === "ArrowUp") { sel = Math.max(sel - 1, 0); paintResults(); e.preventDefault(); }
+  if (e.key === "Enter" && r[sel]) { $("#results").hidden = true; $("#q").value = ""; $("#q").blur(); go(r[sel].k); }
+  if (e.key === "Escape") { $("#results").hidden = true; $("#q").blur(); }
+});
+
+// ---------------------------------------------------------------- boot
+route = parseHash(); if (route.name === "fno" && route.arg) fnoU = route.arg;
+renderNav(); render(); renderTop();
+(async () => { await Promise.all([loadQuotes(), loadSignals()]); if (route.name === "fno") ensureChains(true); if (route.name === "stock" || route.name === "index") ensureIntraday(); })();
+setInterval(() => { if (!document.hidden) { loadQuotes(); loadSignals(); if (route.name === "stock" || route.name === "index") ensureIntraday(); } }, 20000);
+setInterval(() => { if (!document.hidden && D.quotes) tick(); }, 10000);
+document.addEventListener("visibilitychange", () => { if (!document.hidden) loadQuotes(); });
+</script>
+</body>
+</html>
