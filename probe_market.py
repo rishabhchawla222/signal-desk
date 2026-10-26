@@ -34,30 +34,21 @@ def probe(name, url, keep=None, raw=False):
     print(name, json.dumps(res)[:300])
 
 
-probe("fo_stocks", "https://www.nseindia.com/api/equity-stockIndices?index=SECURITIES%20IN%20F%26O",
-      lambda j: {"n": len(j.get("data", [])), "keys": list(j["data"][1].keys()), "row": j["data"][1]})
-probe("allIndices", "https://www.nseindia.com/api/allIndices",
-      lambda j: {"n": len(j.get("data", [])), "rows": [d for d in j["data"] if d.get("index") in ("NIFTY 50", "NIFTY BANK", "INDIA VIX", "NIFTY FIN SERVICE")]})
-probe("deriv_nifty", "https://www.nseindia.com/api/quote-derivative?symbol=NIFTY",
-      lambda j: {"keys": list(j.keys()), "n": len(j.get("stocks", [])),
-                 "fut": [x for x in j.get("stocks", []) if x.get("metadata", {}).get("instrumentType", "").startswith("Index Fut")][:2]})
-probe("deriv_reliance", "https://www.nseindia.com/api/quote-derivative?symbol=RELIANCE",
-      lambda j: {"n": len(j.get("stocks", [])),
-                 "fut": [x for x in j.get("stocks", []) if "Fut" in x.get("metadata", {}).get("instrumentType", "")][:1]})
-probe("ci_reliance", "https://www.nseindia.com/api/option-chain-contract-info?symbol=RELIANCE", lambda j: j)
-try:
-    exp = s.get("https://www.nseindia.com/api/option-chain-contract-info?symbol=RELIANCE", timeout=15).json()["expiryDates"][0]
-    probe("v3_reliance", f"https://www.nseindia.com/api/option-chain-v3?type=Equity&symbol=RELIANCE&expiry={exp}",
-          lambda j: {"rows": len(j["records"]["data"]), "under": j["records"].get("underlyingValue")})
-    exp = s.get("https://www.nseindia.com/api/option-chain-contract-info?symbol=BANKNIFTY", timeout=15).json()["expiryDates"][0]
-    probe("v3_banknifty", f"https://www.nseindia.com/api/option-chain-v3?type=Indices&symbol=BANKNIFTY&expiry={exp}",
-          lambda j: {"rows": len(j["records"]["data"]), "under": j["records"].get("underlyingValue"), "exp": exp})
-except Exception as e:  # noqa: BLE001
-    out["v3_err"] = repr(e)
-probe("lots_csv", "https://nsearchives.nseindia.com/content/fo/fo_mktlots.csv", raw=True)
-probe("chart_reliance", "https://www.nseindia.com/api/chart-databyindex?index=RELIANCEEQN",
-      lambda j: {"keys": list(j.keys()), "n": len(j.get("grapthData", [])), "first": j.get("grapthData", [])[:2]})
-probe("market_status", "https://www.nseindia.com/api/marketStatus", lambda j: j)
+def head(j):
+    return str(j)[:300]
+
+
+for idx in ["NIFTY 50", "NIFTY 200", "SECURITIES IN F&O", "NIFTY BANK"]:
+    from urllib.parse import quote
+    probe("eq_" + idx, "https://www.nseindia.com/api/equity-stockIndices?index=" + quote(idx),
+          lambda j: {"n": len(j.get("data", [])), "row": j["data"][1] if len(j.get("data", [])) > 1 else head(j)})
+probe("eq_raw_fo", "https://www.nseindia.com/api/equity-stockIndices?index=SECURITIES%20IN%20F%26O", raw=True)
+for ix in ["nse50_fut", "nifty_bank_fut", "stock_fut"]:
+    probe("fut_" + ix, f"https://www.nseindia.com/api/liveEquity-derivatives?index={ix}",
+          lambda j: {"n": len(j.get("data", [])), "row": (j.get("data") or [None])[0]})
+probe("quote_eq", "https://www.nseindia.com/api/quote-equity?symbol=RELIANCE", lambda j: head(j))
+probe("deriv_raw", "https://www.nseindia.com/api/quote-derivative?symbol=NIFTY", raw=True)
+
 # Yahoo daily history for one stock
 try:
     r = requests.get("https://query1.finance.yahoo.com/v8/finance/chart/RELIANCE.NS",
