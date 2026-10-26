@@ -349,7 +349,17 @@ class Feed:
             if n:
                 self.idx[key] = {"p": num(n.get("last")), "pc": num(n.get("previousClose")), "o": num(n.get("open")),
                                  "h": num(n.get("high")), "l": num(n.get("low")), "yh": num(n.get("yearHigh")),
-                                 "yl": num(n.get("yearLow"))}
+                                 "yl": num(n.get("yearLow")), "src": "nse"}
+                # NSE's index list refreshes slowly; use Yahoo's tick when it is fresh (< 60 s old)
+                m = d["meta"] if d else {}
+                yt = m.get("regularMarketTime")
+                if yt and m.get("regularMarketPrice") and _time.time() - yt < 60:
+                    self.idx[key]["p"] = num(m["regularMarketPrice"])
+                    self.idx[key]["src"] = "yahoo"
+                    if m.get("regularMarketDayHigh"):
+                        self.idx[key]["h"] = max(self.idx[key]["h"] or 0, num(m["regularMarketDayHigh"]))
+                    if m.get("regularMarketDayLow") and self.idx[key]["l"]:
+                        self.idx[key]["l"] = min(self.idx[key]["l"], num(m["regularMarketDayLow"]))
             elif d:
                 m = d["meta"]
                 self.idx[key] = {"p": num(m.get("regularMarketPrice")),
