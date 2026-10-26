@@ -2,11 +2,17 @@ name: Live signals
 
 on:
   schedule:
-    # Times are UTC. 03:20 UTC = 08:50 IST, 06:30 UTC = 12:00 IST (Mon–Fri).
-    # Two runs because a GitHub job can last at most 6 hours; the second
-    # waits in the queue and takes over when the first finishes.
-    - cron: "20 3 * * 1-5"
+    # Times are UTC (IST = UTC + 5:30), Mon–Fri.
+    # GitHub often starts scheduled jobs 15–60 min late, so the first run is
+    # scheduled at 07:45 IST with backups at 08:15 and 08:45 IST; the engine
+    # simply waits for 9:15. A job can last at most 6 hours, so later triggers
+    # (12:00 and 13:00 IST) queue up and take over when the morning job ends.
+    # Only one job runs at a time; extra triggers just wait or are skipped.
+    - cron: "15 2 * * 1-5"
+    - cron: "45 2 * * 1-5"
+    - cron: "15 3 * * 1-5"
     - cron: "30 6 * * 1-5"
+    - cron: "30 7 * * 1-5"
   workflow_dispatch: {}
 
 permissions:

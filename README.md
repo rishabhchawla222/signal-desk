@@ -97,7 +97,8 @@ After changing rules, run **Backtest** again to see the effect before trusting t
 
 ## Good to know
 - **Holidays** are detected automatically (no data → engine stops for the day).
-- GitHub scheduled runs can occasionally start a few minutes late; the engine starts at 8:50 to leave room.
+- GitHub scheduled runs often start 15–60 minutes late, so the engine is scheduled from 7:45 AM with backup start times; it waits for 9:15 by itself.
+- Each signal has a **buy window** (10 minutes) and a **don't-chase level**. If the price has already run past it when the email goes out, the subject starts with "⚠️ DON'T CHASE".
 - The website updates within about 1–2 minutes of each candle; **email is the fastest alert**.
   Turn on Gmail notifications on your phone for these emails.
 - If GitHub ever shows *"scheduled workflow disabled due to inactivity"*, open Actions and click **Enable**.

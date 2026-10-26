@@ -179,6 +179,9 @@ class IndexEngine:
             "target": round(entry + d * s["reward_risk"] * risk, 2),
             "breakeven": False,
             "status": "OPEN",
+            # the signal is only worth acting on for a short window, and only if price hasn't run away
+            "valid_until": (bar_end + timedelta(minutes=s.get("entry_valid_min", 10))).isoformat(),
+            "chase_limit": round(entry + d * s.get("max_chase_r", 0.3) * risk, 2),
             "reasons": [name for name, _ in checklist(r, side, s)],
             "indicators": {
                 "rsi": round(float(r.rsi), 1),

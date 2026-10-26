@@ -213,6 +213,7 @@ function render(){
     return `<div class="sig ${s.side.toLowerCase()}">
       <div>
         <div class="act">Buy ${s.side==="CALL"?"call":"put"} · since ${hm(s.entry_time)} IST</div>
+        ${windowLine(s, price)}
         <div class="opt">${esc(s.option)}${s.premium ? ` <span style="font-size:.7em;color:var(--muted)">@ ${s.premium.estimated?"≈":""}₹${fmt(s.premium.price)}</span>` : ""}</div>
         ${s.premium ? `<div class="levels">
           <div class="lv"><span>Buy price${s.premium.estimated?" (est.)":""}</span><b>₹${fmt(s.premium.price)}</b></div>
@@ -268,6 +269,18 @@ function render(){
   // history
   const hist = signals.filter(s => s.status === "CLOSED").slice(-30).reverse();
   $("#history").innerHTML = table(hist, "No closed signals yet.", true);
+}
+
+function windowLine(s, price){
+  if (!s.valid_until) return "";
+  const open = Date.now() < new Date(s.valid_until + "+05:30").getTime();
+  const chased = s.chase_limit != null && (s.side==="CALL" ? price > s.chase_limit : price < s.chase_limit);
+  const cmp = s.side==="CALL" ? "below" : "above";
+  const txt = !open ? `Buy window closed at ${hm(s.valid_until)}. If you're already in, follow the stop-loss and target; if not, skip this one.`
+    : chased ? `Price has moved past ${fmt(s.chase_limit)}. Don't chase; buy only if ${esc(s.index)} comes back ${cmp} it before ${hm(s.valid_until)}.`
+    : `Buy window open until ${hm(s.valid_until)} IST, while ${esc(s.index)} is ${cmp} ${fmt(s.chase_limit)}.`;
+  const col = !open ? "var(--muted)" : chased ? "var(--amber)" : "var(--up)";
+  return `<div style="margin-top:6px;font-size:13px;color:${col}">${txt}</div>`;
 }
 
 function table(rows, emptyMsg, withDate){

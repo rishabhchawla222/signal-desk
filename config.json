@@ -44,6 +44,8 @@
     "last_entry": "14:45",
     "square_off": "15:15",
     "max_trades_per_index": 2,
+    "entry_valid_min": 10,
+    "max_chase_r": 0.3,
     "cooldown_after_loss_min": 30
   },
   "email": {

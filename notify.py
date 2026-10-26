@@ -89,10 +89,15 @@ def event_email(ev: dict) -> tuple[str, str, str]:
         color = "#0a8f4e" if side == "CALL" else "#c62828"
         emoji = "🟢" if side == "CALL" else "🔴"
         title = f"BUY {t['option']}" + (f" @ {est}{_rs(p['price'])}" if p else "")
+        until = (t.get("valid_until") or "")[11:16]
+        cmp_ = "below" if side == "CALL" else "above"
+        window = ([("Buy window", f"Now until {until} IST"),
+                   ("Buy only if " + t["index"] + " is", f"{cmp_} {_fmt(t['chase_limit'])}")]
+                  if until and t.get("chase_limit") else [])
         if p:
             subject = (f"{emoji} BUY {t['option']} @ {est}{_rs(p['price'])} | SL {est}{_rs(p['sl'])} | "
                        f"TGT {est}{_rs(p['target'])} | {_exp(p)} expiry")
-            rows = [("Action", f"Buy {t['option']} · {_exp(p)} expiry"),
+            rows = [("Action", f"Buy {t['option']} · {_exp(p)} expiry"), *window,
                     ("Buy price (premium)", f"{est}{_rs(p['price'])}"
                      + (f"  (bid {_rs(p.get('bid'))} / ask {_rs(p.get('ask'))})" if not p.get("estimated") else "")),
                     ("Don't pay more than", _rs(p["buy_upto"])),
@@ -101,13 +106,23 @@ def event_email(ev: dict) -> tuple[str, str, str]:
                     ("Price source", p["source"] + (f", at {p['time'][11:16]} IST" if p.get("time") else ""))]
         else:
             subject = f"{emoji} BUY {t['option']} | spot {_fmt(t['entry'])} | SL {_fmt(t['sl'])} | TGT {_fmt(t['target'])}"
-            rows = [("Action", f"Buy {t['option']} (nearest expiry)"),
+            rows = [("Action", f"Buy {t['option']} (nearest expiry)"), *window,
                     ("Buy price (premium)", "Live price unavailable – check your broker app")]
         rows += [("Signal time", t["entry_time"].replace("T", " ")[:16] + " IST"),
                  (f"{t['index']} spot at signal", _fmt(t["entry"])),
                  ("Stop-loss / target (spot)", f"{_fmt(t['sl'])} / {_fmt(t['target'])}")]
+        if until:
+            subject += f" | buy till {until}"
         note = ""
-        if p.get("estimated"):
+        if t.get("late"):
+            subject = "⚠️ DON'T CHASE – " + subject
+            title = "Price already moved – don't chase"
+            color = "#b7791f"
+            note = (f"<p style='background:#fff6e0;border:1px solid #f0c36d;padding:8px 10px;border-radius:6px;'>"
+                    f"{t['index']} was already at {_fmt(p.get('spot_now'))} when this email was sent, past the "
+                    f"don't-chase level {_fmt(t['chase_limit'])}. Only buy if it comes back {cmp_} that level "
+                    f"before {until}.</p>")
+        elif p.get("estimated"):
             note = ("<p style='background:#fff6e0;border:1px solid #f0c36d;padding:8px 10px;border-radius:6px;'>"
                     "SENSEX premiums are <b>estimated</b> (BSE has no free live feed). Check the live price in your "
                     "broker app before buying and adjust SL/target by the same difference.</p>")

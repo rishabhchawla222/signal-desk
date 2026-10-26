@@ -184,6 +184,7 @@ def entry_quote(index: str, strike: int, side: str, spot: float, sl_spot: float,
                 "price": r05(prem), "ltp": q.get("lastPrice"), "bid": q.get("buyPrice1"), "ask": ask,
                 "buy_upto": r05(max(ask, prem) * 1.03), "sl": p_sl, "target": p_tg,
                 "iv": round(iv * 100, 1), "delta": delta, "time": now.isoformat(timespec="seconds"),
+                "spot_now": round(under, 2),
             }
         # SENSEX (or any index without a free live chain): estimate
         exp = _next_weekday(now.date(), WEEKLY_EXPIRY_WEEKDAY.get(index, 3))

@@ -89,6 +89,10 @@ class Runner:
                 q = entry_quote(t["index"], t["strike"], t["side"], spot, t["sl"], t["target"], self.clock())
                 if q:
                     t["premium"] = q
+                    now_spot = q.get("spot_now")
+                    if now_spot and t.get("chase_limit"):
+                        beyond = now_spot > t["chase_limit"] if t["side"] == "CALL" else now_spot < t["chase_limit"]
+                        t["late"] = bool(beyond)
                     if eng.state.get("open") and eng.state["open"]["id"] == t["id"]:
                         eng.state["open"]["premium"] = q
             elif t.get("premium"):
@@ -198,6 +202,9 @@ def main():
 
     if start.weekday() >= 5:
         run.save("CLOSED", "Weekend – market closed")
+        return
+    if start.time() >= datetime.strptime("15:26", "%H:%M").time():
+        print("Session already over – nothing to do")
         return
 
     while True:
