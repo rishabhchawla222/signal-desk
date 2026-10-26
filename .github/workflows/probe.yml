@@ -12,29 +12,25 @@ permissions:
   contents: write
 
 concurrency:
-  group: signals
-  cancel-in-progress: false
+  group: probe
+  cancel-in-progress: true
 
 jobs:
-  dump:
+  probe:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/checkout@v4
-        with:
-          ref: signals-data
-          path: data-branch
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
       - run: pip install -r requirements.txt
-      - run: python probe_options.py data-branch
-      - name: Save
+      - run: python probe_options.py out
+      - name: Save to probe-results branch
         run: |
-          cd data-branch
+          cd out
+          git init -q -b probe-results
           git config user.name "signal-bot"
           git config user.email "signal-bot@users.noreply.github.com"
-          git add -A
-          git diff --cached --quiet || git commit -m "probe $(date -u +%F)"
-          git push origin HEAD:signals-data
+          git add -A && git commit -qm "probe $(date -u +%FT%H%M)"
+          git push -f "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git" HEAD:probe-results
