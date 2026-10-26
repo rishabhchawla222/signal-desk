@@ -1,0 +1,19 @@
+{
+ "engines": {
+  "NIFTY": {
+   "date": "2026-10-26",
+   "trades_today": 0,
+   "last_loss_end": null,
+   "open": null,
+   "last_bar": "2026-10-26T09:20:00"
+  },
+  "SENSEX": {
+   "date": null,
+   "trades_today": 0,
+   "last_loss_end": null,
+   "open": null,
+   "last_bar": null
+  }
+ },
+ "summary_sent": null
+}
