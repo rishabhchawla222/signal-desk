@@ -10,7 +10,8 @@ import sys
 from email.message import EmailMessage
 
 DISCLAIMER = ("Automated technical signal for personal use only. Not investment advice. "
-              "Levels are on the index (spot). Option prices move differently; always use a stop-loss.")
+              "NIFTY premiums are live from NSE at the time of the email; SENSEX premiums are estimates. "
+              "Prices move fast – always use a stop-loss.")
 
 
 def send_email(subject: str, text: str, html: str | None = None) -> bool:
@@ -67,38 +68,86 @@ def _wrap(title: str, color: str, rows: list[tuple[str, str]], extra: str = "") 
             f"{extra}{btn}<p style='color:#888;font-size:12px;'>{DISCLAIMER}</p></div>")
 
 
+def _rs(x):
+    return f"₹{x:,.2f}" if isinstance(x, (int, float)) else "—"
+
+
+def _exp(p):
+    from datetime import date
+    try:
+        return date.fromisoformat(p["expiry"]).strftime("%d %b")
+    except Exception:  # noqa: BLE001
+        return "nearest"
+
+
 def event_email(ev: dict) -> tuple[str, str, str]:
     t = ev["trade"]
     side = t["side"]
+    p = t.get("premium") or {}
+    est = "≈" if p.get("estimated") else ""
     if ev["type"] == "ENTRY":
         color = "#0a8f4e" if side == "CALL" else "#c62828"
         emoji = "🟢" if side == "CALL" else "🔴"
-        title = f"BUY {t['option']}"
-        subject = f"{emoji} BUY {side}: {t['option']} | spot {_fmt(t['entry'])} | SL {_fmt(t['sl'])} | TGT {_fmt(t['target'])}"
-        rows = [("Action", f"Buy {t['option']} (nearest expiry)"),
-                ("Signal time", t["entry_time"].replace("T", " ")[:16] + " IST"),
-                (f"{t['index']} spot at signal", _fmt(t["entry"])),
-                ("Stop-loss (spot)", _fmt(t["sl"])),
-                ("Target (spot)", _fmt(t["target"])),
-                ("Risk (index points)", _fmt(t["risk"]))]
-        extra = ("<p style='margin:12px 0 4px;font-weight:600;'>Why</p><ul>"
+        title = f"BUY {t['option']}" + (f" @ {est}{_rs(p['price'])}" if p else "")
+        if p:
+            subject = (f"{emoji} BUY {t['option']} @ {est}{_rs(p['price'])} | SL {est}{_rs(p['sl'])} | "
+                       f"TGT {est}{_rs(p['target'])} | {_exp(p)} expiry")
+            rows = [("Action", f"Buy {t['option']} · {_exp(p)} expiry"),
+                    ("Buy price (premium)", f"{est}{_rs(p['price'])}"
+                     + (f"  (bid {_rs(p.get('bid'))} / ask {_rs(p.get('ask'))})" if not p.get("estimated") else "")),
+                    ("Don't pay more than", _rs(p["buy_upto"])),
+                    ("Stop-loss (premium)", f"{est}{_rs(p['sl'])}"),
+                    ("Target (premium)", f"{est}{_rs(p['target'])}"),
+                    ("Price source", p["source"] + (f", at {p['time'][11:16]} IST" if p.get("time") else ""))]
+        else:
+            subject = f"{emoji} BUY {t['option']} | spot {_fmt(t['entry'])} | SL {_fmt(t['sl'])} | TGT {_fmt(t['target'])}"
+            rows = [("Action", f"Buy {t['option']} (nearest expiry)"),
+                    ("Buy price (premium)", "Live price unavailable – check your broker app")]
+        rows += [("Signal time", t["entry_time"].replace("T", " ")[:16] + " IST"),
+                 (f"{t['index']} spot at signal", _fmt(t["entry"])),
+                 ("Stop-loss / target (spot)", f"{_fmt(t['sl'])} / {_fmt(t['target'])}")]
+        note = ""
+        if p.get("estimated"):
+            note = ("<p style='background:#fff6e0;border:1px solid #f0c36d;padding:8px 10px;border-radius:6px;'>"
+                    "SENSEX premiums are <b>estimated</b> (BSE has no free live feed). Check the live price in your "
+                    "broker app before buying and adjust SL/target by the same difference.</p>")
+        elif p:
+            note = ("<p style='color:#555;font-size:13px;'>Premium SL/target are where the option should be when "
+                    "NIFTY reaches the spot SL/target. Exit on whichever happens first.</p>")
+        extra = (note + "<p style='margin:12px 0 4px;font-weight:600;'>Why</p><ul>"
                  + "".join(f"<li>{r}</li>" for r in t["reasons"]) + "</ul>")
         text = "\n".join(f"{k}: {v}" for k, v in rows) + "\nWhy: " + "; ".join(t["reasons"]) + "\n\n" + DISCLAIMER
         return subject, text, _wrap(title, color, rows, extra)
     if ev["type"] == "UPDATE":
         subject = f"🟡 {t['option']}: {ev['message']}"
-        rows = [("Update", ev["message"]), ("Entry (spot)", _fmt(t["entry"])),
-                ("New stop-loss", _fmt(t["sl"])), ("Target", _fmt(t["target"]))]
+        rows = [("Update", ev["message"])]
+        if p:
+            rows += [("Your buy price", f"{est}{_rs(p['price'])}"),
+                     ("New stop-loss (premium)", f"around your buy price {est}{_rs(p['price'])}")]
+            if p.get("now"):
+                rows.append(("Premium now", f"{'≈' if p.get('now_estimated') else ''}{_rs(p['now'])}"))
+            rows.append(("Target (premium)", f"{est}{_rs(p['target'])}"))
+        rows += [("New stop-loss (spot)", _fmt(t["sl"])), ("Target (spot)", _fmt(t["target"]))]
         text = "\n".join(f"{k}: {v}" for k, v in rows)
         return subject, text, _wrap(f"Update: {t['option']}", "#b7791f", rows)
     # EXIT
     pts = t["points"]
     sign = "+" if pts >= 0 else ""
-    subject = f"⚪ EXIT {t['option']} — {t['note']} ({sign}{pts} pts)"
-    rows = [("Action", f"Exit {t['option']}"), ("Reason", t["note"]),
-            ("Entry → Exit (spot)", f"{_fmt(t['entry'])} → {_fmt(t['exit'])}"),
-            ("Result (index points)", f"{sign}{pts}  ({sign}{t['r_multiple']}R)"),
-            ("Exit time", t["exit_time"].replace("T", " ")[:16] + " IST")]
+    if p.get("exit_price") is not None:
+        e2 = "≈" if p.get("exit_price_estimated") else ""
+        pnl = p.get("pnl", 0)
+        subject = f"⚪ EXIT {t['option']} @ {e2}{_rs(p['exit_price'])} — {t['note']} ({'+' if pnl >= 0 else ''}{pnl:.2f}/unit)"
+        rows = [("Action", f"Sell / exit {t['option']} now"),
+                ("Exit price (premium)", f"{e2}{_rs(p['exit_price'])}"),
+                ("Bought at", f"{est}{_rs(p['price'])}"),
+                ("Profit / loss per unit", f"{'+' if pnl >= 0 else ''}₹{pnl:,.2f}"),
+                ("Reason", t["note"])]
+    else:
+        subject = f"⚪ EXIT {t['option']} — {t['note']} ({sign}{pts} pts)"
+        rows = [("Action", f"Sell / exit {t['option']} now"), ("Reason", t["note"])]
+    rows += [("Entry → Exit (spot)", f"{_fmt(t['entry'])} → {_fmt(t['exit'])}"),
+             ("Result (index points)", f"{sign}{pts}  ({sign}{t['r_multiple']}R)"),
+             ("Exit time", t["exit_time"].replace("T", " ")[:16] + " IST")]
     text = "\n".join(f"{k}: {v}" for k, v in rows)
     return subject, text, _wrap(f"EXIT {t['option']}", "#455a64", rows)
 

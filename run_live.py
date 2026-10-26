@@ -17,6 +17,7 @@ from pathlib import Path
 
 from data import BAR, fetch_candles, now_ist
 from notify import event_email, send_email, summary_email
+from options import current_premium, entry_quote
 from strategy import IndexEngine, prepare, snapshot
 
 ROOT = Path(__file__).parent
@@ -53,12 +54,16 @@ def git_push(data_dir: Path, msg: str):
                 return
             print("[git push failed]", r.stderr.strip())
             _time.sleep(3 * (attempt + 1))
+            # someone else updated the data branch: replay our commit on top (ours wins on conflict)
+            g("pull", "--rebase", "-X", "theirs", "origin", "signals-data", check=False)
     except subprocess.CalledProcessError as e:
         print("[git error]", e.stderr)
 
 
 class Runner:
-    def __init__(self, data_dir: Path, use_git: bool, fetch=fetch_candles, clock=now_ist, notify=True):
+    def __init__(self, data_dir: Path, use_git: bool, fetch=fetch_candles, clock=now_ist, notify=True,
+                 premiums=True):
+        self.premiums = premiums
         self.cfg = json.loads((ROOT / "config.json").read_text())
         self.s = self.cfg["strategy"]
         self.dir = data_dir
@@ -76,6 +81,30 @@ class Runner:
         self.status = {"indices": {}, "errors": []}
 
     # ---------------------------------------------------------------- store
+    def add_premium(self, ev: dict, eng: IndexEngine, spot: float):
+        """Attach option premium (buy price, premium SL/target, exit price) to the event."""
+        t = ev["trade"]
+        try:
+            if ev["type"] == "ENTRY":
+                q = entry_quote(t["index"], t["strike"], t["side"], spot, t["sl"], t["target"], self.clock())
+                if q:
+                    t["premium"] = q
+                    if eng.state.get("open") and eng.state["open"]["id"] == t["id"]:
+                        eng.state["open"]["premium"] = q
+            elif t.get("premium"):
+                p = t["premium"]
+                cur = current_premium(t["index"], t["strike"], t["side"], p["expiry"], spot, p.get("iv"), self.clock())
+                if cur:
+                    key = "exit_price" if ev["type"] == "EXIT" else "now"
+                    p = {**p, key: cur[0], f"{key}_estimated": cur[1]}
+                    if ev["type"] == "EXIT":
+                        p["pnl"] = round(cur[0] - p["price"], 2)
+                    t["premium"] = p
+                    if ev["type"] != "EXIT" and eng.state.get("open"):
+                        eng.state["open"]["premium"] = p
+        except Exception as e:  # noqa: BLE001
+            print(f"[premium error] {e}")
+
     def apply(self, ev: dict):
         t = ev["trade"]
         for k, old in enumerate(self.signals):
@@ -131,6 +160,8 @@ class Runner:
                 prev = p.iloc[pos - 1] if pos > 0 else None
                 fresh = now - (ts + BAR) <= STALE_ENTRY
                 for ev in eng.on_bar(ts.to_pydatetime(), p.iloc[pos], prev, allow_entry=fresh):
+                    if fresh and self.premiums:
+                        self.add_premium(ev, eng, float(p.iloc[pos].close))
                     self.apply(ev)
             prev_days = p[p.index.date < today] if not todays.empty else p[p.index.date < p.index[-1].date()]
             prev_close = float(prev_days["close"].iloc[-1]) if not prev_days.empty else None
