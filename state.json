@@ -5,14 +5,14 @@
    "trades_today": 1,
    "last_loss_end": "2026-10-26T11:35:00",
    "open": null,
-   "last_bar": "2026-10-26T13:35:00"
+   "last_bar": "2026-10-26T13:40:00"
   },
   "SENSEX": {
    "date": "2026-10-26",
    "trades_today": 0,
    "last_loss_end": null,
    "open": null,
-   "last_bar": "2026-10-26T13:25:23"
+   "last_bar": "2026-10-26T13:30:24"
   }
  },
  "summary_sent": null
