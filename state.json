@@ -4,47 +4,16 @@
    "date": "2026-10-26",
    "trades_today": 2,
    "last_loss_end": "2026-10-26T11:35:00",
-   "open": {
-    "id": "NIFTY-20261026-1405-CALL",
-    "index": "NIFTY",
-    "side": "CALL",
-    "option": "NIFTY 22650 CE",
-    "strike": 22650,
-    "entry_time": "2026-10-26T14:05:00",
-    "entry": 22662.95,
-    "risk": 40.99,
-    "sl": 22662.95,
-    "initial_sl": 22621.96,
-    "target": 22724.43,
-    "breakeven": true,
-    "status": "OPEN",
-    "reasons": [
-     "Breakout above opening range",
-     "EMA 9 above EMA 21",
-     "Supertrend bullish",
-     "RSI 55\u201375",
-     "ADX \u2265 20 (trending)",
-     "15-min trend up",
-     "Strong bullish candle",
-     "Not overextended"
-    ],
-    "indicators": {
-     "rsi": 61.5,
-     "adx": 23.4,
-     "ema_fast": 22649.63,
-     "ema_slow": 22631.72,
-     "supertrend": 22581.3
-    }
-   },
-   "last_bar": "2026-10-26T15:05:00"
+   "open": null,
+   "last_bar": "2026-10-26T15:10:00"
   },
   "SENSEX": {
    "date": "2026-10-26",
    "trades_today": 0,
    "last_loss_end": null,
    "open": null,
-   "last_bar": "2026-10-26T14:55:23"
+   "last_bar": "2026-10-26T15:00:25"
   }
  },
- "summary_sent": null
+ "summary_sent": "2026-10-26"
 }

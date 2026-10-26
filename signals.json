@@ -50,7 +50,7 @@
   "initial_sl": 22621.96,
   "target": 22724.43,
   "breakeven": true,
-  "status": "OPEN",
+  "status": "CLOSED",
   "reasons": [
    "Breakout above opening range",
    "EMA 9 above EMA 21",
@@ -67,6 +67,12 @@
    "ema_fast": 22649.63,
    "ema_slow": 22631.72,
    "supertrend": 22581.3
-  }
+  },
+  "exit_time": "2026-10-26T15:15:00",
+  "exit": 22719.2,
+  "outcome": "TIME_EXIT",
+  "note": "Square-off time",
+  "points": 56.25,
+  "r_multiple": 1.37
  }
 ]
