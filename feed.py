@@ -19,6 +19,7 @@ import argparse
 import json
 import os
 import subprocess
+import threading
 import time as _time
 from datetime import date, datetime, timedelta
 from pathlib import Path
@@ -175,20 +176,22 @@ def daily_history(yahoo_symbol: str) -> dict | None:
 _expiries: dict[str, tuple[str, list[str]]] = {}
 
 
-def expiries(sym: str, today: date) -> list[str]:
+def expiries(sym: str, today: date, client=None) -> list[str]:
+    client = client or nse
     cached = _expiries.get(sym)
     if cached and cached[0] == today.isoformat():
         return cached[1]
-    info = nse.get(f"/api/option-chain-contract-info?symbol={quote(sym)}")
+    info = client.get(f"/api/option-chain-contract-info?symbol={quote(sym)}")
     exps = sorted(datetime.strptime(e, "%d-%b-%Y").date() for e in info.get("expiryDates", []))
     exps = [e.isoformat() for e in exps if e >= today]
     _expiries[sym] = (today.isoformat(), exps)
     return exps
 
 
-def chain(sym: str, kind: str, exp_iso: str, each_side: int) -> dict | None:
+def chain(sym: str, kind: str, exp_iso: str, each_side: int, client=None) -> dict | None:
+    client = client or nse
     exp = date.fromisoformat(exp_iso)
-    js = nse.get(f"/api/option-chain-v3?type={kind}&symbol={quote(sym)}&expiry={exp:%d-%b-%Y}")
+    js = client.get(f"/api/option-chain-v3?type={kind}&symbol={quote(sym)}&expiry={exp:%d-%b-%Y}")
     rec = js.get("records", {})
     under = num(rec.get("underlyingValue"))
     rows = sorted(rec.get("data", []), key=lambda r: r["strikePrice"])
@@ -269,10 +272,25 @@ def publish(out: Path, msg: str):
 
 
 # ------------------------------------------------------------------- main
+QUOTE_SECONDS = 15        # stock/index/futures refresh cadence (each stock every 2 slots = 30 s)
+CHAIN_SECONDS = 40        # option chains refresh in a background thread
+LIVE_KEEP_MIN = 6
+
+
+def stamp15(now: datetime) -> str:
+    return f"{now:%Y%m%d-%H%M}{(now.second // 15) * 15:02d}"
+
+
 class Feed:
     def __init__(self, out: Path, use_git: bool):
         self.out, self.use_git = out, use_git
         self.uni = None
+        self.stock_q, self.intraday, self.idx, self.fut = {}, {}, {}, {}
+        self.status = {"status": "Unknown", "msg": ""}
+        self.chains, self.chains_ts = {}, None
+        self.lock = threading.Lock()
+        self.slot = 0
+        self.stopping = False
 
     def ensure_daily(self, today: date):
         uni_path = self.out / "universe.json"
@@ -303,102 +321,125 @@ class Feed:
             stamp.write_text(today.isoformat())
             log("history done")
 
-    def snapshot(self, now: datetime) -> dict:
-        today = now.date()
-        stocks = self.uni["stocks"]
-        idx_y = {v[1]: k for k, v in INDICES.items()}
-        sp = spark([ysym(s) for s in stocks] + list(idx_y))
-        nsei = nse_indices()
-        q_stocks, intraday = {}, {}
-        for sym in stocks:
+    # ------------------------------------------------------------ pieces
+    def refresh_stocks(self, now: datetime, part: int, parts: int):
+        syms = sorted(self.uni["stocks"])[part::parts]
+        sp = spark([ysym(s) for s in syms])
+        for sym in syms:
             d = sp.get(ysym(sym))
             if not d:
                 continue
             m = d["meta"]
-            pc = m.get("chartPreviousClose") or m.get("previousClose")
-            q_stocks[sym] = {"p": num(m.get("regularMarketPrice")), "pc": num(pc),
-                             "h": num(m.get("regularMarketDayHigh")), "l": num(m.get("regularMarketDayLow")),
-                             "v": m.get("regularMarketVolume"), "yh": num(m.get("fiftyTwoWeekHigh")),
-                             "yl": num(m.get("fiftyTwoWeekLow")), "t": m.get("regularMarketTime")}
-            if not stocks[sym].get("full") and (m.get("longName") or m.get("shortName")):
-                stocks[sym]["full"] = m.get("longName") or m.get("shortName")
-            intraday[sym] = intraday_series(d, today)
-        q_idx = {}
+            self.stock_q[sym] = {"p": num(m.get("regularMarketPrice")),
+                                 "pc": num(m.get("chartPreviousClose") or m.get("previousClose")),
+                                 "h": num(m.get("regularMarketDayHigh")), "l": num(m.get("regularMarketDayLow")),
+                                 "v": m.get("regularMarketVolume"), "yh": num(m.get("fiftyTwoWeekHigh")),
+                                 "yl": num(m.get("fiftyTwoWeekLow")), "t": m.get("regularMarketTime")}
+            st = self.uni["stocks"][sym]
+            if not st.get("full") and (m.get("longName") or m.get("shortName")):
+                st["full"] = m.get("longName") or m.get("shortName")
+            self.intraday[sym] = intraday_series(d, now.date())
+
+    def refresh_indices(self, now: datetime):
+        nsei = nse_indices()
+        sp = spark([v[1] for v in INDICES.values()])
         for key, (nname, ys) in INDICES.items():
             n = nsei.get(nname) if nname else None
             d = sp.get(ys)
             if n:
-                q_idx[key] = {"p": num(n.get("last")), "pc": num(n.get("previousClose")), "o": num(n.get("open")),
-                              "h": num(n.get("high")), "l": num(n.get("low")), "yh": num(n.get("yearHigh")),
-                              "yl": num(n.get("yearLow"))}
+                self.idx[key] = {"p": num(n.get("last")), "pc": num(n.get("previousClose")), "o": num(n.get("open")),
+                                 "h": num(n.get("high")), "l": num(n.get("low")), "yh": num(n.get("yearHigh")),
+                                 "yl": num(n.get("yearLow"))}
             elif d:
                 m = d["meta"]
-                q_idx[key] = {"p": num(m.get("regularMarketPrice")),
-                              "pc": num(m.get("chartPreviousClose") or m.get("previousClose")),
-                              "h": num(m.get("regularMarketDayHigh")), "l": num(m.get("regularMarketDayLow")),
-                              "yh": num(m.get("fiftyTwoWeekHigh")), "yl": num(m.get("fiftyTwoWeekLow"))}
+                self.idx[key] = {"p": num(m.get("regularMarketPrice")),
+                                 "pc": num(m.get("chartPreviousClose") or m.get("previousClose")),
+                                 "h": num(m.get("regularMarketDayHigh")), "l": num(m.get("regularMarketDayLow")),
+                                 "yh": num(m.get("fiftyTwoWeekHigh")), "yl": num(m.get("fiftyTwoWeekLow"))}
             if d:
-                intraday[key] = intraday_series(d, today)
+                self.intraday[key] = intraday_series(d, now.date())
 
+    def build_chains(self, client) -> dict:
+        today = now_ist().date()
         chains = {}
         for sym, c in CFG["index_chains"].items():
             try:
-                for exp in expiries(sym, today)[: c["expiries"]]:
-                    ch = chain(sym, "Indices", exp, c["strikes_each_side"])
+                for exp in expiries(sym, today, client)[: c["expiries"]]:
+                    ch = chain(sym, "Indices", exp, c["strikes_each_side"], client)
                     if ch:
                         chains[f"{sym}|{exp}"] = ch
             except Exception as e:  # noqa: BLE001
                 log("chain error", sym, e)
         for sym in CFG["stock_chains"]:
             try:
-                exps = expiries(sym, today)
+                exps = expiries(sym, today, client)
                 take = exps[:2] if exps and (date.fromisoformat(exps[0]) - today).days <= 7 else exps[:1]
                 for exp in take:
-                    ch = chain(sym, "Equity", exp, CFG["stock_strikes_each_side"])
+                    ch = chain(sym, "Equity", exp, CFG["stock_strikes_each_side"], client)
                     if ch:
                         chains[f"{sym}|{exp}"] = ch
             except Exception as e:  # noqa: BLE001
                 log("chain error", sym, e)
+        return chains
 
+    def chain_worker(self):
+        client = Nse()
+        while not self.stopping:
+            t0 = _time.time()
+            try:
+                ch = self.build_chains(client)
+                if ch:
+                    with self.lock:
+                        self.chains, self.chains_ts = ch, now_ist().isoformat(timespec="seconds")
+            except Exception as e:  # noqa: BLE001
+                log("chain worker error", e)
+            _time.sleep(max(5, CHAIN_SECONDS - (_time.time() - t0)))
+
+    # -------------------------------------------------------------- write
+    def write_all(self, now: datetime, full: bool):
         ts = now.isoformat(timespec="seconds")
-        return {
-            "quotes": {"ts": ts, "market": market_status(), "indices": q_idx, "stocks": q_stocks,
-                       "futures": futures()},
-            "chains": {"ts": ts, "chains": chains},
-            "intraday": {"ts": ts, "series": intraday},
-        }
-
-    def write_live(self, now: datetime, snap: dict):
-        """Minute-stamped copies (live/YYYYMMDD-HHMM-q.json / -c.json).
-
-        GitHub's raw file server caches each URL for up to 5 minutes, so a new
-        file name every minute is the only way for the app to always get fresh
-        prices. Only the last 15 minutes are kept.
-        """
-        live = self.out / "live"
-        stamp = now.strftime("%Y%m%d-%H%M")
-        write(live / f"{stamp}-q.json", snap["quotes"])
-        write(live / f"{stamp}-c.json", snap["chains"])
-        cutoff = (now - timedelta(minutes=15)).strftime("%Y%m%d-%H%M")
-        for f in live.glob("*.json"):
-            if f.name[:13] < cutoff:
+        quotes = {"ts": ts, "market": self.status, "indices": self.idx, "stocks": self.stock_q, "futures": self.fut}
+        with self.lock:
+            chains = {"ts": self.chains_ts or ts, "chains": self.chains}
+        st = stamp15(now)
+        write(self.out / "quotes.json", quotes)
+        write(self.out / "live" / f"{st}-q.json", quotes)
+        if chains["chains"]:
+            write(self.out / "chains.json", chains)
+            write(self.out / "live" / f"{st}-c.json", chains)
+        if full:
+            write(self.out / "intraday.json", {"ts": ts, "series": self.intraday})
+            write(self.out / "universe.json", self.uni)
+        cutoff = (now - timedelta(minutes=LIVE_KEEP_MIN)).strftime("%Y%m%d-%H%M%S")
+        for f in (self.out / "live").glob("*.json"):
+            if f.name[:15] < cutoff:
                 f.unlink()
+        if self.use_git:
+            publish(self.out, f"market {ts}")
 
     def tick(self):
+        """One 15-second slot: half the stocks, all indices and futures; chains come from the worker."""
         now = now_ist()
         self.ensure_daily(now.date())
         t0 = _time.time()
-        snap = self.snapshot(now)
-        for name, obj in snap.items():
-            write(self.out / f"{name}.json", obj)
-        write(self.out / "universe.json", self.uni)
-        self.write_live(now, snap)
-        q = snap["quotes"]
-        log(f"snapshot: {len(q['stocks'])} stocks, {len(snap['chains']['chains'])} chains, "
-            f"{len(q['futures'])} futures, market {q['market'].get('status')} ({_time.time() - t0:.1f}s)")
-        if self.use_git:
-            publish(self.out, f"market {now:%Y-%m-%d %H:%M}")
-        return q
+        first = not self.stock_q
+        if first:
+            self.refresh_stocks(now, 0, 1)
+        else:
+            self.refresh_stocks(now, self.slot % 2, 2)
+        self.refresh_indices(now)
+        self.fut = futures() or self.fut
+        if self.slot % 4 == 0:
+            self.status = market_status()
+        if first and not self.chains:
+            with self.lock:
+                self.chains, self.chains_ts = self.build_chains(nse), now.isoformat(timespec="seconds")
+        self.write_all(now, full=(self.slot % 4 == 0))
+        if self.slot % 4 == 0:
+            log(f"slot {self.slot}: {len(self.stock_q)} stocks, {len(self.chains)} chains, {len(self.fut)} futures, "
+                f"market {self.status.get('status')} ({_time.time() - t0:.1f}s)")
+        self.slot += 1
+        return {"market": self.status}
 
 
 def main():
@@ -414,6 +455,7 @@ def main():
     if start.weekday() >= 5:
         feed.tick()
         return
+    worker = None
     while True:
         now = now_ist()
         if now.time() < datetime.strptime("09:00", "%H:%M").time() and not a.once:
@@ -421,6 +463,9 @@ def main():
             continue
         try:
             q = feed.tick()
+            if worker is None and not a.once:
+                worker = threading.Thread(target=feed.chain_worker, daemon=True)
+                worker.start()
             closed = str(q["market"].get("status", "")).lower().startswith("close")
             if closed and now.time() >= datetime.strptime("09:20", "%H:%M").time():
                 log("market closed – final snapshot saved")
@@ -429,8 +474,10 @@ def main():
             log("tick failed", e)
         if a.once or now_ist() >= stop:
             break
-        nxt = now_ist().replace(second=8, microsecond=0) + timedelta(minutes=1)
-        _time.sleep(max(5, (nxt - now_ist()).total_seconds()))
+        n = now_ist()
+        nxt = n.replace(microsecond=0) + timedelta(seconds=QUOTE_SECONDS - n.second % QUOTE_SECONDS + 2)
+        _time.sleep(max(1, (nxt - now_ist()).total_seconds()))
+    feed.stopping = True
     log("feed finished")
 
 

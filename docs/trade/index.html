@@ -187,6 +187,17 @@ tbody tr.click{cursor:pointer} tbody tr.click:hover td{background:var(--surface2
 .info{background:var(--warn-soft);color:var(--warn);border-radius:10px;padding:9px 12px;font-size:13px}
 .confirm{background:var(--surface2);border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:10px}
 
+/* price flashes (real changes only) */
+.fl-up{animation:flu 1.3s ease-out}
+.fl-dn{animation:fld 1.3s ease-out}
+@keyframes flu{0%{background:var(--up-soft);color:var(--up);box-shadow:0 0 0 3px var(--up-soft)}100%{background:transparent;box-shadow:0 0 0 3px transparent}}
+@keyframes fld{0%{background:var(--down-soft);color:var(--down);box-shadow:0 0 0 3px var(--down-soft)}100%{background:transparent;box-shadow:0 0 0 3px transparent}}
+@media (prefers-reduced-motion:reduce){.fl-up,.fl-dn{animation:none}}
+.ago{font:500 11.5px var(--mono);color:var(--muted);white-space:nowrap;display:flex;align-items:center;gap:6px}
+.ago .dot{width:7px;height:7px;border-radius:50%;background:var(--faint)}
+.ago.live .dot{background:var(--up);animation:pulse 1.6s infinite}
+.ago.stale .dot{background:var(--warn)}
+
 /* toasts */
 .toasts{position:fixed;right:max(16px,env(safe-area-inset-right,0px));bottom:calc(16px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:8px;z-index:60;max-width:min(380px,calc(100% - 32px))}
 .toast{background:var(--ink);color:var(--surface);border-radius:12px;padding:11px 14px;font-size:13.5px;box-shadow:var(--shadow);animation:in .2s ease-out}
@@ -207,6 +218,7 @@ tbody tr.click{cursor:pointer} tbody tr.click:hover td{background:var(--surface2
   .bottom .nav-btn.on{background:none}
   .brand .word{display:none}
   .funds-pill span{display:none}
+  .ago #agoTxt{display:none}
   .sheet{width:100%;height:auto;max-height:92%;margin-top:auto;border-radius:18px 18px 0 0}
   .scrim{align-items:flex-end}
   .toasts{bottom:calc(84px + env(safe-area-inset-bottom,0px))}
@@ -229,6 +241,7 @@ tbody tr.click{cursor:pointer} tbody tr.click:hover td{background:var(--surface2
       <input id="q" type="search" placeholder="Search stocks, e.g. Reliance" autocomplete="off" aria-label="Search stocks">
       <div id="results" class="results" hidden></div>
     </div>
+    <span class="ago" id="ago" title="When prices were last updated"><span class="dot"></span><span id="agoTxt">—</span></span>
     <button class="funds-pill" id="fundsPill" title="Available to trade"><span>Available</span><b id="availTop">—</b></button>
   </div>
   <div class="ticker" id="ticker"></div>
@@ -295,10 +308,12 @@ const SIG_BASE = BASE && BASE.replace(/market-data\/$/, "signals-data/");
 // name every minute (live/YYYYMMDD-HHMM-q.json). Ask for the newest minute first.
 let lastLive = {q: "", c: ""};
 function liveStamps() {
-  const t = new Date(Date.now() + 330 * 60000 - 35000), out = [];
-  for (let i = 0; i < 4; i++) {
-    const d = new Date(t.getTime() - i * 60000);
-    out.push(d.toISOString().slice(0, 10).replace(/-/g, "") + "-" + d.toISOString().slice(11, 16).replace(":", ""));
+  // newest 15-second slot that should already be published (slot starts +2s, publish takes ~5s)
+  const t = Date.now() + 330 * 60000 - 12000, out = [];
+  const base = Math.floor(t / 15000) * 15000;
+  for (let i = 0; i < 6; i++) {
+    const iso = new Date(base - i * 15000).toISOString();
+    out.push(iso.slice(0, 10).replace(/-/g, "") + "-" + iso.slice(11, 19).replace(/:/g, ""));
   }
   return out;
 }
@@ -362,9 +377,13 @@ async function loadQuotes() {
   if (!BASE) { loadError = "Open this page from your GitHub Pages site to load live prices."; render(); return; }
   try {
     const [q, u] = await Promise.all([getLive("q", "quotes.json"), D.universe ? Promise.resolve(D.universe) : getJSON(BASE + "universe.json")]);
-    D.quotes = q; D.universe = u; loadError = "";
+    if (!D.quotes || q.ts !== D.quotes.ts) {
+      const before = priceMap(D.quotes, null);
+      D.quotes = q; D.universe = u; loadError = "";
+      noteChanges(before, priceMap(q, null));
+    } else { D.universe = u; loadError = ""; }
   } catch (e) { loadError = "Couldn't load prices (" + e.message + "). Retrying…"; }
-  if (needChains() && Date.now() - chainsAt > 25000) await ensureChains(true);
+  if (needChains() && Date.now() - chainsAt > 14000) await ensureChains(true);
   tick();
 }
 function needChains() {
@@ -373,8 +392,11 @@ function needChains() {
   return acct.orders.some(o => (o.status === "OPEN" || o.status === "TRIGGER_PENDING") && o.inst.startsWith("OPT:"));
 }
 async function ensureChains(force) {
-  if (!BASE || (!force && D.chains && Date.now() - chainsAt < 25000)) { if (route.name === "fno") render(); return; }
-  try { D.chains = await getLive("c", "chains.json"); chainsAt = Date.now(); } catch (e) {}
+  if (!BASE || (!force && D.chains && Date.now() - chainsAt < 14000)) { if (route.name === "fno") render(); return; }
+  try {
+    const c = await getLive("c", "chains.json"); chainsAt = Date.now();
+    if (!D.chains || c.ts !== D.chains.ts) { const before = priceMap(null, D.chains); D.chains = c; noteChanges(before, priceMap(null, c)); }
+  } catch (e) {}
   if (route.name === "fno" || sheet) render();
 }
 async function ensureIntraday() {
@@ -394,6 +416,28 @@ async function loadSignals() {
   try { D.signals = await getJSON(SIG_BASE + "signals.json"); } catch (e) {}
 }
 const engineData = () => ({quotes: D.quotes, chains: D.chains, universe: D.universe});
+
+// price flashes: only for prices that really changed in the latest update
+let flash = {}, flashUntil = 0;
+function priceMap(q, c) {
+  const m = {};
+  if (q) {
+    for (const k in q.stocks || {}) m["EQ:" + k] = q.stocks[k].p;
+    for (const k in q.indices || {}) m["IDX:" + k] = q.indices[k].p;
+    for (const k in q.futures || {}) m[k] = q.futures[k].p;
+  }
+  if (c) for (const key in c.chains || {}) {
+    const [u, exp] = key.split("|");
+    for (const r of c.chains[key].rows) { m[`OPT:${u}:${exp}:${r[0]}:CE`] = r[1]; m[`OPT:${u}:${exp}:${r[0]}:PE`] = r[9]; }
+  }
+  return m;
+}
+function noteChanges(before, after) {
+  const f = {};
+  for (const k in after) if (before[k] != null && after[k] != null && after[k] !== before[k]) f[k] = after[k] > before[k] ? "fl-up" : "fl-dn";
+  if (Object.keys(f).length) { flash = f; flashUntil = Date.now() + 1400; }
+}
+const fx = key => Date.now() < flashUntil && flash[key] ? " " + flash[key] : "";
 
 function tick() {
   if (D.quotes) {
@@ -426,7 +470,7 @@ function renderTop() {
   t.innerHTML = INDEX_ORDER.map(k => {
     const q = idxQuote(k); if (!q) return "";
     const c = chg(q);
-    return `<button class="tick" data-go="index-${k}"><b>${INDEX_LABEL[k]}</b><span class="num">${fmt(q.p)}</span><span class="num ${cls(c.abs)}">${sgn(c.pct)}%</span></button>`;
+    return `<button class="tick" data-go="index-${k}"><b>${INDEX_LABEL[k]}</b><span class="num${fx("IDX:" + k)}">${fmt(q.p)}</span><span class="num ${cls(c.abs)}">${sgn(c.pct)}%</span></button>`;
   }).join("");
   const s = E.summary(acct, engineData());
   $("#availTop").textContent = rs(s.available, 0);
@@ -515,12 +559,12 @@ function afterRender() { const h = afterHooks; afterHooks = []; h.forEach(f => f
 function stockItem(s, extra = "") {
   const q = stocks()[s]; const c = chg(q || {});
   return `<button class="list-item" data-go="stock-${esc(s)}"><div class="li-main"><b>${esc(s)}</b><span>${esc(nameOf(s))}${extra}</span></div>
-    <div class="li-end"><b>${q ? fmt(q.p) : "—"}</b><span class="${cls(c.abs)}">${sgn(c.abs)} (${sgn(c.pct)}%)</span></div></button>`;
+    <div class="li-end"><b class="${fx("EQ:" + s)}">${q ? fmt(q.p) : "—"}</b><span class="${cls(c.abs)}">${sgn(c.abs)} (${sgn(c.pct)}%)</span></div></button>`;
 }
 function tile(s) {
   const q = stocks()[s]; const c = chg(q || {});
   return `<button class="tile" data-go="stock-${esc(s)}"><span class="nm">${esc(s)}</span><span class="muted" style="font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(nameOf(s))}</span>
-    <span class="px">₹${fmt(q.p)}</span><span class="ch ${cls(c.abs)}">${sgn(c.abs)} (${sgn(c.pct)}%)</span></button>`;
+    <span class="px${fx("EQ:" + s)}">₹${fmt(q.p)}</span><span class="ch ${cls(c.abs)}">${sgn(c.abs)} (${sgn(c.pct)}%)</span></button>`;
 }
 
 function signalCard() {
@@ -562,7 +606,7 @@ function viewExplore() {
   ${signalCard() ? `<h2>Today's signal</h2>${signalCard()}` : ""}
   <h2>Indices</h2>
   <div class="grid g-idx">${INDEX_ORDER.map(k => { const q = idxQuote(k); if (!q) return ""; const c = chg(q);
-    return `<button class="tile" data-go="index-${k}"><span class="nm">${INDEX_LABEL[k]}</span><span class="px">${fmt(q.p)}</span><span class="ch ${cls(c.abs)}">${sgn(c.abs)} (${sgn(c.pct)}%)</span></button>`; }).join("")}</div>
+    return `<button class="tile" data-go="index-${k}"><span class="nm">${INDEX_LABEL[k]}</span><span class="px${fx("IDX:" + k)}">${fmt(q.p)}</span><span class="ch ${cls(c.abs)}">${sgn(c.abs)} (${sgn(c.pct)}%)</span></button>`; }).join("")}</div>
   <h2>Top gainers</h2><div class="grid g-tiles">${gain.map(x => tile(x.s)).join("")}</div>
   <h2>Top losers</h2><div class="grid g-tiles">${lose.map(x => tile(x.s)).join("")}</div>
   <h2>Most traded today</h2><div class="grid g-tiles">${active.map(x => tile(x.s)).join("")}</div>
@@ -570,7 +614,7 @@ function viewExplore() {
   <div class="card"><div class="pad" style="padding-bottom:6px"><div class="field"><input id="exploreFilter" placeholder="Filter by name or symbol" value="${esc(exploreFilter)}" style="font-family:var(--sans);font-weight:500"></div></div>
   <div class="tbl-wrap"><table><thead><tr>${th("s", "Company")}${th("p", "Price", 1)}${th("chp", "Change", 1)}${th("val", "Traded value", 1)}</tr></thead><tbody>
   ${rows.slice(0, 250).map(x => `<tr class="click" data-go="stock-${esc(x.s)}"><td><b>${esc(x.s)}</b><div class="muted" style="font-size:12px;max-width:260px;overflow:hidden;text-overflow:ellipsis">${esc(nameOf(x.s))}</div></td>
-    <td class="r num">${fmt(x.q.p)}</td><td class="r num ${cls(x.pct)}">${sgn(x.pct)}%</td><td class="r num muted">₹${compact(x.val)}</td></tr>`).join("") || `<tr><td colspan="4" class="empty">No stocks match “${esc(exploreFilter)}”.</td></tr>`}
+    <td class="r num${fx("EQ:" + x.s)}">${fmt(x.q.p)}</td><td class="r num ${cls(x.pct)}">${sgn(x.pct)}%</td><td class="r num muted">₹${compact(x.val)}</td></tr>`).join("") || `<tr><td colspan="4" class="empty">No stocks match “${esc(exploreFilter)}”.</td></tr>`}
   </tbody></table></div></div>`;
 }
 
@@ -606,7 +650,7 @@ function viewStock() {
     <div class="grow"><h1 style="margin:0">${esc(nameOf(s))}</h1><div class="sub">NSE: ${esc(s)}${u.lot ? ` · F&amp;O lot ${u.lot}` : ""}</div></div>
     <button class="icon-btn ${starred ? "on" : ""}" data-star="${esc(s)}" aria-label="${starred ? "Remove from" : "Add to"} watchlist">${svg("star", starred ? 'fill="currentColor"' : "")}</button></div>
   <div class="card pad" style="margin-top:16px">
-    <div class="quote-head"><div><div class="big">₹${fmt(q.p)}</div><div class="num ${cls(c.abs)}" style="font-weight:600">${sgn(c.abs)} (${sgn(c.pct)}%) <span class="muted" style="font-weight:500">today</span></div></div>${marketPill()}</div>
+    <div class="quote-head"><div><div class="big${fx("EQ:" + s)}">₹${fmt(q.p)}</div><div class="num ${cls(c.abs)}" style="font-weight:600">${sgn(c.abs)} (${sgn(c.pct)}%) <span class="muted" style="font-weight:500">today</span></div></div>${marketPill()}</div>
     <div class="chart" id="chart">${typeof ch === "string" ? ch : ch.html}</div>
     ${rangeTabs()}
   </div>
@@ -626,7 +670,7 @@ function viewStock() {
 }
 function futRow(k, f) {
   return `<div class="list-item"><div class="li-main"><b>${esc(E.label(k))}</b><span>OI ${compact(f.oi)} · Lot ${E.lotSize(E.parse(k), engineData())}</span></div>
-    <div class="li-end" style="margin-right:8px"><b>${fmt(f.p)}</b><span class="${cls(f.ch)}">${sgn(f.ch)} (${sgn(f.chp)}%)</span></div>
+    <div class="li-end" style="margin-right:8px"><b class="${fx(k)}">${fmt(f.p)}</b><span class="${cls(f.ch)}">${sgn(f.ch)} (${sgn(f.chp)}%)</span></div>
     <button class="btn sm buy" data-trade="${esc(k)}" data-side="BUY">B</button><button class="btn sm sell" data-trade="${esc(k)}" data-side="SELL">S</button></div>`;
 }
 
@@ -640,7 +684,7 @@ function viewIndex() {
   const fnoable = ["NIFTY", "BANKNIFTY", "FINNIFTY", "MIDCPNIFTY"].includes(k);
   return `
   <div class="row" style="gap:10px"><button class="icon-btn" onclick="history.back()" aria-label="Back">${svg("back")}</button><div class="grow"><h1 style="margin:0">${INDEX_LABEL[k]}</h1><div class="sub">Index</div></div></div>
-  <div class="card pad" style="margin-top:16px"><div class="quote-head"><div><div class="big">${fmt(q.p)}</div><div class="num ${cls(c.abs)}" style="font-weight:600">${sgn(c.abs)} (${sgn(c.pct)}%)</div></div>${marketPill()}</div>
+  <div class="card pad" style="margin-top:16px"><div class="quote-head"><div><div class="big${fx("IDX:" + k)}">${fmt(q.p)}</div><div class="num ${cls(c.abs)}" style="font-weight:600">${sgn(c.abs)} (${sgn(c.pct)}%)</div></div>${marketPill()}</div>
     <div class="chart" id="chart">${typeof ch === "string" ? ch : ch.html}</div>${rangeTabs()}</div>
   ${fnoable ? `<div class="trade-bar" style="margin-top:14px"><button class="btn pri" data-go="fno-${k}">Option chain</button></div>` : ""}
   <h2>Performance</h2><div class="card pad" style="display:grid;gap:18px">${rangeBar(q.l, q.h, q.p, "Today's low", "Today's high")}${rangeBar(q.yl, q.yh, q.p, "52W low", "52W high")}
@@ -677,9 +721,9 @@ function viewFno() {
     return pre + `<tr>
       <td class="r ${cIt ? "itm" : ""}"><span class="oi">${compact(r[5])}</span></td>
       <td class="c-chg r ${cIt ? "itm" : ""} num ${cls(cp)}" style="font-size:12px">${cp == null ? "" : sgn(cp, 1) + "%"}</td>
-      <td class="r ${cIt ? "itm" : ""}"><button class="px-btn" data-trade="${ce}" data-side="BUY" title="Trade ${fnoU} ${K} CE">${fmt(r[1])}</button></td>
+      <td class="r ${cIt ? "itm" : ""}"><button class="px-btn${fx(ce)}" data-trade="${ce}" data-side="BUY" title="Trade ${fnoU} ${K} CE">${fmt(r[1])}</button></td>
       <td class="k">${K}</td>
-      <td class="${pIt ? "itm" : ""}"><button class="px-btn" data-trade="${pe}" data-side="BUY" title="Trade ${fnoU} ${K} PE">${fmt(r[9])}</button></td>
+      <td class="${pIt ? "itm" : ""}"><button class="px-btn${fx(pe)}" data-trade="${pe}" data-side="BUY" title="Trade ${fnoU} ${K} PE">${fmt(r[9])}</button></td>
       <td class="c-chg ${pIt ? "itm" : ""} num ${cls(pp)}" style="font-size:12px">${pp == null ? "" : sgn(pp, 1) + "%"}</td>
       <td class="${pIt ? "itm" : ""}"><span class="oi">${compact(r[13])}</span></td></tr>`;
   }).join("");
@@ -963,8 +1007,21 @@ $("#q").addEventListener("keydown", e => {
 route = parseHash(); if (route.name === "fno" && route.arg) fnoU = route.arg;
 renderNav(); render(); renderTop();
 (async () => { await Promise.all([loadQuotes(), loadSignals()]); if (route.name === "fno") ensureChains(true); if (route.name === "stock" || route.name === "index") ensureIntraday(); })();
-setInterval(() => { if (!document.hidden) { loadQuotes(); loadSignals(); if (route.name === "stock" || route.name === "index") ensureIntraday(); } }, 20000);
-setInterval(() => { if (!document.hidden && D.quotes) tick(); }, 10000);
+function liveWindow() { const t = E.ist(new Date()); return t.wd >= 1 && t.wd <= 5 && t.mins >= 9 * 60 && t.mins <= 15 * 60 + 41; }
+let lastPoll = 0;
+setInterval(() => {
+  if (document.hidden) return;
+  const every = liveWindow() ? 5000 : 30000;
+  if (Date.now() - lastPoll >= every) { lastPoll = Date.now(); loadQuotes(); loadSignals(); if (route.name === "stock" || route.name === "index") ensureIntraday(); }
+}, 1000);
+setInterval(() => { if (!document.hidden && D.quotes) tick(); }, 15000);
+setInterval(() => {
+  const el = $("#ago"); if (!el || !D.quotes) return;
+  const age = Math.max(0, Math.round(E.feedAgeMs(engineData(), new Date()) / 1000));
+  const open = E.marketOpen(engineData(), new Date());
+  el.className = "ago " + (open && age < 60 ? "live" : open ? "stale" : "");
+  $("#agoTxt").textContent = open ? (age < 60 ? `Live · ${age}s ago` : `Delayed · ${Math.round(age / 60)} min`) : `As of ${D.quotes.ts.slice(11, 16)}`;
+}, 1000);
 document.addEventListener("visibilitychange", () => { if (!document.hidden) loadQuotes(); });
 </script>
 </body>
