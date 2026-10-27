@@ -2,15 +2,15 @@
  "indices": {
   "NIFTY": {
    "name": "NIFTY",
-   "price": 22740.6,
+   "price": 22760.5,
    "prev_close": 22753.2,
-   "change_pct": -0.06,
-   "bar_time": "2026-10-27T10:35:00",
+   "change_pct": 0.03,
+   "bar_time": "2026-10-27T10:40:00",
    "indicators": {
-    "rsi": 53.1,
-    "adx": 23.1,
-    "ema_fast": 22740.19,
-    "ema_slow": 22731.12,
+    "rsi": 56.3,
+    "adx": 21.9,
+    "ema_fast": 22744.25,
+    "ema_slow": 22733.79,
     "supertrend": 22675.31,
     "supertrend_dir": 1,
     "orh": 22745.95,
@@ -21,7 +21,7 @@
     "checks": [
      {
       "name": "Breakout above opening range",
-      "ok": false
+      "ok": true
      },
      {
       "name": "EMA 9 above EMA 21",
@@ -33,7 +33,7 @@
      },
      {
       "name": "RSI 55\u201375",
-      "ok": false
+      "ok": true
      },
      {
       "name": "ADX \u2265 20 (trending)",
@@ -52,7 +52,7 @@
       "ok": true
      }
     ],
-    "score": 6,
+    "score": 8,
     "total": 8
    },
    "put": {
@@ -93,30 +93,79 @@
     "score": 1,
     "total": 8
    },
-   "open_trade": null
+   "open_trade": {
+    "id": "NIFTY-20261027-1040-CALL",
+    "index": "NIFTY",
+    "side": "CALL",
+    "option": "NIFTY 22750 CE",
+    "strike": 22750,
+    "entry_time": "2026-10-27T10:40:00",
+    "entry": 22760.5,
+    "risk": 51.35,
+    "sl": 22709.15,
+    "initial_sl": 22709.15,
+    "target": 22837.53,
+    "breakeven": false,
+    "status": "OPEN",
+    "valid_until": "2026-10-27T10:50:00",
+    "chase_limit": 22775.91,
+    "reasons": [
+     "Breakout above opening range",
+     "EMA 9 above EMA 21",
+     "Supertrend bullish",
+     "RSI 55\u201375",
+     "ADX \u2265 20 (trending)",
+     "15-min trend up",
+     "Strong bullish candle",
+     "Not overextended"
+    ],
+    "indicators": {
+     "rsi": 56.3,
+     "adx": 21.9,
+     "ema_fast": 22744.25,
+     "ema_slow": 22733.79,
+     "supertrend": 22675.31
+    },
+    "premium": {
+     "source": "NSE live",
+     "estimated": false,
+     "expiry": "2026-11-03",
+     "price": 232.9,
+     "ltp": 233.3,
+     "bid": 232.65,
+     "ask": 233.2,
+     "buy_upto": 240.2,
+     "sl": 207.5,
+     "target": 277.3,
+     "iv": 16.8,
+     "delta": 0.53,
+     "time": "2026-10-27T10:40:25",
+     "spot_now": 22758.55
+    }
+   }
   },
   "SENSEX": {
    "name": "SENSEX",
-   "price": 73528.0,
+   "price": 73381.13,
    "prev_close": 73606.75,
-   "change_pct": -0.11,
-   "bar_time": "2026-10-27T10:25:23",
+   "change_pct": -0.31,
+   "bar_time": "2026-10-27T10:30:29",
    "indicators": {
-    "rsi": 52.9,
-    "adx": 19.6,
-    "ema_fast": 73543.64,
-    "ema_slow": 73502.51,
-    "supertrend": 73707.26,
+    "rsi": 45.4,
+    "adx": 19.0,
+    "ema_fast": 73486.52,
+    "ema_slow": 73478.76,
+    "supertrend": 73704.27,
     "supertrend_dir": -1,
     "orh": 73500.92,
     "orl": 73213.08,
-    "ema15": 73377.42
+    "ema15": 73377.77
    },
    "call": {
     "checks": [
      {
       "name": "Breakout above opening range",
-      "ok": true
+      "ok": false
      },
      {
       "name": "EMA 9 above EMA 21",
@@ -144,10 +193,10 @@
      },
      {
       "name": "Not overextended",
-      "ok": true
+      "ok": false
      }
     ],
-    "score": 4,
+    "score": 2,
     "total": 8
    },
    "put": {
@@ -182,17 +231,17 @@
      },
      {
       "name": "Not overextended",
-      "ok": false
+      "ok": true
      }
     ],
-    "score": 1,
+    "score": 2,
     "total": 8
    },
    "open_trade": null
   }
  },
  "errors": [],
- "updated_at": "2026-10-27T10:35:25",
+ "updated_at": "2026-10-27T10:40:31",
  "market": "OPEN",
  "note": "",
  "data_source": "Yahoo Finance 5-min candles (free; can lag 1\u20133 min)"
