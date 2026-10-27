@@ -63,8 +63,9 @@ def git_push(data_dir: Path, msg: str):
 
 class Runner:
     def __init__(self, data_dir: Path, use_git: bool, fetch=fetch_candles, clock=now_ist, notify=True,
-                 premiums=True):
+                 premiums=True, control_source=None):
         self.premiums = premiums
+        self.control_source = control_source
         self.cfg = json.loads((ROOT / "config.json").read_text())
         self.s = self.cfg["strategy"]
         self.dir = data_dir
@@ -186,6 +187,58 @@ class Runner:
             self.status["indices"][name] = snap
         return "OPEN" if any_today else "NO_DATA"
 
+    # ------------------------------------------------------------- commands
+    def read_commands(self) -> list[dict]:
+        """Commands the app wrote to the `control` branch (newest state of that branch)."""
+        if self.control_source:
+            return self.control_source()
+        if not self.use_git:
+            return []
+        g = lambda *a: subprocess.run(["git", "-C", str(self.dir), *a], capture_output=True, text=True)  # noqa: E731
+        if g("fetch", "-q", "origin", "control").returncode:
+            return []
+        out = g("show", "FETCH_HEAD:commands.json")
+        try:
+            return json.loads(out.stdout).get("commands", []) if out.returncode == 0 else []
+        except ValueError:
+            return []
+
+    def poll_commands(self) -> int:
+        """Apply new manual commands. Returns how many were completed (and saved)."""
+        if not self.auto:
+            return 0
+        try:
+            cmds = self.read_commands()
+        except Exception as e:  # noqa: BLE001
+            print("[control] read failed", e)
+            return 0
+        done = 0
+        for c in sorted(cmds, key=lambda c: c.get("ts", "")):
+            if c.get("id") in self.auto.st["processed"]:
+                continue
+            res = self.auto.handle_command(c, self.clock())
+            if res is None:
+                continue
+            done += 1
+            print(f"[control] {c.get('type')} {c.get('target') or ''} -> {res['status']}: {res['message']}")
+            if self.notify and c.get("type") in ("EXIT", "EXIT_ALL", "PAUSE", "RESUME"):
+                icon = {"done": "✋", "noop": "ℹ️", "partial": "⚠️", "failed": "⚠️"}.get(res["status"], "")
+                send_email(f"{icon} Auto-trader: {c.get('type').replace('_', ' ').title()} – {res['status']}",
+                           res["message"] + "\n\nPaper trading – no real order was placed.")
+        if done:
+            self.save(self.status.get("market", "OPEN"), self.status.get("note", ""))
+        return done
+
+    def wait(self, seconds: float):
+        """Sleep, but check for manual commands every ~10 seconds."""
+        end = _time.time() + max(0, seconds)
+        while True:
+            self.poll_commands()
+            left = end - _time.time()
+            if left <= 0:
+                return
+            _time.sleep(min(10, left))
+
     def daily_summary(self):
         day = self.clock().date().isoformat()
         if self.state.get("summary_sent") == day or not self.cfg["email"].get("send_daily_summary", True):
@@ -227,7 +280,7 @@ def main():
             run.save("PRE_OPEN", "Waiting for the first 5-minute candle (9:20 IST)")
             if a.once:
                 return
-            _time.sleep(min(1800, max(5, (open_t + BAR - now).total_seconds() + 20)))
+            run.wait(min(1800, max(5, (open_t + BAR - now).total_seconds() + 20)))
             continue
 
         market = run.cycle()
@@ -247,7 +300,7 @@ def main():
         wait = (nxt - now_ist()).total_seconds()
         if now_ist() + timedelta(seconds=max(wait, 0)) > end:
             break
-        _time.sleep(max(wait, 5))
+        run.wait(max(wait, 5))
     print("Runner finished")
 
 

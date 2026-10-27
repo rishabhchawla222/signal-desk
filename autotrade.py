@@ -9,6 +9,16 @@ Auto-trader: paper-trades every Signal Desk signal in a virtual account.
 
 The account is saved as autotrade.json on the signals-data branch, so it keeps
 going day after day without any browser being open.
+
+Manual control (from the app, through the `control` branch):
+  EXIT          sell one open auto position now (at the live bid)
+  EXIT_ALL      pause new entries and sell every open auto position
+  PAUSE         stop new automated entries (open positions are left alone)
+  RESUME        allow automated entries again
+  ALLOW_REENTRY lift today's re-entry block after a manual exit
+  SET_REENTRY   value "block_today" (default) or "allow"
+Every command has a unique id and is applied at most once; its result is kept in
+`processed` so the app can show the authoritative outcome.
 """
 import json
 from datetime import date, datetime
@@ -46,6 +56,9 @@ class AutoTrader:
         except Exception:  # noqa: BLE001
             cash = float(cfg.get("start_cash", 1000000))
             self.st = {"start_cash": cash, "cash": cash, "open": {}, "trades": [], "skipped": [], "started": None}
+        for k, v in (("paused", False), ("blocks", {}), ("processed", {}), ("attempts", {}),
+                     ("manual_exits", {}), ("reentry_rule", cfg.get("reentry_after_manual_exit", "block_today"))):
+            self.st.setdefault(k, v)
 
     # ----------------------------------------------------------------- events
     def on_event(self, ev: dict, now: datetime) -> dict | None:
@@ -57,6 +70,9 @@ class AutoTrader:
             return self._enter(t, now)
         if ev["type"] == "EXIT" and t["id"] in self.st["open"]:
             return self._exit(t, now)
+        if ev["type"] == "EXIT" and t["id"] in self.st["manual_exits"]:
+            m = self.st["manual_exits"][t["id"]]
+            return {"status": "manual", "price": m["price"], "net": m["net"], "time": m["time"]}
         return None
 
     def _skip(self, t: dict, now: datetime, reason: str) -> dict:
@@ -73,6 +89,10 @@ class AutoTrader:
             return self._skip(t, now, "No live option price at signal time")
         if t.get("late"):
             return self._skip(t, now, "Price had already run past the don't-chase level")
+        if self.st.get("paused"):
+            return self._skip(t, now, "Auto-trading is paused (by you)")
+        if self.st["blocks"].get(t["index"]) == now.date().isoformat():
+            return self._skip(t, now, f"Re-entry blocked: you exited a {t['index']} auto-trade manually today")
         q = None
         try:
             q = self.quote(t["index"], t["strike"], t["side"], p["expiry"])
@@ -102,6 +122,12 @@ class AutoTrader:
 
     def _exit(self, t: dict, now: datetime) -> dict:
         pos = self.st["open"][t["id"]]
+        return self._sell(pos, now, t.get("note"), t.get("outcome"), t)
+
+    def _sell(self, pos: dict, now: datetime, reason: str, outcome: str, t: dict | None = None,
+              manual: bool = False) -> dict | None:
+        """Sell an open auto position. Manual exits need a live price (returns None to retry)."""
+        t = t or {}
         px = None
         try:
             q = self.quote(pos["index"], pos["strike"], pos["side"], pos["expiry"])
@@ -110,11 +136,13 @@ class AutoTrader:
         except Exception as e:  # noqa: BLE001
             print(f"[auto] quote error {e}")
         source = "live bid"
+        if px is None and manual:
+            return None  # never close a manual exit on a guessed price; caller retries
         if px is None:
             px = (t.get("premium") or {}).get("exit_price")
             source = "signal exit price"
         if px is None:  # last resort: intrinsic value at the index exit level
-            s = float(t.get("exit") or t["entry"])
+            s = float(t.get("exit") or t.get("entry") or pos["spot_entry"])
             px = max(0.05, s - pos["strike"] if pos["side"] == "CALL" else pos["strike"] - s)
             source = "intrinsic value"
         ch = option_charges("SELL", pos["qty"], px)
@@ -122,15 +150,83 @@ class AutoTrader:
         gross = (px - pos["buy_price"]) * pos["qty"]
         net = round(gross - pos["buy_charges"] - ch, 2)
         rec = {**pos, "sell_price": round(px, 2), "sell_time": now.isoformat(timespec="seconds"),
-               "sell_charges": ch, "gross": round(gross, 2), "net": net, "reason": t.get("note"),
-               "outcome": t.get("outcome"), "price_source": source}
+               "sell_charges": ch, "gross": round(gross, 2), "net": net, "reason": reason,
+               "outcome": outcome, "price_source": source, "manual": manual}
         self.st["trades"].append(rec)
         self.st["trades"] = self.st["trades"][-1000:]
-        del self.st["open"][t["id"]]
+        del self.st["open"][pos["id"]]
         print(f"[auto] SELL {pos['qty']} {pos['option']} @ {px} net {net}")
         return {"status": "sold", "qty": pos["qty"], "price": round(px, 2), "buy_price": pos["buy_price"],
                 "net": net, "charges": round(pos["buy_charges"] + ch, 2), "time": rec["sell_time"],
                 "cash_after": self.st["cash"]}
+
+    # --------------------------------------------------------------- commands
+    MAX_ATTEMPTS = 12  # ~2 minutes of 10-second polls without a live price -> report failure
+
+    def handle_command(self, cmd: dict, now: datetime) -> dict | None:
+        """Apply one command from the app. Returns the result, or None to retry later."""
+        cid = cmd.get("id")
+        if not cid:
+            return {"status": "failed", "message": "Command without id ignored"}
+        if cid in self.st["processed"]:
+            return self.st["processed"][cid]          # idempotent: never apply twice
+        kind = cmd.get("type")
+        res = None
+        if kind == "PAUSE":
+            self.st["paused"], self.st["paused_at"] = True, now.isoformat(timespec="seconds")
+            res = {"status": "done", "message": "Auto-trading paused. Open positions are unchanged."}
+        elif kind == "RESUME":
+            self.st["paused"] = False
+            res = {"status": "done", "message": "Auto-trading resumed for new signals."}
+        elif kind == "ALLOW_REENTRY":
+            self.st["blocks"] = {}
+            res = {"status": "done", "message": "Re-entry allowed again today."}
+        elif kind == "SET_REENTRY":
+            v = cmd.get("value") if cmd.get("value") in ("block_today", "allow") else "block_today"
+            self.st["reentry_rule"] = v
+            res = {"status": "done", "message": f"After a manual exit: {'no new auto-trades that day' if v == 'block_today' else 'auto-trading continues'}."}
+        elif kind == "EXIT":
+            res = self._manual_exit(cmd.get("target"), now, cid)
+        elif kind == "EXIT_ALL":
+            self.st["paused"], self.st["paused_at"] = True, now.isoformat(timespec="seconds")
+            results = [self._manual_exit(pid, now, cid) for pid in list(self.st["open"])]
+            if any(r is None for r in results):
+                res = None if self.st["attempts"].get(cid, 0) < self.MAX_ATTEMPTS else {
+                    "status": "partial", "message": "Paused. Some positions could not be sold (no live price); they are still open."}
+            else:
+                n = sum(1 for r in results if r and r["status"] == "done")
+                res = {"status": "done", "message": f"Paused and exited {n} position(s)."}
+        else:
+            res = {"status": "failed", "message": f"Unknown command {kind}"}
+        if res is None:
+            self.st["attempts"][cid] = self.st["attempts"].get(cid, 0) + 1
+            if self.st["attempts"][cid] >= self.MAX_ATTEMPTS:
+                res = {"status": "failed", "message": "No live option price for 2 minutes, so nothing was sold. The position is still open – try again."}
+            else:
+                return None
+        res = {**res, "type": kind, "target": cmd.get("target"), "time": now.isoformat(timespec="seconds")}
+        self.st["processed"][cid] = res
+        self.st["attempts"].pop(cid, None)
+        if len(self.st["processed"]) > 500:
+            for k in list(self.st["processed"])[:-500]:
+                del self.st["processed"][k]
+        return res
+
+    def _manual_exit(self, pid: str, now: datetime, cid: str) -> dict | None:
+        pos = self.st["open"].get(pid)
+        if not pos:
+            done = next((x for x in reversed(self.st["trades"]) if x["id"] == pid), None)
+            if done:
+                return {"status": "noop", "message": f"Already closed at ₹{done['sell_price']} ({done.get('reason')}) at {done['sell_time'][11:16]}."}
+            return {"status": "noop", "message": "No open auto position with that id."}
+        out = self._sell(pos, now, "Manual exit (you)", "MANUAL", manual=True)
+        if out is None:
+            return None
+        self.st["manual_exits"][pid] = {"price": out["price"], "net": out["net"], "time": out["time"], "cmd": cid}
+        if self.st.get("reentry_rule", "block_today") == "block_today":
+            self.st["blocks"][pos["index"]] = now.date().isoformat()
+        return {"status": "done", "message": f"Sold {out['qty']} {pos['option']} at ₹{out['price']:.2f} (paper). Net {'+' if out['net'] >= 0 else '−'}₹{abs(out['net']):,.2f}.",
+                "price": out["price"], "net": out["net"], "option": pos["option"]}
 
     # ---------------------------------------------------------------- summary
     def summary(self, day: str | None = None) -> dict:

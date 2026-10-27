@@ -178,6 +178,9 @@ def event_email(ev: dict) -> tuple[str, str, str]:
         subject = f"⚪ EXIT {t['option']} — {t['note']} ({sign}{pts} pts)"
         rows = [("Action", f"Sell / exit {t['option']} now"), ("Reason", t["note"])]
     a = t.get("auto")
+    if a and a.get("status") == "manual":
+        rows.insert(1, ("Auto-trader (paper)", f"You already exited this manually at {_rs(a['price'])} "
+                                               f"(net {'+' if a['net'] >= 0 else '−'}₹{_inr(abs(a['net']))})"))
     if a and a.get("status") == "sold":
         rows.insert(1, ("Auto-trader (paper)", f"Sold {a['qty']} @ {_rs(a['price'])} (bought {_rs(a['buy_price'])}) · "
                                                f"net {'+' if a['net'] >= 0 else '−'}₹{_inr(abs(a['net']))} after charges"))
