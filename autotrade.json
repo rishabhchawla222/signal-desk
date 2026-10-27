@@ -1,8 +1,9 @@
 {
  "start_cash": 1000000.0,
- "cash": 984811.66,
- "open": {
-  "NIFTY-20261027-1040-CALL": {
+ "cash": 999102.85,
+ "open": {},
+ "trades": [
+  {
    "id": "NIFTY-20261027-1040-CALL",
    "key": "OPT:NIFTY:2026-11-03:22750:CE",
    "option": "NIFTY 22750 CE",
@@ -17,19 +18,26 @@
    "buy_charges": 30.34,
    "spot_entry": 22760.5,
    "sl": 207.5,
-   "target": 277.3
+   "target": 277.3,
+   "sell_price": 220.65,
+   "sell_time": "2026-10-27T13:05:27",
+   "sell_charges": 51.06,
+   "gross": -815.75,
+   "net": -897.15,
+   "reason": "Stopped at cost after moving SL",
+   "outcome": "BREAKEVEN",
+   "price_source": "live bid"
   }
- },
- "trades": [],
+ ],
  "skipped": [],
  "started": "2026-10-27",
- "updated": "2026-10-27T13:00:25",
+ "updated": "2026-10-27T13:05:29",
  "summary": {
-  "trades": 0,
+  "trades": 1,
   "wins": 0,
-  "net": 0,
-  "cash": 984811.66,
-  "value": 999969.66,
+  "net": -897.15,
+  "cash": 999102.85,
+  "value": 999102.85,
   "start_cash": 1000000.0
  }
 }
