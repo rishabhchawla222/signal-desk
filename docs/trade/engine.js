@@ -15,6 +15,9 @@
   const MIS_SQUAREOFF = 15 * 60 + 20; // 3:20 PM
   const OPEN = 9 * 60 + 15, CLOSE = 15 * 60 + 30;
   const STALE_MS = 5 * 60 * 1000;
+  /** Money is kept in rupees rounded to the paisa at every step (no float drift). */
+  const money = x => Math.round((+x + Number.EPSILON) * 100) / 100;
+  const ACTIVE = o => o.status === "OPEN" || o.status === "TRIGGER_PENDING";
 
   // ------------------------------------------------------------------ time
   function ist(now) {
@@ -225,7 +228,8 @@
     let pending = 0;
     for (const o of acct.orders) if (o.status === "OPEN" || o.status === "TRIGGER_PENDING") pending += o.blocked || 0;
     const available = acct.cash - used - mtmLoss - pending;
-    return { cash: acct.cash, used, pending, unrealized: unreal, available, invested, current,
+    const netWorth = money(acct.cash + current + unreal);
+    return { cash: acct.cash, used, pending, unrealized: unreal, available, invested, current, netWorth,
              holdingsPnl: current - invested, holdingsDayPnl: dayPnl, realized: acct.realized, charges: acct.chargesPaid };
   }
 
@@ -266,11 +270,15 @@
 
   function placeOrder(acct, input, data, now) {
     now = now || new Date();
+    if (input.clientId) {
+      const dup = acct.orders.find(x => x.clientId === input.clientId);
+      if (dup) return { ok: dup.status !== "REJECTED", duplicate: true, order: dup, events: [], error: dup.status === "REJECTED" ? dup.msg : undefined };
+    }
     const o = {
       id: "O" + (++acct.seq) + "-" + (now instanceof Date ? now.getTime() : now).toString(36).slice(-4).toUpperCase(),
       ts: ist(now).iso, inst: input.inst, side: input.side, qty: +input.qty, product: input.product,
       type: input.type || "MARKET", price: input.price ? +input.price : null, trigger: input.trigger ? +input.trigger : null,
-      status: "OPEN", tag: input.tag || null,
+      status: "OPEN", tag: input.tag || null, clientId: input.clientId || null,
     };
     const err = validate(acct, o, data, now);
     if (err) { o.status = "REJECTED"; o.msg = err; acct.orders.push(o); return { ok: false, error: err, order: o }; }
@@ -319,21 +327,21 @@
   // ------------------------------------------------------------ execution
   function applyFill(acct, o, price, now, reason) {
     const i = parse(o.inst);
-    price = Math.round(price * 100) / 100;
+    price = money(price);
     const ch = charges(o.inst, o.side, o.qty, price, o.product);
     o.status = "COMPLETE"; o.fillPrice = price; o.fillTs = ist(now).iso; o.charges = ch.total; o.blocked = 0;
     if (reason) o.msg = reason;
-    acct.cash -= ch.total; acct.chargesPaid += ch.total;
+    acct.cash = money(acct.cash - ch.total); acct.chargesPaid = money(acct.chargesPaid + ch.total);
     let realized = 0;
     if (i.kind === "EQ" && o.product === "CNC") {
       const h = acct.holdings[i.u] || { qty: 0, avg: 0 };
       if (o.side === "BUY") {
-        h.avg = (h.qty * h.avg + o.qty * price) / (h.qty + o.qty); h.qty += o.qty;
-        acct.cash -= o.qty * price;
+        h.avg = Math.round((h.qty * h.avg + o.qty * price) / (h.qty + o.qty) * 10000) / 10000; h.qty += o.qty;
+        acct.cash = money(acct.cash - o.qty * price);
         acct.holdings[i.u] = h;
       } else {
-        realized = (price - h.avg) * o.qty;
-        h.qty -= o.qty; acct.cash += o.qty * price;
+        realized = money((price - h.avg) * o.qty);
+        h.qty -= o.qty; acct.cash = money(acct.cash + o.qty * price);
         if (h.qty <= 0) delete acct.holdings[i.u]; else acct.holdings[i.u] = h;
       }
     } else {
@@ -344,22 +352,22 @@
       let q = o.qty;
       if (p.qty && Math.sign(p.qty) !== s) {
         const closing = Math.min(q, Math.abs(p.qty));
-        realized = (price - p.avg) * closing * Math.sign(p.qty);
+        realized = money((price - p.avg) * closing * Math.sign(p.qty));
         p.qty += s * closing; q -= closing;
         if (!p.qty) p.avg = 0;
       }
       if (q > 0) {
-        p.avg = (Math.abs(p.qty) * p.avg + q * price) / (Math.abs(p.qty) + q);
+        p.avg = Math.round((Math.abs(p.qty) * p.avg + q * price) / (Math.abs(p.qty) + q) * 10000) / 10000;
         p.qty += s * q;
         if (Math.abs(p.qty) === q) p.opened = ist(now).date;
       }
       if (o.side === "BUY") { p.buyQty += o.qty; p.buyVal += o.qty * price; } else { p.sellQty += o.qty; p.sellVal += o.qty * price; }
-      p.realized += realized;
+      p.realized = money(p.realized + realized);
       p.last = ist(now).date;
-      acct.cash += realized;
+      acct.cash = money(acct.cash + realized);
       acct.positions[k] = p;
     }
-    acct.realized += realized;
+    acct.realized = money(acct.realized + realized);
     acct.lastPx[o.inst] = acct.lastPx[o.inst] || price;
     acct.trades.push({ id: o.id, ts: o.fillTs, inst: o.inst, side: o.side, qty: o.qty, price, product: o.product,
                        charges: ch.total, realized: Math.round(realized * 100) / 100 });
@@ -482,19 +490,47 @@
       if (!p.qty && (p.last || p.opened) < t.date) delete acct.positions[k];
     }
     if (acct.orders.length > 1500) acct.orders.splice(0, acct.orders.length - 1500);
+    if (data && data.quotes) recordEquity(acct, data, now);
     return events;
   }
 
+  /** One value per day (the latest), plus the value at the start of today for "Today's P&L". */
+  function recordEquity(acct, data, now) {
+    const t = ist(now);
+    const v = summary(acct, data).netWorth;
+    if (!isFinite(v)) return;
+    acct.equity = acct.equity || [];
+    const last = acct.equity[acct.equity.length - 1];
+    if (!acct.dayStart || acct.dayStart.d !== t.date) acct.dayStart = { d: t.date, v: last ? last.v : acct.deposits };
+    if (last && last.d === t.date) last.v = v; else acct.equity.push({ d: t.date, v });
+    if (acct.equity.length > 1000) acct.equity.splice(0, acct.equity.length - 1000);
+  }
+
+  const STATUS_LABEL = { OPEN: "Pending", TRIGGER_PENDING: "Trigger pending", COMPLETE: "Filled", CANCELLED: "Cancelled", REJECTED: "Rejected" };
+  function statusLabel(o) { return o.status === "OPEN" && o.amo ? "Queued (AMO)" : STATUS_LABEL[o.status] || o.status; }
+
   /** Exit a position at market (or queue if market is closed). */
-  function exitPosition(acct, k, data, now) {
+  function pendingExitQty(acct, p) {
+    const side = p.qty > 0 ? "SELL" : "BUY";
+    return acct.orders.filter(o => ACTIVE(o) && o.inst === p.inst && o.product === p.product && o.side === side)
+      .reduce((a, o) => a + o.qty, 0);
+  }
+  function exitPosition(acct, k, data, now, clientId) {
     const p = acct.positions[k];
-    if (!p || !p.qty) return { ok: false, error: "No open quantity." };
-    return placeOrder(acct, { inst: p.inst, side: p.qty > 0 ? "SELL" : "BUY", qty: Math.abs(p.qty), product: p.product, type: "MARKET", tag: "EXIT" }, data, now);
+    if (!p || !p.qty) return { ok: false, error: "This position is already closed." };
+    if (clientId) {
+      const dup = acct.orders.find(x => x.clientId === clientId);
+      if (dup) return { ok: dup.status !== "REJECTED", duplicate: true, order: dup, events: [] };
+    }
+    if (pendingExitQty(acct, p) >= Math.abs(p.qty)) return { ok: false, error: "An exit order for this position is already pending." };
+    const qty = Math.abs(p.qty) - pendingExitQty(acct, p);
+    return placeOrder(acct, { inst: p.inst, side: p.qty > 0 ? "SELL" : "BUY", qty, product: p.product, type: "MARKET", tag: "EXIT", clientId }, data, now);
   }
 
   const api = { ist, nextWeekday, marketOpen, sessionPhase, feedAgeMs, parse, label, fmtExp, lotSize, quote, execPrice,
                 underlyingSpot, chainRow, isIndex, newAccount, marginFor, orderMargin, charges, summary, validate,
-                placeOrder, cancelOrder, modifyOrder, process, exitPosition, posKey, lastPrice,
+                placeOrder, cancelOrder, modifyOrder, process, exitPosition, pendingExitQty, posKey, lastPrice, money,
+                statusLabel, recordEquity, ACTIVE,
                 CONST: { OPEN, CLOSE, MIS_SQUAREOFF, MARGIN } };
   root.PaperEngine = api;
   if (typeof module !== "undefined" && module.exports) module.exports = api;

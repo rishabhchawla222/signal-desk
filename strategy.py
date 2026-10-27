@@ -207,7 +207,7 @@ class IndexEngine:
             sl_px = max(sl, r.open)
         if hit_sl:  # if both happen in one candle we assume the worse case
             if tr["breakeven"]:
-                return self._close(tr, bar_end, sl_px, "BREAKEVEN", "Stopped at cost after moving SL")
+                return self._close(tr, bar_end, sl_px, "BREAKEVEN", "Index back at entry (stop had moved to cost)")
             return self._close(tr, bar_end, sl_px, "STOPLOSS", "Stop-loss hit")
         if hit_tg:
             return self._close(tr, bar_end, tgt, "TARGET", "Target hit")
