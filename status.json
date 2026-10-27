@@ -2,20 +2,20 @@
  "indices": {
   "NIFTY": {
    "name": "NIFTY",
-   "price": 22748.75,
+   "price": 22762.0,
    "prev_close": 22753.2,
-   "change_pct": -0.02,
-   "bar_time": "2026-10-27T15:10:00",
+   "change_pct": 0.04,
+   "bar_time": "2026-10-27T15:15:00",
    "indicators": {
-    "rsi": 56.4,
-    "adx": 26.0,
-    "ema_fast": 22734.04,
-    "ema_slow": 22722.42,
-    "supertrend": 22666.6,
+    "rsi": 59.1,
+    "adx": 26.3,
+    "ema_fast": 22739.63,
+    "ema_slow": 22726.01,
+    "supertrend": 22670.63,
     "supertrend_dir": 1,
     "orh": 22745.95,
     "orl": 22653.5,
-    "ema15": 22721.47
+    "ema15": 22725.33
    },
    "call": {
     "checks": [
@@ -45,11 +45,11 @@
      },
      {
       "name": "Strong bullish candle",
-      "ok": false
+      "ok": true
      },
      {
       "name": "Not overextended",
-      "ok": true
+      "ok": false
      }
     ],
     "score": 7,
@@ -83,34 +83,34 @@
      },
      {
       "name": "Strong bearish candle",
-      "ok": true
+      "ok": false
      },
      {
       "name": "Not overextended",
       "ok": false
      }
     ],
-    "score": 2,
+    "score": 1,
     "total": 8
    },
    "open_trade": null
   },
   "SENSEX": {
    "name": "SENSEX",
-   "price": 73561.48,
+   "price": 73569.39,
    "prev_close": 73606.75,
-   "change_pct": -0.06,
-   "bar_time": "2026-10-27T15:00:24",
+   "change_pct": -0.05,
+   "bar_time": "2026-10-27T15:05:25",
    "indicators": {
-    "rsi": 60.5,
-    "adx": 24.9,
-    "ema_fast": 73447.2,
-    "ema_slow": 73422.94,
-    "supertrend": 73323.12,
+    "rsi": 60.1,
+    "adx": 25.7,
+    "ema_fast": 73477.96,
+    "ema_slow": 73439.51,
+    "supertrend": 73321.77,
     "supertrend_dir": 1,
     "orh": 73500.92,
     "orl": 73213.08,
-    "ema15": 73447.48
+    "ema15": 73451.24
    },
    "call": {
     "checks": [
@@ -192,8 +192,8 @@
   }
  },
  "errors": [],
- "updated_at": "2026-10-27T15:10:25",
- "market": "OPEN",
- "note": "",
+ "updated_at": "2026-10-27T15:15:28",
+ "market": "CLOSED",
+ "note": "Session over \u2013 see you tomorrow",
  "data_source": "Yahoo Finance 5-min candles (free; can lag 1\u20133 min)"
 }
