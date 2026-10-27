@@ -50,5 +50,26 @@ nothing in the app is mock data except the clearly labelled sample data on the s
 17. Intraday (MIS) square-off at 3:20 PM needs the app open; if closed, it happens on next open at the last price seen. (Documented; a browser-only app cannot do better.)
 18. SENSEX options can't be traded (BSE blocks free access) – documented, not fixable without a data vendor.
 
-## Fix plan / status
-See the commit history: stage 2 (engine), stage 3 (manual exit + controls), stage 4 (UI), stage 5–6 (tests, a11y, deploy).
+## Status (all fixed unless marked)
+| # | Fix |
+|---|---|
+| 1 | Exit / Pause / Resume / Stop & exit all / Allow re-entry from the app via the `control` branch; applied once per command id; result reported back in `autotrade.json` |
+| 2 | Second exit refused while one is pending; idempotent `clientId` on every order |
+| 3 | With a token the app reads `autotrade.json` through the GitHub API (fresh); without one it says the data may be ~5 min old |
+| 4 | New **Trade history** page (your trades + auto-trader trades) |
+| 5 | Pause (emergency stop for new entries) on Dashboard and Auto trading |
+| 6 | Exit label fixed; P&L shown is always the option's |
+| 7 | In-flight guard + idempotent order id on Confirm |
+| 8 | Money rounded to the paisa at every step |
+| 9 | User-facing status labels |
+| 10–12 | New Dashboard, equity history chart, holdings search/sort/allocation, positions show SL/target and realized/unrealized |
+| 13 | Dialogs and order ticket trap focus, close on Escape, return focus |
+| 14 | Not changed (signals dashboard is read-only and falls back gracefully) |
+| 15–18 | Documented limitations |
+
+## Tests
+* `node --test tests/engine.test.js tests/control.test.js` – 26 engine and control-client cases
+* `python -m unittest discover -s tests` – 15 auto-trader cases (manual exit, races, retries, pause, re-entry, restart)
+* `python tests/ui_test.py` – 29 browser checks (every page at 390/820/1280 px, order double-tap, manual exits,
+  refresh during exit, network failure + retry, rejected exit, pause/resume, missing data)
+All run on every push via `.github/workflows/tests.yml`.

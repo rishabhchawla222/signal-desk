@@ -162,3 +162,43 @@ prices are only estimates. Signals where the price already ran past the don't-ch
 See it in the app under **Portfolio → Auto-trader**; every signal email and the daily summary say what it did.
 Settings are in `config.json` → `autotrade` (`lots`, `indices`, `start_cash`, `enabled`).
 The account is stored in `autotrade.json` on the `signals-data` branch; delete that file to start over.
+
+---
+
+## Controlling the auto-trader from the app (manual exit, pause, resume)
+
+Open **Auto trading** in the app (`/trade/#auto`). Controls:
+
+| Control | What it does |
+|---|---|
+| **Exit trade** | Sells that auto position at the live NSE bid (paper). Shows *Exiting…* until the auto-trader confirms. |
+| **Pause auto-trading** | No new auto entries. Open trades stay and still exit on their signal or when you exit them. |
+| **Resume auto-trading** | New signals are traded again (asks you to confirm). |
+| **Stop & exit all** | Pauses and sells every open auto position. |
+| **Allow re-entry today** | After a manual exit, new auto-trades on that index are blocked for the rest of the day; this lifts the block. |
+| **After you exit manually…** | Choose whether manual exits block same-day re-entry (default) or not. |
+
+**One-time setup:** these controls need a GitHub token (the auto-trader runs on GitHub, so the app writes your command to the
+repository's `control` branch and the auto-trader picks it up within ~10 seconds during market hours).
+
+1. GitHub → Settings → Developer settings → **Fine-grained tokens** → *Generate new token*
+   (direct link: https://github.com/settings/personal-access-tokens/new)
+2. Repository access: **Only select repositories** → `signal-desk`
+3. Permissions → Repository → **Contents: Read and write** (nothing else)
+4. In the app: **Settings → Auto-trader control** → paste → *Save & test*.
+
+The token is kept only in that browser's storage and is sent only to api.github.com. Never commit it.
+
+How it stays safe: each command has a unique id and is applied at most once; a manual exit needs a live bid (it is never closed
+at a guessed price – after ~2 minutes without a price it reports failure and the position stays open); a strategy exit for a
+trade you already closed does nothing; the app only shows a position as closed after the auto-trader confirms it.
+
+## Tests
+
+```
+node --test tests/engine.test.js tests/control.test.js     # order engine + control client
+python -m unittest discover -s tests                         # auto-trader (manual exit, races, pause, re-entry)
+pip install playwright && python -m playwright install chromium
+python tests/ui_test.py                                      # browser tests, phone/tablet/desktop
+```
+They also run automatically on every push (`.github/workflows/tests.yml`). See `AUDIT.md` for the bug audit.

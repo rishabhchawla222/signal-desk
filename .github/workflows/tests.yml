@@ -24,7 +24,19 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: "22"
-      - name: Engine tests (paper-trading app)
-        run: node --test tests/engine.test.js
+      - name: Engine + control client tests (paper-trading app)
+        run: node --test tests/engine.test.js tests/control.test.js
       - name: Auto-trader tests
         run: python -m unittest discover -s tests -v
+
+  ui:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install playwright && python -m playwright install --with-deps chromium
+      - name: Browser tests (all pages, phone/tablet/desktop, manual exit flows)
+        run: python tests/ui_test.py
