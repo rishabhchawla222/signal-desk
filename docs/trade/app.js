@@ -61,9 +61,9 @@ const save = () => store.set(ACCT_KEY, acct);
 let autoPending = store.get(PEND_KEY, []), autoLog = store.get(LOG_KEY, []);
 const savePending = () => { store.set(PEND_KEY, autoPending); store.set(LOG_KEY, autoLog.slice(-30)); };
 
-function applyTheme() {
-  const t = store.get(THEME_KEY, "system");
-  if (t === "system") document.documentElement.removeAttribute("data-theme"); else document.documentElement.setAttribute("data-theme", t);
+function applyTheme() {   // the app is light-only
+  document.documentElement.setAttribute("data-theme", "light");
+  store.del(THEME_KEY);
 }
 applyTheme();
 
@@ -855,12 +855,9 @@ function viewHistory() {
 let tokenCheck = null;
 function viewSettings() {
   const sm = E.summary(acct, engineData());
-  const theme = store.get(THEME_KEY, "system");
   const r = repoInfo();
   return `${pageHead("Settings", "Everything here stays in this browser")}
-  <h2 style="margin-top:0">Appearance</h2>
-  <div class="card pad"><div class="seg" role="radiogroup" aria-label="Theme">${[["system", "System"], ["light", "Light"], ["dark", "Dark"]].map(([k, l]) => `<button class="${theme === k ? "on" : ""}" role="radio" aria-checked="${theme === k}" data-theme-set="${k}">${l}</button>`).join("")}</div></div>
-  <h2>Auto-trader control</h2>
+  <h2 style="margin-top:0">Auto-trader control</h2>
   <div class="card pad stack">
     <div class="sub">To exit auto-trades and pause or resume the auto-trader from this app, it needs a GitHub token that can write to <b>${r ? esc(r.owner + "/" + r.repo) : "your repository"}</b>. The token is saved only in this browser and is sent only to api.github.com.</div>
     <ol class="sub" style="margin:0;padding-left:18px;line-height:1.7">
@@ -1128,7 +1125,7 @@ function toastEvent(ev) {
 
 // ================================================================== events
 document.addEventListener("click", e => {
-  const t = e.target.closest("[data-go],[data-back],[data-more],[data-trade],[data-range],[data-eq],[data-exp],[data-star],[data-otab],[data-htab],[data-cancel],[data-modify],[data-exit],[data-exitall],[data-msort],[data-hsort],[data-sside],[data-sprod],[data-stype],[data-step],[data-auto-exit],[data-auto-retry],[data-auto-dismiss],[data-auto-pause],[data-auto-resume],[data-auto-stopall],[data-auto-reentry],[data-theme-set],#sheetClose,#sheetPlace,#sheetGo,#sheetBack,#scrim,#dlgScrim,#dlgOk,#dlgCancel,#addFunds,#resetAsk,#backupBtn,#fundsPill,#tokenSave,#tokenTest,#tokenDel,#moreScrim");
+  const t = e.target.closest("[data-go],[data-back],[data-more],[data-trade],[data-range],[data-eq],[data-exp],[data-star],[data-otab],[data-htab],[data-cancel],[data-modify],[data-exit],[data-exitall],[data-msort],[data-hsort],[data-sside],[data-sprod],[data-stype],[data-step],[data-auto-exit],[data-auto-retry],[data-auto-dismiss],[data-auto-pause],[data-auto-resume],[data-auto-stopall],[data-auto-reentry],#sheetClose,#sheetPlace,#sheetGo,#sheetBack,#scrim,#dlgScrim,#dlgOk,#dlgCancel,#addFunds,#resetAsk,#backupBtn,#fundsPill,#tokenSave,#tokenTest,#tokenDel,#moreScrim");
   if (!t) { if (!e.target.closest(".search")) $("#results").hidden = true; return; }
   const ds = t.dataset;
   if (t.id === "scrim" && e.target === t) return closeSheet();
@@ -1161,7 +1158,6 @@ document.addEventListener("click", e => {
   if (ds.autoResume) return askAuto("resume");
   if (ds.autoStopall) return askAuto("stopall");
   if (ds.autoReentry) return askAuto("reentry");
-  if (ds.themeSet) { store.set(THEME_KEY, ds.themeSet); applyTheme(); return render(); }
   if (ds.sside) { sheet.side = ds.sside; sheet.error = ""; sheet.confirm = false; return renderSheet(); }
   if (ds.sprod) { sheet.product = ds.sprod; sheet.error = ""; sheet.confirm = false; return renderSheet(); }
   if (ds.stype) { sheet.type = ds.stype; sheet.error = ""; sheet.confirm = false; if (!sheet.price) { const q = E.quote(sheet.inst, engineData()); if (q) sheet.price = q.ltp; } return renderSheet(); }

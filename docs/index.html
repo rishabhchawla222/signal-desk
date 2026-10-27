@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<meta name="color-scheme" content="light">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Signal Desk</title>
 <meta name="robots" content="noindex, nofollow">
@@ -10,11 +11,12 @@
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#0c0f14; --panel:#131821; --panel2:#181e29; --line:#232b38; --line2:#2d3746;
-  --text:#e6ebf2; --muted:#8792a3; --faint:#5b6577;
-  --up:#31d68c; --up-bg:rgba(49,214,140,.10); --down:#ff5c6c; --down-bg:rgba(255,92,108,.10);
-  --amber:#f5b942; --amber-bg:rgba(245,185,66,.12);
+  --bg:#f4f5f7; --panel:#ffffff; --panel2:#f1f3f6; --line:#e3e7ed; --line2:#d3d9e1;
+  --text:#121826; --muted:#5f6b7d; --faint:#8a95a6;
+  --up:#08875a; --up-bg:#e5f5ee; --down:#cf2f3a; --down-bg:#fdebec;
+  --amber:#9a5b00; --amber-bg:#fff3dc;
   --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace; --sans:"IBM Plex Sans",system-ui,sans-serif;
+  color-scheme:light;
 }
 *{box-sizing:border-box}
 html,body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans);font-size:15px;-webkit-font-smoothing:antialiased}
@@ -49,7 +51,7 @@ h2{font-size:12px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;
 .lv span{display:block;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.8px}
 .lv b{font:600 16px var(--mono)}
 .track{grid-column:1/-1;position:relative;height:8px;border-radius:4px;background:linear-gradient(90deg,var(--down) 0%,#3a4352 40%,#3a4352 60%,var(--up) 100%);margin-top:6px;opacity:.85}
-.track i{position:absolute;top:-5px;width:4px;height:18px;border-radius:2px;background:#fff;box-shadow:0 0 0 3px rgba(255,255,255,.15);transform:translateX(-2px)}
+.track i{position:absolute;top:-5px;width:4px;height:18px;border-radius:2px;background:var(--text);box-shadow:0 0 0 3px var(--panel);transform:translateX(-2px)}
 .track-l{grid-column:1/-1;display:flex;justify-content:space-between;font:12px var(--mono);color:var(--muted)}
 .none{padding:20px;border:1px solid var(--line);border-radius:14px;background:var(--panel);color:var(--muted)}
 .none b{color:var(--text)}
