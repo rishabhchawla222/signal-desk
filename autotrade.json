@@ -1,0 +1,17 @@
+{
+ "start_cash": 1000000.0,
+ "cash": 1000000.0,
+ "open": {},
+ "trades": [],
+ "skipped": [],
+ "started": null,
+ "updated": "2026-10-27T08:10:32",
+ "summary": {
+  "trades": 0,
+  "wins": 0,
+  "net": 0,
+  "cash": 1000000.0,
+  "value": 1000000.0,
+  "start_cash": 1000000.0
+ }
+}
