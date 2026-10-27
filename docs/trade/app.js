@@ -450,11 +450,20 @@ function render() {
   }
   const fn = {dashboard: viewDashboard, market: viewMarket, watchlist: viewWatch, fno: viewFno, orders: viewOrders, positions: viewPositions,
               holdings: viewHoldings, auto: viewAuto, history: viewHistory, settings: viewSettings, stock: viewStock, index: viewIndex}[route.name] || viewDashboard;
+  const keep = focusKey(document.activeElement);
   v.innerHTML = fn();
   renderNav();
+  if (keep) { const el = document.querySelector(keep); if (el && el !== document.activeElement) el.focus({preventScroll: true}); }
   const h = afterHooks; afterHooks = []; h.forEach(f => f());
 }
 let afterHooks = [];
+/** A selector that finds "the same" control after a re-render, so live price updates don't steal keyboard focus. */
+function focusKey(el) {
+  if (!el || el === document.body || !el.closest || !el.closest("#view, #sideNav, #bottomNav")) return null;
+  if (el.id) return "#" + CSS.escape(el.id);
+  for (const a of el.getAttributeNames()) if (a.startsWith("data-")) return `${el.tagName.toLowerCase()}[${a}="${CSS.escape(el.getAttribute(a))}"]`;
+  return null;
+}
 const pageHead = (title, sub, right = "") => `<div class="page-h"><div><h1>${title}</h1>${sub ? `<div class="sub">${sub}</div>` : ""}</div>${right}</div>`;
 
 // ---------- dashboard
