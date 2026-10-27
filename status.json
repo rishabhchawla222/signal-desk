@@ -2,16 +2,16 @@
  "indices": {
   "NIFTY": {
    "name": "NIFTY",
-   "price": 22753.65,
+   "price": 22764.3,
    "prev_close": 22753.2,
-   "change_pct": 0.0,
-   "bar_time": "2026-10-27T11:35:00",
+   "change_pct": 0.05,
+   "bar_time": "2026-10-27T11:40:00",
    "indicators": {
-    "rsi": 53.2,
-    "adx": 13.9,
-    "ema_fast": 22750.89,
-    "ema_slow": 22747.05,
-    "supertrend": 22685.92,
+    "rsi": 55.8,
+    "adx": 13.3,
+    "ema_fast": 22753.57,
+    "ema_slow": 22748.62,
+    "supertrend": 22690.6,
     "supertrend_dir": 1,
     "orh": 22745.95,
     "orl": 22653.5,
@@ -33,7 +33,7 @@
      },
      {
       "name": "RSI 55\u201375",
-      "ok": false
+      "ok": true
      },
      {
       "name": "ADX \u2265 20 (trending)",
@@ -45,14 +45,14 @@
      },
      {
       "name": "Strong bullish candle",
-      "ok": false
+      "ok": true
      },
      {
       "name": "Not overextended",
       "ok": true
      }
     ],
-    "score": 5,
+    "score": 7,
     "total": 8
    },
    "put": {
@@ -146,20 +146,20 @@
   },
   "SENSEX": {
    "name": "SENSEX",
-   "price": 73461.07,
+   "price": 73476.56,
    "prev_close": 73606.75,
-   "change_pct": -0.2,
-   "bar_time": "2026-10-27T11:25:23",
+   "change_pct": -0.18,
+   "bar_time": "2026-10-27T11:30:23",
    "indicators": {
-    "rsi": 46.4,
-    "adx": 11.8,
-    "ema_fast": 73520.95,
-    "ema_slow": 73518.86,
-    "supertrend": 73674.77,
+    "rsi": 47.4,
+    "adx": 12.4,
+    "ema_fast": 73514.92,
+    "ema_slow": 73516.49,
+    "supertrend": 73677.1,
     "supertrend_dir": -1,
     "orh": 73500.92,
     "orl": 73213.08,
-    "ema15": 73429.49
+    "ema15": 73433.97
    },
    "call": {
     "checks": [
@@ -169,7 +169,7 @@
      },
      {
       "name": "EMA 9 above EMA 21",
-      "ok": true
+      "ok": false
      },
      {
       "name": "Supertrend bullish",
@@ -196,7 +196,7 @@
       "ok": false
      }
     ],
-    "score": 2,
+    "score": 1,
     "total": 8
    },
    "put": {
@@ -207,7 +207,7 @@
      },
      {
       "name": "EMA 9 below EMA 21",
-      "ok": false
+      "ok": true
      },
      {
       "name": "Supertrend bearish",
@@ -234,14 +234,14 @@
       "ok": true
      }
     ],
-    "score": 2,
+    "score": 3,
     "total": 8
    },
    "open_trade": null
   }
  },
  "errors": [],
- "updated_at": "2026-10-27T11:35:25",
+ "updated_at": "2026-10-27T11:40:25",
  "market": "OPEN",
  "note": "",
  "data_source": "Yahoo Finance 5-min candles (free; can lag 1\u20133 min)"
