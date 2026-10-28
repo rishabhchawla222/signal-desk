@@ -2,20 +2,20 @@
  "indices": {
   "NIFTY": {
    "name": "NIFTY",
-   "price": 22510.5,
+   "price": 22506.2,
    "prev_close": 22749.75,
-   "change_pct": -1.05,
-   "bar_time": "2026-10-28T10:25:00",
+   "change_pct": -1.07,
+   "bar_time": "2026-10-28T10:30:00",
    "indicators": {
-    "rsi": 31.4,
-    "adx": 33.1,
-    "ema_fast": 22565.77,
-    "ema_slow": 22612.54,
+    "rsi": 31.0,
+    "adx": 33.2,
+    "ema_fast": 22553.86,
+    "ema_slow": 22602.88,
     "supertrend": 22633.2,
     "supertrend_dir": -1,
     "orh": 22689.15,
     "orl": 22551.9,
-    "ema15": 22679.98
+    "ema15": 22663.43
    },
    "call": {
     "checks": [
@@ -83,34 +83,34 @@
      },
      {
       "name": "Strong bearish candle",
-      "ok": false
+      "ok": true
      },
      {
       "name": "Not overextended",
       "ok": false
      }
     ],
-    "score": 6,
+    "score": 7,
     "total": 8
    },
    "open_trade": null
   },
   "SENSEX": {
    "name": "SENSEX",
-   "price": 72791.96,
+   "price": 72823.29,
    "prev_close": 73598.67,
-   "change_pct": -1.1,
-   "bar_time": "2026-10-28T10:15:24",
+   "change_pct": -1.05,
+   "bar_time": "2026-10-28T10:20:24",
    "indicators": {
-    "rsi": 33.0,
+    "rsi": 35.4,
     "adx": 27.6,
-    "ema_fast": 72942.98,
-    "ema_slow": 73100.75,
-    "supertrend": 73189.05,
+    "ema_fast": 72931.83,
+    "ema_slow": 73082.13,
+    "supertrend": 73219.33,
     "supertrend_dir": -1,
     "orh": 73279.57,
     "orl": 72815.16,
-    "ema15": 73282.49
+    "ema15": 73290.11
    },
    "call": {
     "checks": [
@@ -154,7 +154,7 @@
     "checks": [
      {
       "name": "Breakdown below opening range",
-      "ok": true
+      "ok": false
      },
      {
       "name": "EMA 9 below EMA 21",
@@ -185,14 +185,14 @@
       "ok": false
      }
     ],
-    "score": 6,
+    "score": 5,
     "total": 8
    },
    "open_trade": null
   }
  },
  "errors": [],
- "updated_at": "2026-10-28T10:25:25",
+ "updated_at": "2026-10-28T10:30:25",
  "market": "OPEN",
  "note": "",
  "data_source": "Yahoo Finance 5-min candles (free; can lag 1\u20133 min)"
