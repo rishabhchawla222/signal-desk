@@ -37,6 +37,6 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - run: pip install playwright && python -m playwright install --with-deps chromium
+      - run: pip install -r requirements.txt playwright && python -m playwright install --with-deps chromium
       - name: Browser tests (all pages, phone/tablet/desktop, manual exit flows)
         run: python tests/ui_test.py
