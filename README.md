@@ -156,8 +156,8 @@ Nothing here places real orders. To trade for real later, the order screen would
 
 Every market day the signal engine also trades its own signals in a **virtual account** (₹10,00,000 to start):
 it buys each NIFTY signal (1 lot) at the live NSE ask price and sells at the live bid when the signal exits
-(target, stop-loss, trend flip or 3:15 PM). Charges are included. SENSEX signals are skipped because their option
-prices are only estimates. Signals where the price already ran past the don't-chase level are skipped too.
+(target, stop-loss, trend flip or 3:15 PM). Charges are included. SENSEX signals are traded too (1 lot = 20) on
+**estimated** prices (see below). Signals where the price already ran past the don't-chase level are skipped.
 
 See it in the app under **Portfolio → Auto-trader**; every signal email and the daily summary say what it did.
 Settings are in `config.json` → `autotrade` (`lots`, `indices`, `start_cash`, `enabled`).
@@ -202,3 +202,16 @@ pip install playwright && python -m playwright install chromium
 python tests/ui_test.py                                      # browser tests, phone/tablet/desktop
 ```
 They also run automatically on every push (`.github/workflows/tests.yml`). See `AUDIT.md` for the bug audit.
+
+## SENSEX options (estimated prices)
+
+BSE blocks free automated access to its option prices (re-checked 28 Oct 2026), so SENSEX options use **estimated**
+prices everywhere – the F&O option chain, your own paper trades and the auto-trader:
+
+* Black-Scholes on the live SENSEX level (refreshed every 15 s), with the implied volatility of the NIFTY strike at the
+  same moneyness (NIFTY expiry closest in time, never an expiring-today chain), smoothed and kept arbitrage-free.
+* Bid/ask set 0.25% either side. No open interest. Weekly expiries on Thursdays; lot size 20.
+* Shown as "Estimated" in the chain, the order ticket, emails (≈) and auto-trade history (EST).
+
+Real SENSEX prices can differ, especially far from the money and near expiry. To turn off SENSEX auto-trading, remove it
+from `autotrade.indices` in `config.json`.

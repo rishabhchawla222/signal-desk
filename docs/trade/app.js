@@ -541,7 +541,7 @@ function autoPosRow(p, compactRow) {
     : pend ? `<span class="exiting" role="status"><span class="spinner"></span>${pend.state === "sending" ? "Sending exit…" : "Exiting…"}</span>`
     : `<button class="btn sm sell" data-auto-exit="${esc(p.id)}">Exit trade</button>`;
   return `<div class="list-item" style="padding:${compactRow ? "10px 0" : "12px 16px"};align-items:flex-start;flex-wrap:wrap">
-    <div class="li-main"><b>${esc(p.option)} <span class="pill acc">AUTO</span></b>
+    <div class="li-main"><b>${esc(p.option)} <span class="pill acc">AUTO</span>${p.estimated ? ' <span class="pill warn" title="Estimated prices">EST</span>' : ""}</b>
       <span class="wrap">Long ${p.side === "CALL" ? "call" : "put"} · ${p.qty} qty · bought ₹${fmt(p.buy_price)} at ${esc(hm(p.buy_time))}${p.sl ? ` · SL ₹${fmt(p.sl)} · target ₹${fmt(p.target)}` : ""}</span></div>
     <div class="li-end" style="display:flex;flex-direction:column;align-items:flex-end;gap:6px"><b class="${cls(pnl)}">${pnl == null ? "—" : srs(pnl)}</b>
       <span class="muted">LTP ${px == null ? "—" : fmt(px)}</span><div class="row" style="gap:6px">${action}</div></div></div>`;
@@ -635,7 +635,7 @@ function viewIndex() {
   const c = chg(q), ch = chartBlock(k, q);
   afterHooks.push(() => wireChart($("#chart"), ch.xs, ch.ys, ch.fx));
   const futs = Object.entries((D.quotes && D.quotes.futures) || {}).filter(([kk, f]) => f.u === k);
-  const fnoable = ["NIFTY", "BANKNIFTY", "FINNIFTY", "MIDCPNIFTY"].includes(k);
+  const fnoable = ["NIFTY", "SENSEX", "BANKNIFTY", "FINNIFTY", "MIDCPNIFTY"].includes(k);
   return `
   <div class="row" style="gap:10px;margin-bottom:16px"><button class="icon-btn" data-back="1" aria-label="Back">${svg("back")}</button><div class="grow"><h1>${INDEX_LABEL[k]}</h1><div class="sub">Index</div></div></div>
   <div class="card pad"><div class="quote-head"><div><div class="big${fx("IDX:" + k)}">${fmt(q.p)}</div><div class="num ${cls(c.abs)}" style="font-weight:600">${sgn(c.abs)} (${pct(c.pct)})</div></div>${marketPill()}</div>
@@ -644,14 +644,14 @@ function viewIndex() {
   <h2>Performance</h2><div class="card pad" style="display:grid;gap:18px">${rangeBar(q.l, q.h, q.p, "Today's low", "Today's high")}${rangeBar(q.yl, q.yh, q.p, "52W low", "52W high")}
     <div class="stats"><div class="stat"><span>Open</span><b>${fmt(q.o)}</b></div><div class="stat"><span>Previous close</span><b>${fmt(q.pc)}</b></div></div></div>
   ${futs.length ? `<h2>Futures</h2><div class="card">${futs.map(([kk, f]) => futRow(kk, f)).join("")}</div>` : ""}
-  ${k === "SENSEX" ? `<div class="info" style="margin-top:14px">SENSEX options trade on BSE, which has no free live feed, so they can't be paper-traded here.</div>` : ""}`;
+  ${k === "SENSEX" ? `<div class="note" style="margin-top:14px">SENSEX option prices are estimates (BSE has no free live feed). They're calculated from the live SENSEX level and NIFTY's live volatility.</div>` : ""}`;
 }
 
 // ---------- F&O
 function chainUnderlyings() {
   const keys = Object.keys((D.chains && D.chains.chains) || {});
   const u = [...new Set(keys.map(k => k.split("|")[0]))];
-  const idx = ["NIFTY", "BANKNIFTY", "FINNIFTY", "MIDCPNIFTY"].filter(x => u.includes(x));
+  const idx = ["NIFTY", "SENSEX", "BANKNIFTY", "FINNIFTY", "MIDCPNIFTY"].filter(x => u.includes(x));
   return idx.concat(u.filter(x => !idx.includes(x)).sort());
 }
 function viewFno() {
@@ -671,15 +671,15 @@ function viewFno() {
     const ce = `OPT:${fnoU}:${fnoExp}:${K}:CE`, pe = `OPT:${fnoU}:${fnoExp}:${K}:PE`;
     const cIt = K < spot, pIt = K > spot;
     const p_ = (l, c) => l != null && l - c ? (c / (l - c) * 100) : null;
-    const cp = p_(r[1], r[2]), pp = p_(r[9], r[10]);
+    const cp = ch.estimated ? null : p_(r[1], r[2]), pp = ch.estimated ? null : p_(r[9], r[10]);
     return pre + `<tr>
-      <td class="r ${cIt ? "itm" : ""}"><span class="oi">${compact(r[5])}</span></td>
+      <td class="r ${cIt ? "itm" : ""}"><span class="oi">${ch.estimated ? "—" : compact(r[5])}</span></td>
       <td class="c-chg r ${cIt ? "itm" : ""} num ${cls(cp)}" style="font-size:12px">${cp == null ? "" : pct(cp, 1)}</td>
       <td class="r ${cIt ? "itm" : ""}"><button class="px-btn${fx(ce)}" data-trade="${ce}" data-side="BUY" aria-label="Trade ${fnoU} ${K} call at ${fmt(r[1])}">${fmt(r[1])}</button></td>
       <td class="k">${K}</td>
       <td class="${pIt ? "itm" : ""}"><button class="px-btn${fx(pe)}" data-trade="${pe}" data-side="BUY" aria-label="Trade ${fnoU} ${K} put at ${fmt(r[9])}">${fmt(r[9])}</button></td>
       <td class="c-chg ${pIt ? "itm" : ""} num ${cls(pp)}" style="font-size:12px">${pp == null ? "" : pct(pp, 1)}</td>
-      <td class="${pIt ? "itm" : ""}"><span class="oi">${compact(r[13])}</span></td></tr>`;
+      <td class="${pIt ? "itm" : ""}"><span class="oi">${ch.estimated ? "—" : compact(r[13])}</span></td></tr>`;
   }).join("");
   afterHooks.push(() => {
     const s = $("#fnoU"); if (s) s.onchange = e => go("fno-" + e.target.value);
@@ -688,6 +688,7 @@ function viewFno() {
   });
   return `${pageHead("F&amp;O", `Tap a price to buy or sell · lot size ${lot} · chain as of ${esc(hm(D.chains.ts))} IST`, marketPill())}
   ${signalCard() ? `<div class="stack" style="margin-bottom:14px">${signalCard()}</div>` : ""}
+  ${ch.estimated ? `<div class="info" style="margin-bottom:12px" role="note"><b>Estimated prices.</b> BSE doesn't offer a free live feed, so these ${fnoU} option prices are calculated every 15 seconds from the live ${fnoU} level and ${esc(ch.proxy || "NIFTY")}'s live volatility. Real market prices can differ, especially far from the current level and near expiry. Open interest isn't available.</div>` : ""}
   <div class="row wrap" style="margin-bottom:12px;gap:10px"><label class="sr" for="fnoU">Underlying</label><select id="fnoU" class="inp">${us.map(u => `<option ${u === fnoU ? "selected" : ""}>${u}</option>`).join("")}</select>
     <div class="tabs" role="tablist" aria-label="Expiry">${exps.map(e => `<button class="tab ${e === fnoExp ? "on" : ""}" role="tab" aria-selected="${e === fnoExp}" data-exp="${e}">${E.fmtExp(e)}</button>`).join("")}</div>
     <div class="grow"></div><div class="num" style="font-weight:600">${fnoU} ${fmt(spot)}</div></div>
@@ -832,7 +833,7 @@ function viewAuto() {
 function autoTradesTable(tr) {
   if (!tr.length) return `<div class="card empty"><b>No closed auto-trades yet</b>They appear after the first signal exits.</div>`;
   return `<div class="card tbl-wrap"><table><thead><tr><th>Date</th><th>Option</th><th class="r">Qty</th><th class="r">Bought</th><th class="r">Sold</th><th class="r">Charges</th><th class="r">Net P&amp;L</th><th>Why it closed</th></tr></thead><tbody>
-    ${tr.map(t => `<tr><td class="num">${dmy(t.buy_time)} ${hm(t.buy_time)}–${hm(t.sell_time)}</td><td><b>${esc(t.option)}</b>${t.manual ? ' <span class="pill warn">MANUAL</span>' : ""}</td><td class="r num">${t.qty}</td>
+    ${tr.map(t => `<tr><td class="num">${dmy(t.buy_time)} ${hm(t.buy_time)}–${hm(t.sell_time)}</td><td><b>${esc(t.option)}</b>${t.manual ? ' <span class="pill warn">MANUAL</span>' : ""}${t.estimated ? ' <span class="pill" title="Estimated prices">EST</span>' : ""}</td><td class="r num">${t.qty}</td>
       <td class="r num">${fmt(t.buy_price)}</td><td class="r num">${fmt(t.sell_price)}</td><td class="r num muted">${fmt((t.buy_charges || 0) + (t.sell_charges || 0))}</td><td class="r num ${cls(t.net)}">${sgn(t.net)}</td><td class="muted">${esc(t.reason || "")}</td></tr>`).join("")}
   </tbody></table></div>`;
 }
@@ -894,7 +895,8 @@ function viewSettings() {
     <b>Mode: Paper trading.</b> All orders are simulated with virtual money; nothing is sent to any broker.<br>
     Prices: NSE (indices, futures, option chains, lot sizes) and Yahoo Finance (stocks), refreshed about every 15 seconds on market days and typically 10–25 seconds behind the exchange. Orders never fill on prices older than 5 minutes.<br>
     Charges are approximate (brokerage, STT incl. the 2026 F&amp;O rates, exchange, SEBI, stamp duty, GST). Margins are simplified estimates.<br>
-    Limits: SENSEX options can't be traded (no free BSE feed). Charts go back one year. Intraday positions square off at 3:20 PM only while the app is open; otherwise at the last seen price on your next visit.
+    SENSEX options use estimated prices (no free BSE feed): Black-Scholes on the live SENSEX level with NIFTY's live volatility smile, refreshed every 15 seconds, marked "Estimated". Lot size 20, Thursday expiries (holiday shifts aren't modelled).<br>
+    Limits: Charts go back one year. Intraday positions square off at 3:20 PM only while the app is open; otherwise at the last seen price on your next visit.
   </div>`;
 }
 
@@ -1015,7 +1017,7 @@ function askAutoExit(id) {
     html: `<div class="kv"><span class="muted">Instrument</span><b>${esc(p.option)}</b></div>
       <div class="kv"><span class="muted">Position</span><b>Long ${p.side === "CALL" ? "call" : "put"} · ${p.qty} qty</b></div>
       <div class="kv"><span class="muted">Bought at</span><b>₹${fmt(p.buy_price)}</b></div>
-      <div class="kv"><span class="muted">Current bid</span><b>${px != null ? "₹" + fmt(px) : "unavailable"}</b></div>
+      <div class="kv"><span class="muted">Current bid${p.estimated ? " (estimated)" : ""}</span><b>${px != null ? "₹" + fmt(px) : "unavailable"}</b></div>
       <div class="kv"><span class="muted">Estimated net P&amp;L</span><b class="${cls(est)}">${est == null ? "—" : srs(est)}</b></div>
       <div class="note">Paper trade. The auto-trader sells at the live bid when it picks this up${running ? " – usually within 10–20 seconds" : " (it runs 9:15–3:30 on market days)"}. The final price and P&amp;L can differ from this estimate. After a manual exit it won't open a new NIFTY auto-trade today unless you allow it.</div>`,
     onConfirm: async () => { sendAuto("EXIT", id, {}, `Exit ${p.option}`); }});
@@ -1084,6 +1086,7 @@ function renderSheet() {
       ${sheet.type === "SL" || sheet.type === "SL-M" ? `<div class="field"><label for="sheetTrig">Trigger price</label><input id="sheetTrig" type="number" step="0.05" inputmode="decimal" value="${esc(sheet.trigger)}" placeholder="${sheet.side === "BUY" ? "Above" : "Below"} ${q ? fmt(q.ltp) : "current price"}"></div>` : ""}
       ${sheet.type === "LIMIT" || sheet.type === "SL" ? `<div class="field"><label for="sheetPx">${sheet.type === "SL" ? "Limit price after trigger" : "Limit price"}</label><input id="sheetPx" type="number" step="0.05" inputmode="decimal" value="${esc(sheet.price)}"></div>` : ""}
       ${sheet.type === "MARKET" ? `<div class="hint">Fills at the live ${q && q.bid && q.ask ? (sheet.side === "BUY" ? "ask" : "bid") : "price"}${open ? "" : " when the market opens"}.</div>` : ""}
+      ${q && q.est ? `<div class="info" role="note">Estimated price: ${esc(i.u)} options have no free live feed, so this fills at a calculated price that can differ from the real market.</div>` : ""}
       ${!open ? `<div class="info">Market is closed or prices are delayed. This becomes a queued order and runs on the next fresh price.</div>` : ""}
       ${sheet.error ? `<div class="err" role="alert">${esc(sheet.error)}</div>` : ""}
     </div>

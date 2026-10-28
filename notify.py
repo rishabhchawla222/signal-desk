@@ -122,7 +122,8 @@ def event_email(ev: dict) -> tuple[str, str, str]:
                     ("Buy price (premium)", "Live price unavailable – check your broker app")]
         a = t.get("auto")
         if a and a.get("status") == "bought":
-            rows.insert(1, ("Auto-trader (paper)", f"Bought {a['qty']} @ {_rs(a['price'])} in the virtual account"))
+            rows.insert(1, ("Auto-trader (paper)", f"Bought {a['qty']} @ {'≈' if a.get('estimated') else ''}{_rs(a['price'])} in the virtual account"
+                                                   + (" (estimated price)" if a.get("estimated") else "")))
         elif a and a.get("status") == "skipped":
             rows.insert(1, ("Auto-trader (paper)", f"Skipped – {a['reason']}"))
         rows += [("Signal time", t["entry_time"].replace("T", " ")[:16] + " IST"),
@@ -182,7 +183,7 @@ def event_email(ev: dict) -> tuple[str, str, str]:
         rows.insert(1, ("Auto-trader (paper)", f"You already exited this manually at {_rs(a['price'])} "
                                                f"(net {'+' if a['net'] >= 0 else '−'}₹{_inr(abs(a['net']))})"))
     if a and a.get("status") == "sold":
-        rows.insert(1, ("Auto-trader (paper)", f"Sold {a['qty']} @ {_rs(a['price'])} (bought {_rs(a['buy_price'])}) · "
+        rows.insert(1, ("Auto-trader (paper)", f"Sold {a['qty']} @ {'≈' if a.get('estimated') else ''}{_rs(a['price'])} (bought {_rs(a['buy_price'])}) · "
                                                f"net {'+' if a['net'] >= 0 else '−'}₹{_inr(abs(a['net']))} after charges"))
     rows += [("Entry → Exit (spot)", f"{_fmt(t['entry'])} → {_fmt(t['exit'])}"),
              ("Result (index points)", f"{sign}{pts}  ({sign}{t['r_multiple']}R)"),

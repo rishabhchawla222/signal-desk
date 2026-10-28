@@ -48,7 +48,7 @@ nothing in the app is mock data except the clearly labelled sample data on the s
 15. Chart range "ALL" isn't possible: the feed stores one year of daily closes. Ranges stop at 1Y.
 16. Option chain change % on deep ITM strikes is noisy (thin trading) – shown as-is, it's real data.
 17. Intraday (MIS) square-off at 3:20 PM needs the app open; if closed, it happens on next open at the last price seen. (Documented; a browser-only app cannot do better.)
-18. SENSEX options can't be traded (BSE blocks free access) – documented, not fixable without a data vendor.
+18. SENSEX options: BSE blocks free access, so they now trade on clearly labelled **estimated** prices (NIFTY-smile model); real prices would need a data vendor.
 
 ## Status (all fixed unless marked)
 | # | Fix |

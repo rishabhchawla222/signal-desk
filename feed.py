@@ -28,6 +28,7 @@ from urllib.parse import quote
 import requests
 
 from data import HEADERS, now_ist
+from options import fit_smile, model_quote, no_arbitrage, sensex_expiries, smile_points
 
 ROOT = Path(__file__).parent
 CFG = json.loads((ROOT / "feed_config.json").read_text())
@@ -405,12 +406,51 @@ class Feed:
                 log("chain worker error", e)
             _time.sleep(max(5, CHAIN_SECONDS - (_time.time() - t0)))
 
+    def estimated_chains(self, now: datetime, real: dict) -> dict:
+        """Model chains for indices with no free live feed (SENSEX), priced every slot from the
+        live index level and the proxy index's (NIFTY's) live implied-volatility smile."""
+        out = {}
+        for sym, c in (CFG.get("estimated_chains") or {}).items():
+            spot = (self.idx.get(sym) or {}).get("p")
+            # proxy chains, never one expiring today (expiry-day smiles are distorted)
+            proxies = sorted(k for k in real if k.startswith(c["proxy"] + "|") and k.split("|")[1] > now.date().isoformat())
+            if not spot or not proxies:
+                continue
+            step, n = c["step"], c["strikes_each_side"]
+            atm = round(spot / step) * step
+            for exp in sensex_expiries(now.date(), c["expiries"], include_today=now.time() < datetime.strptime("15:30", "%H:%M").time()):
+                # proxy expiry closest in time to this expiry
+                pk = min(proxies, key=lambda k: abs((date.fromisoformat(k.split("|")[1]) - exp).days))
+                prox = real[pk]
+                sm = fit_smile(smile_points(prox["rows"], prox["spot"], compact=True))
+                if not sm:
+                    continue
+                rows = []
+                for k in range(atm - n * step, atm + (n + 1) * step, step):
+                    iv = sm(k / spot)
+                    ce, pe = model_quote(spot, k, exp, "CALL", iv, now), model_quote(spot, k, exp, "PUT", iv, now)
+                    leg = lambda q: [q["ltp"], None, q["bid"], q["ask"], 0, 0, q["iv"], 0]  # noqa: E731
+                    rows.append([k, *leg(ce), *leg(pe)])
+                rows = no_arbitrage(rows)
+                out[f"{sym}|{exp.isoformat()}"] = {"u": sym, "exp": exp.isoformat(), "spot": spot, "rows": rows,
+                                                   "estimated": True, "proxy": c["proxy"], "proxy_expiry": pk.split("|")[1]}
+            self.uni.setdefault("lots", {})[sym] = c["lot"]
+        return out
+
     # -------------------------------------------------------------- write
     def write_all(self, now: datetime, full: bool):
         ts = now.isoformat(timespec="seconds")
         quotes = {"ts": ts, "market": self.status, "indices": self.idx, "stocks": self.stock_q, "futures": self.fut}
         with self.lock:
-            chains = {"ts": self.chains_ts or ts, "chains": self.chains}
+            real = dict(self.chains)
+            chains = {"ts": self.chains_ts or ts, "chains": real}
+        try:
+            est = self.estimated_chains(now, real)
+            if est:
+                chains = {**chains, "ts": ts if not self.chains_ts or ts > chains["ts"] else chains["ts"],
+                          "chains": {**real, **est}}
+        except Exception as e:  # noqa: BLE001
+            log("estimated chain error", e)
         st = stamp15(now)
         write(self.out / "quotes.json", quotes)
         write(self.out / "live" / f"{st}-q.json", quotes)

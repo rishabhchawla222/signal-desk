@@ -43,8 +43,17 @@ def build_site() -> Path:
     (tmp / "md" / "quotes.json").write_text(json.dumps(q))
     ch = json.loads((FIX / "chains.json").read_text())
     ch["ts"] = f"{DAY}T13:25:00"
+    # estimated SENSEX chains, built exactly as the feed builds them
+    sys.path.insert(0, str(ROOT))
+    import feed
+    from datetime import datetime as _dt
+    f = feed.Feed(Path("."), use_git=False)
+    f.uni, f.idx = {"lots": {}}, {"SENSEX": {"p": q["indices"]["SENSEX"]["p"]}}
+    ch["chains"].update(f.estimated_chains(_dt.fromisoformat(NOW_IST), ch["chains"]))
     (tmp / "md" / "chains.json").write_text(json.dumps(ch))
-    shutil.copy(FIX / "universe.json", tmp / "md" / "universe.json")
+    uni = json.loads((FIX / "universe.json").read_text())
+    uni["lots"]["SENSEX"] = 20
+    (tmp / "md" / "universe.json").write_text(json.dumps(uni))
     (tmp / "md" / "intraday.json").write_text(json.dumps({"ts": q["ts"], "series": {
         "NIFTY": [[0, 60, 120, 180, 240], [22700, 22720, 22690, 22740, q["indices"]["NIFTY"]["p"]]]}}))
     (tmp / "sig" / "signals.json").write_text("[]")
@@ -222,6 +231,26 @@ def main():
         check("manual exit closes own position", acct["positions"]["EQ:SBIN|MIS"]["qty"] == 0)
         check("no Exit button left for a closed position", pg.locator("[data-exit]").count() == 0)
         check("no errors in trading flow", not errs, "; ".join(errs[:3]))
+        pg.context.close()
+
+        # 3b. SENSEX options: estimated chain, clearly labelled, tradable in lots of 20
+        pg, errs = page_for()
+        pg.goto(base + "#fno-SENSEX")
+        pg.wait_for_selector("table.oc")
+        check("SENSEX chain shows the estimated-prices notice", "Estimated prices" in pg.inner_text("main"))
+        pg.locator("table.oc .px-btn").nth(20).click()
+        pg.wait_for_selector(".sheet")
+        check("order ticket warns the SENSEX price is estimated", "Estimated price" in pg.inner_text(".sheet") and "lot size 20" in pg.inner_text(".sheet"))
+        pg.click("#sheetPlace")
+        pg.click("#sheetGo")
+        pg.wait_for_timeout(300)
+        acct = pg.evaluate("JSON.parse(localStorage.getItem('signaldesk.paper.account.v1'))")
+        pos = [p for k, p in acct["positions"].items() if k.startswith("OPT:SENSEX:")]
+        check("SENSEX option bought: 20 qty", len(pos) == 1 and pos[0]["qty"] == 20)
+        if SHOTS:
+            pg.goto(base + "#fno-SENSEX"); pg.wait_for_selector("table.oc"); pg.wait_for_timeout(300)
+            pg.screenshot(path=str(SHOTS / "sensex-fno.png"))
+        check("no errors on SENSEX F&O", not errs, "; ".join(errs[:3]))
         pg.context.close()
 
         # 4. auto exit without a token asks to connect

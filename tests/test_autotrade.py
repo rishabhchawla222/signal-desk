@@ -78,10 +78,29 @@ class AutoTraderTest(unittest.TestCase):
         self.assertAlmostEqual(x["net"], expected, places=2)
         self.assertBalanced()
 
-    def test_sensex_and_late_signals_are_skipped(self):
+    def test_sensex_and_late_signals_are_skipped_by_default(self):
         self.assertEqual(self.enter(signal(index="SENSEX"))["status"], "skipped")
         self.assertEqual(self.enter(signal(2, late=True))["status"], "skipped")
         self.assertEqual(self.a.st["open"], {})
+
+    def test_sensex_traded_on_estimated_prices_when_enabled(self):
+        self.a = self.make({**CFG, "indices": ["NIFTY", "SENSEX"], "estimated_ok": ["SENSEX"]})
+        self.a.lots = lambda s: 20 if s == "SENSEX" else 65
+        est_q = Quotes(299.0, 301.0)
+        self.a.quote = lambda *a: {**est_q(*a), "estimated": True}
+        t = signal(index="SENSEX")
+        n = self.enter(t)
+        self.assertEqual(n["status"], "bought")
+        self.assertEqual(n["qty"], 20)
+        self.assertTrue(n["estimated"])
+        self.assertTrue(self.a.st["open"][t["id"]]["estimated"])
+        r = self.cmd("EXIT", t["id"])                       # manual exit works on an estimated price
+        self.assertEqual(r["status"], "done")
+        self.assertIn("estimated", r["message"])
+        last = self.a.st["trades"][-1]
+        self.assertTrue(last["estimated"])
+        self.assertEqual(last["price_source"], "estimated bid (model)")
+        self.assertBalanced()
 
     # ------------------------------------------------------- manual exit
     def test_manual_exit_sells_records_and_blocks_reentry(self):

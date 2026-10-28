@@ -195,3 +195,19 @@ test("charges use 2026 F&O STT (0.15% on option sell premium)", () => {
   const c = E.charges("OPT:NIFTY:2026-10-27:22600:CE", "SELL", 65, 100, "NRML");
   assert.equal(c.stt, 9.75);
 });
+
+test("SENSEX options (estimated chain): lot of 20, fills at the model ask, flagged estimated", () => {
+  const d = data("13:25", DAY, x => {
+    x.universe.lots.SENSEX = 20;
+    x.chains.chains["SENSEX|2026-11-05"] = { u: "SENSEX", exp: "2026-11-05", spot: 73500, estimated: true,
+      rows: [[73500, 300, null, 299, 301, 0, 0, 15, 0, 250, null, 249, 251, 0, 0, 15, 0]] };
+  });
+  const a = E.newAccount(1e6), k = "OPT:SENSEX:2026-11-05:73500:CE";
+  const q = E.quote(k, d);
+  assert.equal(q.est, true);
+  assert.equal(E.lotSize(E.parse(k), d), 20);
+  assert.match(E.placeOrder(a, { inst: k, side: "BUY", qty: 7, product: "NRML" }, d, at("13:25")).error, /lot size \(20\)/);
+  const r = E.placeOrder(a, { inst: k, side: "BUY", qty: 20, product: "NRML" }, d, at("13:25"));
+  assert.equal(r.order.fillPrice, 301);
+  assert.equal(a.positions[`${k}|NRML`].qty, 20);
+});

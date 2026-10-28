@@ -3,9 +3,11 @@ Auto-trader: paper-trades every Signal Desk signal in a virtual account.
 
 * ENTRY  -> buys the signal's option (ATM, nearest expiry) at the live NSE ask
 * EXIT   -> sells at the live NSE bid (target, stop-loss, trend flip or 3:15 PM)
-* Skips a signal when there is no live option price (e.g. SENSEX, whose BSE
-  prices are only estimates), when price already ran past the don't-chase
-  level, or when there isn't enough virtual cash.
+* SENSEX has no free live option feed (BSE blocks it), so SENSEX trades use
+  ESTIMATED prices (Black-Scholes on NIFTY's live volatility smile) when SENSEX
+  is listed in `estimated_ok`; those trades are marked "estimated".
+* Skips a signal when there is no price at all, when price already ran past the
+  don't-chase level, or when there isn't enough virtual cash.
 
 The account is saved as autotrade.json on the signals-data branch, so it keeps
 going day after day without any browser being open.
@@ -83,10 +85,13 @@ class AutoTrader:
 
     def _enter(self, t: dict, now: datetime) -> dict:
         if t["index"] not in self.cfg.get("indices", ["NIFTY"]):
-            return self._skip(t, now, f"{t['index']} has no live option prices (estimates only), so it isn't auto-traded")
+            return self._skip(t, now, f"{t['index']} isn't in the auto-trader's list of indices")
         p = t.get("premium") or {}
-        if not p or p.get("estimated") or not p.get("expiry"):
-            return self._skip(t, now, "No live option price at signal time")
+        estimated = bool(p.get("estimated"))
+        if not p or not p.get("expiry"):
+            return self._skip(t, now, "No option price at signal time")
+        if estimated and t["index"] not in self.cfg.get("estimated_ok", []):
+            return self._skip(t, now, f"{t['index']} has only estimated option prices, and estimates aren't enabled for it")
         if t.get("late"):
             return self._skip(t, now, "Price had already run past the don't-chase level")
         if self.st.get("paused"):
@@ -100,6 +105,7 @@ class AutoTrader:
             print(f"[auto] quote error {e}")
         if q:
             px = q["ask"] if _sane(q.get("bid"), q.get("ask")) else q.get("ltp")
+            estimated = estimated or bool(q.get("estimated"))
         else:
             px = p.get("ask") if _sane(p.get("bid"), p.get("ask")) else p.get("price")
         if not px:
@@ -114,10 +120,10 @@ class AutoTrader:
         pos = {"id": t["id"], "key": _key(t, p["expiry"]), "option": t["option"], "expiry": p["expiry"],
                "index": t["index"], "side": t["side"], "strike": t["strike"], "qty": qty, "lot": lot,
                "buy_price": round(px, 2), "buy_time": now.isoformat(timespec="seconds"), "buy_charges": ch,
-               "spot_entry": t["entry"], "sl": p.get("sl"), "target": p.get("target")}
+               "spot_entry": t["entry"], "sl": p.get("sl"), "target": p.get("target"), "estimated": estimated}
         self.st["open"][t["id"]] = pos
         print(f"[auto] BUY {qty} {t['option']} @ {px}")
-        return {"status": "bought", "qty": qty, "price": round(px, 2), "charges": ch,
+        return {"status": "bought", "qty": qty, "price": round(px, 2), "charges": ch, "estimated": estimated,
                 "time": pos["buy_time"], "cash_after": self.st["cash"]}
 
     def _exit(self, t: dict, now: datetime) -> dict:
@@ -135,7 +141,8 @@ class AutoTrader:
                 px = q["bid"] if _sane(q.get("bid"), q.get("ask")) else q.get("ltp")
         except Exception as e:  # noqa: BLE001
             print(f"[auto] quote error {e}")
-        source = "live bid"
+            q = None
+        source = "estimated bid (model)" if q and q.get("estimated") else "live bid"
         if px is None and manual:
             return None  # never close a manual exit on a guessed price; caller retries
         if px is None:
@@ -157,6 +164,7 @@ class AutoTrader:
         del self.st["open"][pos["id"]]
         print(f"[auto] SELL {pos['qty']} {pos['option']} @ {px} net {net}")
         return {"status": "sold", "qty": pos["qty"], "price": round(px, 2), "buy_price": pos["buy_price"],
+                "estimated": bool(pos.get("estimated")) or source.startswith("estimated"),
                 "net": net, "charges": round(pos["buy_charges"] + ch, 2), "time": rec["sell_time"],
                 "cash_after": self.st["cash"]}
 
@@ -225,7 +233,8 @@ class AutoTrader:
         self.st["manual_exits"][pid] = {"price": out["price"], "net": out["net"], "time": out["time"], "cmd": cid}
         if self.st.get("reentry_rule", "block_today") == "block_today":
             self.st["blocks"][pos["index"]] = now.date().isoformat()
-        return {"status": "done", "message": f"Sold {out['qty']} {pos['option']} at ₹{out['price']:.2f} (paper). Net {'+' if out['net'] >= 0 else '−'}₹{abs(out['net']):,.2f}.",
+        est = " – estimated price" if out.get("estimated") else ""
+        return {"status": "done", "message": f"Sold {out['qty']} {pos['option']} at ₹{out['price']:.2f} (paper{est}). Net {'+' if out['net'] >= 0 else '−'}₹{abs(out['net']):,.2f}.",
                 "price": out["price"], "net": out["net"], "option": pos["option"]}
 
     # ---------------------------------------------------------------- summary

@@ -109,7 +109,8 @@
     const o = i.right === "CE" ? 1 : 9;
     const ltp = r[o], ch = r[o + 1] || 0;
     if (ltp == null) return null;
-    return { ltp, bid: r[o + 2] || 0, ask: r[o + 3] || 0, pc: ltp - ch, ch, oi: r[o + 4], iv: r[o + 6] };
+    const chain = data.chains.chains[i.u + "|" + i.exp];
+    return { ltp, bid: r[o + 2] || 0, ask: r[o + 3] || 0, pc: ltp - ch, ch, oi: r[o + 4], iv: r[o + 6], est: !!(chain && chain.estimated) };
   }
   /** Price you'd realistically get now: options use bid/ask when they look sane. */
   function execPrice(q, side) {
