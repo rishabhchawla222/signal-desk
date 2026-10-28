@@ -1,0 +1,26 @@
+{
+ "https://www.bseindia.com/": {
+  "status": 200,
+  "cookies": []
+ },
+ "https://www.bseindia.com/markets/Derivatives/DeriReports/DeriOptionchain.html": {
+  "status": 200,
+  "cookies": []
+ },
+ "expiry_IV": {
+  "status": 403,
+  "head": "<HTML><HEAD>\n<TITLE>Access Denied</TITLE>\n</HEAD><BODY>\n<H1>Access Denied</H1>\n \nYou don't have permission to access \"http&#58;&#47;&#47;api&#46;bseindia&#46;com&#47;BseIndiaAPI&#47;api&#47;ddlExpiry&#95;IV&#47;w&#63;\" on this server.<P>\nReference&#32;&#35;18&#46;4a6bdc17&#46;1793167935&#46;456b101\n<P>https&#58;&#47;&#47;errors&#46;edgesuite&#46;net&#47;18&#46;4a6bdc17&#46;1793167935&#46;456b101</"
+ },
+ "expiry_new": {
+  "status": 403,
+  "head": "<HTML><HEAD>\n<TITLE>Access Denied</TITLE>\n</HEAD><BODY>\n<H1>Access Denied</H1>\n \nYou don't have permission to access \"http&#58;&#47;&#47;api&#46;bseindia&#46;com&#47;BseIndiaAPI&#47;api&#47;ddlExpiry&#95;IV&#47;w&#63;\" on this server.<P>\nReference&#32;&#35;18&#46;496bdc17&#46;1793167935&#46;100979c0\n<P>https&#58;&#47;&#47;errors&#46;edgesuite&#46;net&#47;18&#46;496bdc17&#46;1793167935&#46;100979c0"
+ },
+ "sensex_quote": {
+  "status": 403,
+  "head": "<HTML><HEAD>\n<TITLE>Access Denied</TITLE>\n</HEAD><BODY>\n<H1>Access Denied</H1>\n \nYou don't have permission to access \"http&#58;&#47;&#47;api&#46;bseindia&#46;com&#47;BseIndiaAPI&#47;api&#47;GetSensexData&#47;w\" on this server.<P>\nReference&#32;&#35;18&#46;496bdc17&#46;1793167935&#46;10097aac\n<P>https&#58;&#47;&#47;errors&#46;edgesuite&#46;net&#47;18&#46;496bdc17&#46;1793167935&#46;10097aac</P>\n</B"
+ },
+ "deriv_expiry": {
+  "status": 403,
+  "head": "<HTML><HEAD>\n<TITLE>Access Denied</TITLE>\n</HEAD><BODY>\n<H1>Access Denied</H1>\n \nYou don't have permission to access \"http&#58;&#47;&#47;api&#46;bseindia&#46;com&#47;BseIndiaAPI&#47;api&#47;DerivExpiryDate&#47;w&#63;\" on this server.<P>\nReference&#32;&#35;18&#46;496bdc17&#46;1793167935&#46;10097b57\n<P>https&#58;&#47;&#47;errors&#46;edgesuite&#46;net&#47;18&#46;496bdc17&#46;1793167935&#46;10097b57<"
+ }
+}
