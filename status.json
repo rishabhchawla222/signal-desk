@@ -2,20 +2,20 @@
  "indices": {
   "NIFTY": {
    "name": "NIFTY",
-   "price": 22890.1,
+   "price": 22889.95,
    "prev_close": 22698.85,
    "change_pct": 0.84,
-   "bar_time": "2026-10-29T14:10:00",
+   "bar_time": "2026-10-29T14:15:00",
    "indicators": {
-    "rsi": 62.6,
-    "adx": 19.6,
-    "ema_fast": 22877.69,
-    "ema_slow": 22861.97,
+    "rsi": 62.5,
+    "adx": 20.2,
+    "ema_fast": 22880.14,
+    "ema_slow": 22864.51,
     "supertrend": 22839.67,
     "supertrend_dir": 1,
     "orh": 22745.7,
     "orl": 22656.85,
-    "ema15": 22820.1
+    "ema15": 22826.75
    },
    "call": {
     "checks": [
@@ -37,7 +37,7 @@
      },
      {
       "name": "ADX \u2265 20 (trending)",
-      "ok": false
+      "ok": true
      },
      {
       "name": "15-min trend up",
@@ -52,7 +52,7 @@
       "ok": false
      }
     ],
-    "score": 5,
+    "score": 6,
     "total": 8
    },
    "put": {
@@ -75,7 +75,7 @@
      },
      {
       "name": "ADX \u2265 20 (trending)",
-      "ok": false
+      "ok": true
      },
      {
       "name": "15-min trend down",
@@ -83,7 +83,7 @@
      },
      {
       "name": "Strong bearish candle",
-      "ok": true
+      "ok": false
      },
      {
       "name": "Not overextended",
@@ -97,20 +97,20 @@
   },
   "SENSEX": {
    "name": "SENSEX",
-   "price": 73968.69,
+   "price": 73962.91,
    "prev_close": 73246.03,
-   "change_pct": 0.99,
-   "bar_time": "2026-10-29T14:00:24",
+   "change_pct": 0.98,
+   "bar_time": "2026-10-29T14:05:23",
    "indicators": {
-    "rsi": 66.8,
-    "adx": 23.4,
-    "ema_fast": 73883.96,
-    "ema_slow": 73838.17,
-    "supertrend": 73793.9,
+    "rsi": 66.3,
+    "adx": 24.5,
+    "ema_fast": 73896.96,
+    "ema_slow": 73848.07,
+    "supertrend": 73791.72,
     "supertrend_dir": 1,
     "orh": 73436.74,
     "orl": 73188.24,
-    "ema15": 73713.22
+    "ema15": 73711.56
    },
    "call": {
     "checks": [
@@ -192,7 +192,7 @@
   }
  },
  "errors": [],
- "updated_at": "2026-10-29T14:10:25",
+ "updated_at": "2026-10-29T14:15:25",
  "market": "OPEN",
  "note": "",
  "data_source": "Yahoo Finance 5-min candles (free; can lag 1\u20133 min)"
