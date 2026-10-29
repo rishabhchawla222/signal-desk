@@ -2,20 +2,20 @@
  "indices": {
   "NIFTY": {
    "name": "NIFTY",
-   "price": 22793.45,
+   "price": 22786.95,
    "prev_close": 22698.85,
-   "change_pct": 0.42,
-   "bar_time": "2026-10-29T10:10:00",
+   "change_pct": 0.39,
+   "bar_time": "2026-10-29T10:15:00",
    "indicators": {
-    "rsi": 69.4,
-    "adx": 14.3,
-    "ema_fast": 22752.27,
-    "ema_slow": 22732.93,
-    "supertrend": 22680.41,
+    "rsi": 66.9,
+    "adx": 14.9,
+    "ema_fast": 22759.2,
+    "ema_slow": 22737.84,
+    "supertrend": 22688.66,
     "supertrend_dir": 1,
     "orh": 22745.7,
     "orl": 22656.85,
-    "ema15": 22701.21
+    "ema15": 22709.38
    },
    "call": {
     "checks": [
@@ -45,14 +45,14 @@
      },
      {
       "name": "Strong bullish candle",
-      "ok": true
+      "ok": false
      },
      {
       "name": "Not overextended",
       "ok": false
      }
     ],
-    "score": 6,
+    "score": 5,
     "total": 8
    },
    "put": {
@@ -97,20 +97,20 @@
   },
   "SENSEX": {
    "name": "SENSEX",
-   "price": 73493.1,
+   "price": 73479.15,
    "prev_close": 73246.03,
-   "change_pct": 0.34,
-   "bar_time": "2026-10-29T10:00:24",
+   "change_pct": 0.32,
+   "bar_time": "2026-10-29T10:05:23",
    "indicators": {
-    "rsi": 63.3,
-    "adx": 22.3,
-    "ema_fast": 73422.17,
-    "ema_slow": 73365.36,
-    "supertrend": 73218.12,
+    "rsi": 61.0,
+    "adx": 23.3,
+    "ema_fast": 73427.06,
+    "ema_slow": 73372.34,
+    "supertrend": 73197.23,
     "supertrend_dir": 1,
     "orh": 73436.74,
     "orl": 73188.24,
-    "ema15": 73294.01
+    "ema15": 73290.14
    },
    "call": {
     "checks": [
@@ -144,10 +144,10 @@
      },
      {
       "name": "Not overextended",
-      "ok": false
+      "ok": true
      }
     ],
-    "score": 6,
+    "score": 7,
     "total": 8
    },
    "put": {
@@ -192,7 +192,7 @@
   }
  },
  "errors": [],
- "updated_at": "2026-10-29T10:10:25",
+ "updated_at": "2026-10-29T10:15:25",
  "market": "OPEN",
  "note": "",
  "data_source": "Yahoo Finance 5-min candles (free; can lag 1\u20133 min)"
