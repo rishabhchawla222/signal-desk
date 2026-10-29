@@ -1,7 +1,26 @@
 {
  "start_cash": 1000000.0,
- "cash": 999102.85,
- "open": {},
+ "cash": 989929.68,
+ "open": {
+  "NIFTY-20261029-1115-CALL": {
+   "id": "NIFTY-20261029-1115-CALL",
+   "key": "OPT:NIFTY:2026-11-03:22850:CE",
+   "option": "NIFTY 22850 CE",
+   "expiry": "2026-11-03",
+   "index": "NIFTY",
+   "side": "CALL",
+   "strike": 22850,
+   "qty": 65,
+   "lot": 65,
+   "buy_price": 140.7,
+   "buy_time": "2026-10-29T11:15:27",
+   "buy_charges": 27.67,
+   "spot_entry": 22835.8,
+   "sl": 120.05,
+   "target": 173.3,
+   "estimated": false
+  }
+ },
  "trades": [
   {
    "id": "NIFTY-20261027-1040-CALL",
@@ -31,13 +50,13 @@
  ],
  "skipped": [],
  "started": "2026-10-27",
- "updated": "2026-10-29T11:10:25",
+ "updated": "2026-10-29T11:15:30",
  "summary": {
   "trades": 1,
   "wins": 0,
   "net": -897.15,
-  "cash": 999102.85,
-  "value": 999102.85,
+  "cash": 989929.68,
+  "value": 999075.18,
   "start_cash": 1000000.0
  },
  "paused": false,
