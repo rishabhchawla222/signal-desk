@@ -156,10 +156,10 @@
   "entry_time": "2026-10-29T11:15:00",
   "entry": 22835.8,
   "risk": 40.76,
-  "sl": 22795.04,
+  "sl": 22835.8,
   "initial_sl": 22795.04,
   "target": 22896.94,
-  "breakeven": false,
+  "breakeven": true,
   "status": "OPEN",
   "valid_until": "2026-10-29T11:25:00",
   "chase_limit": 22848.03,
@@ -194,7 +194,9 @@
    "iv": 12.6,
    "delta": 0.51,
    "time": "2026-10-29T11:15:25",
-   "spot_now": 22837.05
+   "spot_now": 22837.05,
+   "now": 164.55,
+   "now_estimated": false
   },
   "late": false,
   "auto": {
