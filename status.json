@@ -2,15 +2,15 @@
  "indices": {
   "NIFTY": {
    "name": "NIFTY",
-   "price": 22828.75,
+   "price": 22815.5,
    "prev_close": 22698.85,
-   "change_pct": 0.57,
-   "bar_time": "2026-10-29T11:05:00",
+   "change_pct": 0.51,
+   "bar_time": "2026-10-29T11:10:00",
    "indicators": {
-    "rsi": 62.9,
-    "adx": 27.2,
-    "ema_fast": 22830.03,
-    "ema_slow": 22800.24,
+    "rsi": 58.0,
+    "adx": 26.1,
+    "ema_fast": 22827.13,
+    "ema_slow": 22801.63,
     "supertrend": 22773.26,
     "supertrend_dir": 1,
     "orh": 22745.7,
@@ -83,34 +83,34 @@
      },
      {
       "name": "Strong bearish candle",
-      "ok": false
+      "ok": true
      },
      {
       "name": "Not overextended",
       "ok": false
      }
     ],
-    "score": 1,
+    "score": 2,
     "total": 8
    },
    "open_trade": null
   },
   "SENSEX": {
    "name": "SENSEX",
-   "price": 73787.19,
+   "price": 73783.48,
    "prev_close": 73246.03,
-   "change_pct": 0.74,
-   "bar_time": "2026-10-29T10:55:23",
+   "change_pct": 0.73,
+   "bar_time": "2026-10-29T11:00:24",
    "indicators": {
-    "rsi": 70.8,
-    "adx": 43.3,
-    "ema_fast": 73728.87,
-    "ema_slow": 73601.71,
-    "supertrend": 73549.95,
+    "rsi": 69.8,
+    "adx": 43.0,
+    "ema_fast": 73737.75,
+    "ema_slow": 73617.18,
+    "supertrend": 73556.28,
     "supertrend_dir": 1,
     "orh": 73436.74,
     "orl": 73188.24,
-    "ema15": 73401.43
+    "ema15": 73437.81
    },
    "call": {
     "checks": [
@@ -192,7 +192,7 @@
   }
  },
  "errors": [],
- "updated_at": "2026-10-29T11:05:25",
+ "updated_at": "2026-10-29T11:10:25",
  "market": "OPEN",
  "note": "",
  "data_source": "Yahoo Finance 5-min candles (free; can lag 1\u20133 min)"
