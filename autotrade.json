@@ -1,26 +1,7 @@
 {
  "start_cash": 1000000.0,
- "cash": 992930.67,
- "open": {
-  "NIFTY-20261030-1310-CALL": {
-   "id": "NIFTY-20261030-1310-CALL",
-   "key": "OPT:NIFTY:2026-11-03:23100:CE",
-   "option": "NIFTY 23100 CE",
-   "expiry": "2026-11-03",
-   "index": "NIFTY",
-   "side": "CALL",
-   "strike": 23100,
-   "qty": 65,
-   "lot": 65,
-   "buy_price": 112,
-   "buy_time": "2026-10-30T13:10:26",
-   "buy_charges": 26.84,
-   "spot_entry": 23098.5,
-   "sl": 98.9,
-   "target": 140.85,
-   "estimated": false
-  }
- },
+ "cash": 998752.36,
+ "open": {},
  "trades": [
   {
    "id": "NIFTY-20261027-1040-CALL",
@@ -73,17 +54,44 @@
    "outcome": "TARGET",
    "price_source": "live bid",
    "manual": false
+  },
+  {
+   "id": "NIFTY-20261030-1310-CALL",
+   "key": "OPT:NIFTY:2026-11-03:23100:CE",
+   "option": "NIFTY 23100 CE",
+   "expiry": "2026-11-03",
+   "index": "NIFTY",
+   "side": "CALL",
+   "strike": 23100,
+   "qty": 65,
+   "lot": 65,
+   "buy_price": 112,
+   "buy_time": "2026-10-30T13:10:26",
+   "buy_charges": 26.84,
+   "spot_entry": 23098.5,
+   "sl": 98.9,
+   "target": 140.85,
+   "estimated": false,
+   "sell_price": 90.1,
+   "sell_time": "2026-10-30T13:30:28",
+   "sell_charges": 34.81,
+   "gross": -1423.5,
+   "net": -1485.15,
+   "reason": "Stop-loss hit",
+   "outcome": "STOPLOSS",
+   "price_source": "live bid",
+   "manual": false
   }
  ],
  "skipped": [],
  "started": "2026-10-27",
- "updated": "2026-10-30T13:25:25",
+ "updated": "2026-10-30T13:30:29",
  "summary": {
-  "trades": 2,
+  "trades": 3,
   "wins": 1,
-  "net": 237.51,
-  "cash": 992930.67,
-  "value": 1000210.67,
+  "net": -1247.64,
+  "cash": 998752.36,
+  "value": 998752.36,
   "start_cash": 1000000.0
  },
  "paused": false,
