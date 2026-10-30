@@ -2,20 +2,20 @@
  "indices": {
   "NIFTY": {
    "name": "NIFTY",
-   "price": 23001.65,
+   "price": 23006.25,
    "prev_close": 22936.75,
-   "change_pct": 0.28,
-   "bar_time": "2026-10-30T11:10:00",
+   "change_pct": 0.3,
+   "bar_time": "2026-10-30T11:15:00",
    "indicators": {
-    "rsi": 64.8,
-    "adx": 27.9,
-    "ema_fast": 22965.51,
-    "ema_slow": 22953.48,
-    "supertrend": 23003.25,
-    "supertrend_dir": -1,
+    "rsi": 65.6,
+    "adx": 28.9,
+    "ema_fast": 22973.66,
+    "ema_slow": 22958.28,
+    "supertrend": 22928.4,
+    "supertrend_dir": 1,
     "orh": 22980.25,
     "orl": 22919.9,
-    "ema15": 22913.93
+    "ema15": 22922.73
    },
    "call": {
     "checks": [
@@ -29,7 +29,7 @@
      },
      {
       "name": "Supertrend bullish",
-      "ok": false
+      "ok": true
      },
      {
       "name": "RSI 55\u201375",
@@ -45,7 +45,7 @@
      },
      {
       "name": "Strong bullish candle",
-      "ok": true
+      "ok": false
      },
      {
       "name": "Not overextended",
@@ -67,7 +67,7 @@
      },
      {
       "name": "Supertrend bearish",
-      "ok": true
+      "ok": false
      },
      {
       "name": "RSI 25\u201345",
@@ -90,27 +90,27 @@
       "ok": false
      }
     ],
-    "score": 2,
+    "score": 1,
     "total": 8
    },
    "open_trade": null
   },
   "SENSEX": {
    "name": "SENSEX",
-   "price": 74237.52,
+   "price": 74280.58,
    "prev_close": 74151.04,
-   "change_pct": 0.12,
-   "bar_time": "2026-10-30T11:00:24",
+   "change_pct": 0.17,
+   "bar_time": "2026-10-30T11:05:23",
    "indicators": {
-    "rsi": 55.7,
-    "adx": 16.1,
-    "ema_fast": 74197.28,
-    "ema_slow": 74181.86,
-    "supertrend": 73978.68,
+    "rsi": 58.6,
+    "adx": 16.7,
+    "ema_fast": 74220.45,
+    "ema_slow": 74194.19,
+    "supertrend": 74013.29,
     "supertrend_dir": 1,
     "orh": 74293.92,
     "orl": 74100.51,
-    "ema15": 74056.88
+    "ema15": 74060.75
    },
    "call": {
     "checks": [
@@ -192,7 +192,7 @@
   }
  },
  "errors": [],
- "updated_at": "2026-10-30T11:10:25",
+ "updated_at": "2026-10-30T11:15:25",
  "market": "OPEN",
  "note": "",
  "data_source": "Yahoo Finance 5-min candles (free; can lag 1\u20133 min)"
