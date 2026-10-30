@@ -1,7 +1,7 @@
 {
  "indices": {},
  "errors": [],
- "updated_at": "2026-10-30T08:24:15",
+ "updated_at": "2026-10-30T08:54:16",
  "market": "PRE_OPEN",
  "note": "Waiting for the first 5-minute candle (9:20 IST)",
  "data_source": "Yahoo Finance 5-min candles (free; can lag 1\u20133 min)"
