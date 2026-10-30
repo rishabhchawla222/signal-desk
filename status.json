@@ -2,15 +2,15 @@
  "indices": {
   "NIFTY": {
    "name": "NIFTY",
-   "price": 22962.0,
+   "price": 22979.75,
    "prev_close": 22936.75,
-   "change_pct": 0.11,
-   "bar_time": "2026-10-30T09:45:00",
+   "change_pct": 0.19,
+   "bar_time": "2026-10-30T09:50:00",
    "indicators": {
-    "rsi": 61.9,
-    "adx": 46.8,
-    "ema_fast": 22957.68,
-    "ema_slow": 22939.11,
+    "rsi": 66.3,
+    "adx": 46.6,
+    "ema_fast": 22962.1,
+    "ema_slow": 22942.8,
     "supertrend": 22908.78,
     "supertrend_dir": 1,
     "orh": 22980.25,
@@ -45,11 +45,11 @@
      },
      {
       "name": "Strong bullish candle",
-      "ok": false
+      "ok": true
      },
      {
       "name": "Not overextended",
-      "ok": true
+      "ok": false
      }
     ],
     "score": 6,
@@ -83,29 +83,29 @@
      },
      {
       "name": "Strong bearish candle",
-      "ok": true
+      "ok": false
      },
      {
       "name": "Not overextended",
       "ok": false
      }
     ],
-    "score": 2,
+    "score": 1,
     "total": 8
    },
    "open_trade": null
   },
   "SENSEX": {
    "name": "SENSEX",
-   "price": 74235.09,
+   "price": 74349.69,
    "prev_close": 74151.04,
-   "change_pct": 0.11,
-   "bar_time": "2026-10-30T09:35:23",
+   "change_pct": 0.27,
+   "bar_time": "2026-10-30T09:40:23",
    "indicators": {
-    "rsi": 65.2,
-    "adx": 34.6,
-    "ema_fast": 74161.06,
-    "ema_slow": 74092.27,
+    "rsi": 71.4,
+    "adx": 34.0,
+    "ema_fast": 74216.53,
+    "ema_slow": 74124.83,
     "supertrend": 73957.7,
     "supertrend_dir": 1,
     "orh": 74293.92,
@@ -116,7 +116,7 @@
     "checks": [
      {
       "name": "Breakout above opening range",
-      "ok": false
+      "ok": true
      },
      {
       "name": "EMA 9 above EMA 21",
@@ -144,7 +144,7 @@
      },
      {
       "name": "Not overextended",
-      "ok": true
+      "ok": false
      }
     ],
     "score": 6,
@@ -192,7 +192,7 @@
   }
  },
  "errors": [],
- "updated_at": "2026-10-30T09:45:25",
+ "updated_at": "2026-10-30T09:50:25",
  "market": "OPEN",
  "note": "",
  "data_source": "Yahoo Finance 5-min candles (free; can lag 1\u20133 min)"
