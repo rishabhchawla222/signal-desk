@@ -2,26 +2,26 @@
  "indices": {
   "NIFTY": {
    "name": "NIFTY",
-   "price": 23304.35,
+   "price": 23291.45,
    "prev_close": 23053.1,
-   "change_pct": 1.09,
-   "bar_time": "2026-11-02T12:40:00",
+   "change_pct": 1.03,
+   "bar_time": "2026-11-02T12:45:00",
    "indicators": {
-    "rsi": 49.1,
-    "adx": 25.5,
-    "ema_fast": 23319.04,
-    "ema_slow": 23314.73,
+    "rsi": 45.0,
+    "adx": 25.2,
+    "ema_fast": 23313.53,
+    "ema_slow": 23312.61,
     "supertrend": 23281.45,
     "supertrend_dir": 1,
     "orh": 23292.45,
     "orl": 23212.65,
-    "ema15": 23242.77
+    "ema15": 23247.4
    },
    "call": {
     "checks": [
      {
       "name": "Breakout above opening range",
-      "ok": true
+      "ok": false
      },
      {
       "name": "EMA 9 above EMA 21",
@@ -52,7 +52,7 @@
       "ok": false
      }
     ],
-    "score": 5,
+    "score": 4,
     "total": 8
    },
    "put": {
@@ -83,34 +83,34 @@
      },
      {
       "name": "Strong bearish candle",
-      "ok": false
+      "ok": true
      },
      {
       "name": "Not overextended",
       "ok": true
      }
     ],
-    "score": 2,
+    "score": 3,
     "total": 8
    },
    "open_trade": null
   },
   "SENSEX": {
    "name": "SENSEX",
-   "price": 75432.32,
+   "price": 75415.72,
    "prev_close": 74459.53,
-   "change_pct": 1.31,
-   "bar_time": "2026-11-02T12:30:23",
+   "change_pct": 1.28,
+   "bar_time": "2026-11-02T12:35:23",
    "indicators": {
-    "rsi": 58.8,
-    "adx": 24.0,
-    "ema_fast": 75405.27,
-    "ema_slow": 75381.59,
+    "rsi": 57.0,
+    "adx": 23.4,
+    "ema_fast": 75405.91,
+    "ema_slow": 75383.95,
     "supertrend": 75290.18,
     "supertrend_dir": 1,
     "orh": 75362.06,
     "orl": 75101.96,
-    "ema15": 75149.4
+    "ema15": 75148.54
    },
    "call": {
     "checks": [
@@ -192,7 +192,7 @@
   }
  },
  "errors": [],
- "updated_at": "2026-11-02T12:40:25",
+ "updated_at": "2026-11-02T12:45:25",
  "market": "OPEN",
  "note": "",
  "data_source": "Yahoo Finance 5-min candles (free; can lag 1\u20133 min)"
