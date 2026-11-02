@@ -2,20 +2,20 @@
  "indices": {
   "NIFTY": {
    "name": "NIFTY",
-   "price": 23275.2,
+   "price": 23281.25,
    "prev_close": 23053.1,
-   "change_pct": 0.96,
-   "bar_time": "2026-11-02T14:25:00",
+   "change_pct": 0.99,
+   "bar_time": "2026-11-02T14:30:00",
    "indicators": {
-    "rsi": 53.7,
-    "adx": 27.2,
-    "ema_fast": 23258.86,
-    "ema_slow": 23261.4,
+    "rsi": 55.4,
+    "adx": 25.7,
+    "ema_fast": 23263.34,
+    "ema_slow": 23263.2,
     "supertrend": 23302.02,
     "supertrend_dir": -1,
     "orh": 23292.45,
     "orl": 23212.65,
-    "ema15": 23248.18
+    "ema15": 23251.33
    },
    "call": {
     "checks": [
@@ -25,7 +25,7 @@
      },
      {
       "name": "EMA 9 above EMA 21",
-      "ok": false
+      "ok": true
      },
      {
       "name": "Supertrend bullish",
@@ -33,7 +33,7 @@
      },
      {
       "name": "RSI 55\u201375",
-      "ok": false
+      "ok": true
      },
      {
       "name": "ADX \u2265 20 (trending)",
@@ -52,7 +52,7 @@
       "ok": true
      }
     ],
-    "score": 3,
+    "score": 5,
     "total": 8
    },
    "put": {
@@ -63,7 +63,7 @@
      },
      {
       "name": "EMA 9 below EMA 21",
-      "ok": true
+      "ok": false
      },
      {
       "name": "Supertrend bearish",
@@ -83,34 +83,34 @@
      },
      {
       "name": "Strong bearish candle",
-      "ok": true
+      "ok": false
      },
      {
       "name": "Not overextended",
       "ok": false
      }
     ],
-    "score": 4,
+    "score": 2,
     "total": 8
    },
    "open_trade": null
   },
   "SENSEX": {
    "name": "SENSEX",
-   "price": 75117.26,
+   "price": 75134.15,
    "prev_close": 74459.53,
-   "change_pct": 0.88,
-   "bar_time": "2026-11-02T14:15:24",
+   "change_pct": 0.91,
+   "bar_time": "2026-11-02T14:20:24",
    "indicators": {
-    "rsi": 45.1,
-    "adx": 31.9,
-    "ema_fast": 75102.49,
-    "ema_slow": 75146.46,
+    "rsi": 46.9,
+    "adx": 30.2,
+    "ema_fast": 75114.31,
+    "ema_slow": 75148.18,
     "supertrend": 75248.54,
     "supertrend_dir": -1,
     "orh": 75362.06,
     "orl": 75101.96,
-    "ema15": 75137.14
+    "ema15": 75140.41
    },
    "call": {
     "checks": [
@@ -174,7 +174,7 @@
      },
      {
       "name": "15-min trend down",
-      "ok": true
+      "ok": false
      },
      {
       "name": "Strong bearish candle",
@@ -185,14 +185,14 @@
       "ok": true
      }
     ],
-    "score": 5,
+    "score": 4,
     "total": 8
    },
    "open_trade": null
   }
  },
  "errors": [],
- "updated_at": "2026-11-02T14:25:25",
+ "updated_at": "2026-11-02T14:30:25",
  "market": "OPEN",
  "note": "",
  "data_source": "Yahoo Finance 5-min candles (free; can lag 1\u20133 min)"
