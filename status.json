@@ -2,17 +2,17 @@
  "indices": {
   "NIFTY": {
    "name": "NIFTY",
-   "price": 23291.1,
+   "price": 23304.0,
    "prev_close": 23053.1,
-   "change_pct": 1.03,
-   "bar_time": "2026-11-02T14:35:00",
+   "change_pct": 1.09,
+   "bar_time": "2026-11-02T14:40:00",
    "indicators": {
-    "rsi": 58.2,
-    "adx": 24.7,
-    "ema_fast": 23268.89,
-    "ema_slow": 23265.74,
-    "supertrend": 23302.02,
-    "supertrend_dir": -1,
+    "rsi": 61.6,
+    "adx": 25.0,
+    "ema_fast": 23275.91,
+    "ema_slow": 23269.22,
+    "supertrend": 23239.25,
+    "supertrend_dir": 1,
     "orh": 23292.45,
     "orl": 23212.65,
     "ema15": 23251.33
@@ -21,7 +21,7 @@
     "checks": [
      {
       "name": "Breakout above opening range",
-      "ok": false
+      "ok": true
      },
      {
       "name": "EMA 9 above EMA 21",
@@ -29,7 +29,7 @@
      },
      {
       "name": "Supertrend bullish",
-      "ok": false
+      "ok": true
      },
      {
       "name": "RSI 55\u201375",
@@ -45,11 +45,11 @@
      },
      {
       "name": "Strong bullish candle",
-      "ok": true
+      "ok": false
      },
      {
       "name": "Not overextended",
-      "ok": true
+      "ok": false
      }
     ],
     "score": 6,
@@ -67,7 +67,7 @@
      },
      {
       "name": "Supertrend bearish",
-      "ok": true
+      "ok": false
      },
      {
       "name": "RSI 25\u201345",
@@ -90,27 +90,27 @@
       "ok": false
      }
     ],
-    "score": 2,
+    "score": 1,
     "total": 8
    },
    "open_trade": null
   },
   "SENSEX": {
    "name": "SENSEX",
-   "price": 75188.29,
+   "price": 75187.38,
    "prev_close": 74459.53,
    "change_pct": 0.98,
-   "bar_time": "2026-11-02T14:25:24",
+   "bar_time": "2026-11-02T14:30:25",
    "indicators": {
-    "rsi": 52.0,
-    "adx": 27.4,
-    "ema_fast": 75136.51,
-    "ema_slow": 75155.65,
+    "rsi": 51.9,
+    "adx": 26.0,
+    "ema_fast": 75145.9,
+    "ema_slow": 75158.13,
     "supertrend": 75248.54,
     "supertrend_dir": -1,
     "orh": 75362.06,
     "orl": 75101.96,
-    "ema15": 75140.41
+    "ema15": 75144.89
    },
    "call": {
     "checks": [
@@ -192,7 +192,7 @@
   }
  },
  "errors": [],
- "updated_at": "2026-11-02T14:35:25",
+ "updated_at": "2026-11-02T14:40:25",
  "market": "OPEN",
  "note": "",
  "data_source": "Yahoo Finance 5-min candles (free; can lag 1\u20133 min)"
