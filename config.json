@@ -49,8 +49,8 @@
     "cooldown_after_loss_min": 30
   },
   "email": {
-    "enabled": true,
-    "send_daily_summary": true
+    "enabled": false,
+    "send_daily_summary": false
   },
   "autotrade": {
     "enabled": true,
