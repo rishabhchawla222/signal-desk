@@ -2,15 +2,15 @@
  "indices": {
   "NIFTY": {
    "name": "NIFTY",
-   "price": 23729.8,
+   "price": 23731.85,
    "prev_close": 23440.8,
-   "change_pct": 1.23,
-   "bar_time": "2026-11-03T15:15:00",
+   "change_pct": 1.24,
+   "bar_time": "2026-11-03T15:20:00",
    "indicators": {
-    "rsi": 62.7,
-    "adx": 15.2,
-    "ema_fast": 23704.99,
-    "ema_slow": 23701.14,
+    "rsi": 63.3,
+    "adx": 15.4,
+    "ema_fast": 23710.36,
+    "ema_slow": 23703.94,
     "supertrend": 23744.25,
     "supertrend_dir": -1,
     "orh": 23628.2,
@@ -97,15 +97,15 @@
   },
   "SENSEX": {
    "name": "SENSEX",
-   "price": 76590.26,
+   "price": 76592.95,
    "prev_close": 75692.78,
    "change_pct": 1.19,
-   "bar_time": "2026-11-03T15:05:24",
+   "bar_time": "2026-11-03T15:10:23",
    "indicators": {
-    "rsi": 48.1,
-    "adx": 18.6,
-    "ema_fast": 76607.72,
-    "ema_slow": 76614.87,
+    "rsi": 48.5,
+    "adx": 17.2,
+    "ema_fast": 76604.41,
+    "ema_slow": 76612.7,
     "supertrend": 76756.01,
     "supertrend_dir": -1,
     "orh": 76420.13,
@@ -192,7 +192,7 @@
   }
  },
  "errors": [],
- "updated_at": "2026-11-03T15:15:26",
+ "updated_at": "2026-11-03T15:20:25",
  "market": "CLOSED",
  "note": "Session over \u2013 see you tomorrow",
  "data_source": "Yahoo Finance 5-min candles (free; can lag 1\u20133 min)"
