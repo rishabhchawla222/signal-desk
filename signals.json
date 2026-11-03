@@ -434,5 +434,65 @@
   "note": "Target hit",
   "points": 45.13,
   "r_multiple": 1.5
+ },
+ {
+  "id": "NIFTY-20261103-1415-CALL",
+  "index": "NIFTY",
+  "side": "CALL",
+  "option": "NIFTY 23700 CE",
+  "strike": 23700,
+  "entry_time": "2026-11-03T14:15:00",
+  "entry": 23709.95,
+  "risk": 28.19,
+  "sl": 23681.76,
+  "initial_sl": 23681.76,
+  "target": 23752.23,
+  "breakeven": false,
+  "status": "OPEN",
+  "valid_until": "2026-11-03T14:25:00",
+  "chase_limit": 23718.41,
+  "reasons": [
+   "Breakout above opening range",
+   "EMA 9 above EMA 21",
+   "Supertrend bullish",
+   "RSI 55\u201375",
+   "ADX \u2265 20 (trending)",
+   "15-min trend up",
+   "Strong bullish candle",
+   "Not overextended"
+  ],
+  "indicators": {
+   "rsi": 57.0,
+   "adx": 25.4,
+   "ema_fast": 23711.51,
+   "ema_slow": 23702.38,
+   "supertrend": 23681.76
+  },
+  "premium": {
+   "source": "NSE live",
+   "estimated": false,
+   "expiry": "2026-11-09",
+   "price": 198.5,
+   "ltp": 198.75,
+   "bid": 198.25,
+   "ask": 198.7,
+   "buy_upto": 204.65,
+   "sl": 185.9,
+   "target": 224.0,
+   "iv": 15.0,
+   "delta": 0.53,
+   "time": "2026-11-03T14:15:25",
+   "spot_now": 23705.9
+  },
+  "late": false,
+  "auto": {
+   "status": "bought",
+   "qty": 65,
+   "price": 198.7,
+   "charges": 29.34,
+   "estimated": false,
+   "time": "2026-11-03T14:15:25",
+   "cash_after": 988476.55
+  }
  }
 ]
