@@ -2,20 +2,20 @@
  "indices": {
   "NIFTY": {
    "name": "NIFTY",
-   "price": 23918.6,
+   "price": 23913.3,
    "prev_close": 23810.85,
-   "change_pct": 0.45,
-   "bar_time": "2026-11-04T15:10:00",
+   "change_pct": 0.43,
+   "bar_time": "2026-11-04T15:15:00",
    "indicators": {
-    "rsi": 64.6,
-    "adx": 27.5,
-    "ema_fast": 23912.08,
-    "ema_slow": 23894.76,
+    "rsi": 61.6,
+    "adx": 26.5,
+    "ema_fast": 23912.32,
+    "ema_slow": 23896.44,
     "supertrend": 23871.07,
     "supertrend_dir": 1,
     "orh": 23942.15,
     "orl": 23700.8,
-    "ema15": 23847.94
+    "ema15": 23854.17
    },
    "call": {
     "checks": [
@@ -49,10 +49,10 @@
      },
      {
       "name": "Not overextended",
-      "ok": false
+      "ok": true
      }
     ],
-    "score": 5,
+    "score": 6,
     "total": 8
    },
    "put": {
@@ -83,34 +83,34 @@
      },
      {
       "name": "Strong bearish candle",
-      "ok": true
+      "ok": false
      },
      {
       "name": "Not overextended",
       "ok": false
      }
     ],
-    "score": 2,
+    "score": 1,
     "total": 8
    },
    "open_trade": null
   },
   "SENSEX": {
    "name": "SENSEX",
-   "price": 77240.8,
+   "price": 77255.29,
    "prev_close": 76917.85,
-   "change_pct": 0.42,
-   "bar_time": "2026-11-04T15:00:24",
+   "change_pct": 0.44,
+   "bar_time": "2026-11-04T15:05:23",
    "indicators": {
-    "rsi": 63.8,
-    "adx": 21.5,
-    "ema_fast": 77210.01,
-    "ema_slow": 77155.17,
-    "supertrend": 77076.84,
+    "rsi": 65.0,
+    "adx": 22.2,
+    "ema_fast": 77221.42,
+    "ema_slow": 77165.48,
+    "supertrend": 77095.48,
     "supertrend_dir": 1,
     "orh": 77382.02,
     "orl": 76616.15,
-    "ema15": 77035.63
+    "ema15": 77037.03
    },
    "call": {
     "checks": [
@@ -192,8 +192,8 @@
   }
  },
  "errors": [],
- "updated_at": "2026-11-04T15:10:25",
- "market": "OPEN",
- "note": "",
+ "updated_at": "2026-11-04T15:15:25",
+ "market": "CLOSED",
+ "note": "Session over \u2013 see you tomorrow",
  "data_source": "Yahoo Finance 5-min candles (free; can lag 1\u20133 min)"
 }
