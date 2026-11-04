@@ -2,20 +2,20 @@
  "indices": {
   "NIFTY": {
    "name": "NIFTY",
-   "price": 23903.55,
+   "price": 23903.7,
    "prev_close": 23810.85,
    "change_pct": 0.39,
-   "bar_time": "2026-11-04T14:25:00",
+   "bar_time": "2026-11-04T14:30:00",
    "indicators": {
     "rsi": 63.8,
-    "adx": 25.5,
-    "ema_fast": 23886.42,
-    "ema_slow": 23868.1,
-    "supertrend": 23844.07,
+    "adx": 25.8,
+    "ema_fast": 23889.88,
+    "ema_slow": 23871.33,
+    "supertrend": 23846.69,
     "supertrend_dir": 1,
     "orh": 23942.15,
     "orl": 23700.8,
-    "ema15": 23824.78
+    "ema15": 23832.29
    },
    "call": {
     "checks": [
@@ -45,14 +45,14 @@
      },
      {
       "name": "Strong bullish candle",
-      "ok": true
+      "ok": false
      },
      {
       "name": "Not overextended",
       "ok": false
      }
     ],
-    "score": 6,
+    "score": 5,
     "total": 8
    },
    "put": {
@@ -97,20 +97,20 @@
   },
   "SENSEX": {
    "name": "SENSEX",
-   "price": 77118.6,
+   "price": 77101.97,
    "prev_close": 76917.85,
-   "change_pct": 0.26,
-   "bar_time": "2026-11-04T14:15:24",
+   "change_pct": 0.24,
+   "bar_time": "2026-11-04T14:20:24",
    "indicators": {
-    "rsi": 56.7,
-    "adx": 20.4,
-    "ema_fast": 77122.02,
-    "ema_slow": 77070.25,
+    "rsi": 55.3,
+    "adx": 19.8,
+    "ema_fast": 77114.95,
+    "ema_slow": 77071.55,
     "supertrend": 77028.64,
     "supertrend_dir": 1,
     "orh": 77382.02,
     "orl": 76616.15,
-    "ema15": 76969.45
+    "ema15": 76967.62
    },
    "call": {
     "checks": [
@@ -132,7 +132,7 @@
      },
      {
       "name": "ADX \u2265 20 (trending)",
-      "ok": true
+      "ok": false
      },
      {
       "name": "15-min trend up",
@@ -147,7 +147,7 @@
       "ok": true
      }
     ],
-    "score": 6,
+    "score": 5,
     "total": 8
    },
    "put": {
@@ -170,7 +170,7 @@
      },
      {
       "name": "ADX \u2265 20 (trending)",
-      "ok": true
+      "ok": false
      },
      {
       "name": "15-min trend down",
@@ -185,14 +185,14 @@
       "ok": false
      }
     ],
-    "score": 1,
+    "score": 0,
     "total": 8
    },
    "open_trade": null
   }
  },
  "errors": [],
- "updated_at": "2026-11-04T14:25:25",
+ "updated_at": "2026-11-04T14:30:25",
  "market": "OPEN",
  "note": "",
  "data_source": "Yahoo Finance 5-min candles (free; can lag 1\u20133 min)"
