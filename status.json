@@ -2,26 +2,26 @@
  "indices": {
   "NIFTY": {
    "name": "NIFTY",
-   "price": 24371.2,
+   "price": 24389.05,
    "prev_close": 23960.6,
-   "change_pct": 1.71,
-   "bar_time": "2026-11-05T11:25:00",
+   "change_pct": 1.79,
+   "bar_time": "2026-11-05T11:30:00",
    "indicators": {
-    "rsi": 64.6,
+    "rsi": 67.2,
     "adx": 50.7,
-    "ema_fast": 24372.31,
-    "ema_slow": 24335.48,
-    "supertrend": 24303.51,
+    "ema_fast": 24375.66,
+    "ema_slow": 24340.35,
+    "supertrend": 24305.77,
     "supertrend_dir": 1,
     "orh": 24385.9,
     "orl": 24298.45,
-    "ema15": 24143.84
+    "ema15": 24167.19
    },
    "call": {
     "checks": [
      {
       "name": "Breakout above opening range",
-      "ok": false
+      "ok": true
      },
      {
       "name": "EMA 9 above EMA 21",
@@ -45,14 +45,14 @@
      },
      {
       "name": "Strong bullish candle",
-      "ok": false
+      "ok": true
      },
      {
       "name": "Not overextended",
       "ok": false
      }
     ],
-    "score": 5,
+    "score": 7,
     "total": 8
    },
    "put": {
@@ -83,34 +83,34 @@
      },
      {
       "name": "Strong bearish candle",
-      "ok": true
+      "ok": false
      },
      {
       "name": "Not overextended",
       "ok": false
      }
     ],
-    "score": 2,
+    "score": 1,
     "total": 8
    },
    "open_trade": null
   },
   "SENSEX": {
    "name": "SENSEX",
-   "price": 78731.53,
+   "price": 78736.44,
    "prev_close": 77301.4,
-   "change_pct": 1.85,
-   "bar_time": "2026-11-05T11:15:25",
+   "change_pct": 1.86,
+   "bar_time": "2026-11-05T11:20:24",
    "indicators": {
-    "rsi": 64.8,
-    "adx": 50.0,
-    "ema_fast": 78728.41,
-    "ema_slow": 78593.11,
-    "supertrend": 78468.16,
+    "rsi": 64.7,
+    "adx": 49.4,
+    "ema_fast": 78732.07,
+    "ema_slow": 78607.2,
+    "supertrend": 78488.45,
     "supertrend_dir": 1,
     "orh": 78910.94,
     "orl": 78553.72,
-    "ema15": 77996.13
+    "ema15": 77997.35
    },
    "call": {
     "checks": [
@@ -192,7 +192,7 @@
   }
  },
  "errors": [],
- "updated_at": "2026-11-05T11:25:25",
+ "updated_at": "2026-11-05T11:30:25",
  "market": "OPEN",
  "note": "",
  "data_source": "Yahoo Finance 5-min candles (free; can lag 1\u20133 min)"
