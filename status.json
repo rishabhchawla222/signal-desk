@@ -2,16 +2,16 @@
  "indices": {
   "NIFTY": {
    "name": "NIFTY",
-   "price": 24369.4,
+   "price": 24386.5,
    "prev_close": 23960.6,
-   "change_pct": 1.71,
-   "bar_time": "2026-11-05T11:15:00",
+   "change_pct": 1.78,
+   "bar_time": "2026-11-05T11:20:00",
    "indicators": {
-    "rsi": 66.6,
-    "adx": 51.1,
-    "ema_fast": 24369.11,
-    "ema_slow": 24326.45,
-    "supertrend": 24291.93,
+    "rsi": 69.0,
+    "adx": 50.9,
+    "ema_fast": 24372.59,
+    "ema_slow": 24331.91,
+    "supertrend": 24298.07,
     "supertrend_dir": 1,
     "orh": 24385.9,
     "orl": 24298.45,
@@ -21,7 +21,7 @@
     "checks": [
      {
       "name": "Breakout above opening range",
-      "ok": false
+      "ok": true
      },
      {
       "name": "EMA 9 above EMA 21",
@@ -45,14 +45,14 @@
      },
      {
       "name": "Strong bullish candle",
-      "ok": false
+      "ok": true
      },
      {
       "name": "Not overextended",
       "ok": false
      }
     ],
-    "score": 5,
+    "score": 7,
     "total": 8
    },
    "put": {
@@ -83,30 +83,30 @@
      },
      {
       "name": "Strong bearish candle",
-      "ok": true
+      "ok": false
      },
      {
       "name": "Not overextended",
       "ok": false
      }
     ],
-    "score": 2,
+    "score": 1,
     "total": 8
    },
    "open_trade": null
   },
   "SENSEX": {
    "name": "SENSEX",
-   "price": 78735.18,
+   "price": 78729.07,
    "prev_close": 77301.4,
    "change_pct": 1.85,
-   "bar_time": "2026-11-05T11:05:24",
+   "bar_time": "2026-11-05T11:10:25",
    "indicators": {
-    "rsi": 66.2,
-    "adx": 51.2,
-    "ema_fast": 78724.87,
-    "ema_slow": 78563.08,
-    "supertrend": 78448.9,
+    "rsi": 64.9,
+    "adx": 50.7,
+    "ema_fast": 78729.32,
+    "ema_slow": 78580.04,
+    "supertrend": 78449.02,
     "supertrend_dir": 1,
     "orh": 78910.94,
     "orl": 78553.72,
@@ -192,7 +192,7 @@
   }
  },
  "errors": [],
- "updated_at": "2026-11-05T11:15:25",
+ "updated_at": "2026-11-05T11:20:25",
  "market": "OPEN",
  "note": "",
  "data_source": "Yahoo Finance 5-min candles (free; can lag 1\u20133 min)"
