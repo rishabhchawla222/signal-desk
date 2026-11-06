@@ -2,20 +2,20 @@
  "indices": {
   "NIFTY": {
    "name": "NIFTY",
-   "price": 24552.7,
+   "price": 24573.35,
    "prev_close": 24536.6,
-   "change_pct": 0.07,
-   "bar_time": "2026-11-06T09:40:00",
+   "change_pct": 0.15,
+   "bar_time": "2026-11-06T09:45:00",
    "indicators": {
-    "rsi": 58.8,
-    "adx": 36.7,
-    "ema_fast": 24532.51,
-    "ema_slow": 24530.21,
-    "supertrend": 24441.52,
+    "rsi": 63.4,
+    "adx": 35.2,
+    "ema_fast": 24540.68,
+    "ema_slow": 24534.13,
+    "supertrend": 24448.68,
     "supertrend_dir": 1,
     "orh": 24538.3,
     "orl": 24388.1,
-    "ema15": 24448.82
+    "ema15": 24460.68
    },
    "call": {
     "checks": [
@@ -45,14 +45,14 @@
      },
      {
       "name": "Strong bullish candle",
-      "ok": false
+      "ok": true
      },
      {
       "name": "Not overextended",
       "ok": true
      }
     ],
-    "score": 7,
+    "score": 8,
     "total": 8
    },
    "put": {
@@ -93,24 +93,73 @@
     "score": 1,
     "total": 8
    },
-   "open_trade": null
+   "open_trade": {
+    "id": "NIFTY-20261106-0945-CALL",
+    "index": "NIFTY",
+    "side": "CALL",
+    "option": "NIFTY 24550 CE",
+    "strike": 24550,
+    "entry_time": "2026-11-06T09:45:00",
+    "entry": 24573.35,
+    "risk": 51.35,
+    "sl": 24522.0,
+    "initial_sl": 24522.0,
+    "target": 24650.38,
+    "breakeven": false,
+    "status": "OPEN",
+    "valid_until": "2026-11-06T09:55:00",
+    "chase_limit": 24588.75,
+    "reasons": [
+     "Breakout above opening range",
+     "EMA 9 above EMA 21",
+     "Supertrend bullish",
+     "RSI 55\u201375",
+     "ADX \u2265 20 (trending)",
+     "15-min trend up",
+     "Strong bullish candle",
+     "Not overextended"
+    ],
+    "indicators": {
+     "rsi": 63.4,
+     "adx": 35.2,
+     "ema_fast": 24540.68,
+     "ema_slow": 24534.13,
+     "supertrend": 24448.68
+    },
+    "premium": {
+     "source": "NSE live",
+     "estimated": false,
+     "expiry": "2026-11-09",
+     "price": 164.55,
+     "ltp": 164.35,
+     "bid": 164.35,
+     "ask": 164.75,
+     "buy_upto": 169.7,
+     "sl": 137.1,
+     "target": 208.75,
+     "iv": 15.6,
+     "delta": 0.55,
+     "time": "2026-11-06T09:45:25",
+     "spot_now": 24575.1
+    }
+   }
   },
   "SENSEX": {
    "name": "SENSEX",
-   "price": 79357.51,
+   "price": 79427.46,
    "prev_close": 79310.01,
-   "change_pct": 0.06,
-   "bar_time": "2026-11-06T09:30:24",
+   "change_pct": 0.15,
+   "bar_time": "2026-11-06T09:35:25",
    "indicators": {
-    "rsi": 55.1,
-    "adx": 52.0,
-    "ema_fast": 79367.72,
-    "ema_slow": 79336.44,
+    "rsi": 60.1,
+    "adx": 52.9,
+    "ema_fast": 79389.66,
+    "ema_slow": 79349.88,
     "supertrend": 79215.29,
     "supertrend_dir": 1,
-    "orh": null,
-    "orl": null,
-    "ema15": 79036.39
+    "orh": 79523.37,
+    "orl": 79020.55,
+    "ema15": 79042.34
    },
    "call": {
     "checks": [
@@ -192,7 +241,7 @@
   }
  },
  "errors": [],
- "updated_at": "2026-11-06T09:40:25",
+ "updated_at": "2026-11-06T09:45:27",
  "market": "OPEN",
  "note": "",
  "data_source": "Yahoo Finance 5-min candles (free; can lag 1\u20133 min)"
