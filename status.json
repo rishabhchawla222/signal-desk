@@ -2,15 +2,15 @@
  "indices": {
   "NIFTY": {
    "name": "NIFTY",
-   "price": 24931.95,
+   "price": 24946.85,
    "prev_close": 25030.35,
-   "change_pct": -0.39,
-   "bar_time": "2026-11-09T14:05:00",
+   "change_pct": -0.33,
+   "bar_time": "2026-11-09T14:10:00",
    "indicators": {
-    "rsi": 54.1,
-    "adx": 13.6,
-    "ema_fast": 24923.24,
-    "ema_slow": 24918.5,
+    "rsi": 57.7,
+    "adx": 13.8,
+    "ema_fast": 24927.96,
+    "ema_slow": 24921.07,
     "supertrend": 24978.64,
     "supertrend_dir": -1,
     "orh": 25081.0,
@@ -33,7 +33,7 @@
      },
      {
       "name": "RSI 55\u201375",
-      "ok": false
+      "ok": true
      },
      {
       "name": "ADX \u2265 20 (trending)",
@@ -45,14 +45,14 @@
      },
      {
       "name": "Strong bullish candle",
-      "ok": false
+      "ok": true
      },
      {
       "name": "Not overextended",
       "ok": true
      }
     ],
-    "score": 3,
+    "score": 5,
     "total": 8
    },
    "put": {
@@ -83,34 +83,34 @@
      },
      {
       "name": "Strong bearish candle",
-      "ok": true
+      "ok": false
      },
      {
       "name": "Not overextended",
       "ok": false
      }
     ],
-    "score": 2,
+    "score": 1,
     "total": 8
    },
    "open_trade": null
   },
   "SENSEX": {
    "name": "SENSEX",
-   "price": 80806.41,
+   "price": 80872.46,
    "prev_close": 81028.02,
-   "change_pct": -0.27,
-   "bar_time": "2026-11-09T13:55:42",
+   "change_pct": -0.19,
+   "bar_time": "2026-11-09T14:00:23",
    "indicators": {
-    "rsi": 54.7,
-    "adx": 12.5,
-    "ema_fast": 80748.61,
-    "ema_slow": 80749.32,
+    "rsi": 58.7,
+    "adx": 13.0,
+    "ema_fast": 80785.37,
+    "ema_slow": 80766.7,
     "supertrend": 80927.31,
     "supertrend_dir": -1,
     "orh": 81319.5,
     "orl": 80717.91,
-    "ema15": 80665.36
+    "ema15": 80685.08
    },
    "call": {
     "checks": [
@@ -120,7 +120,7 @@
      },
      {
       "name": "EMA 9 above EMA 21",
-      "ok": false
+      "ok": true
      },
      {
       "name": "Supertrend bullish",
@@ -128,7 +128,7 @@
      },
      {
       "name": "RSI 55\u201375",
-      "ok": false
+      "ok": true
      },
      {
       "name": "ADX \u2265 20 (trending)",
@@ -147,7 +147,7 @@
       "ok": true
      }
     ],
-    "score": 2,
+    "score": 4,
     "total": 8
    },
    "put": {
@@ -158,7 +158,7 @@
      },
      {
       "name": "EMA 9 below EMA 21",
-      "ok": true
+      "ok": false
      },
      {
       "name": "Supertrend bearish",
@@ -185,14 +185,14 @@
       "ok": false
      }
     ],
-    "score": 2,
+    "score": 1,
     "total": 8
    },
    "open_trade": null
   }
  },
  "errors": [],
- "updated_at": "2026-11-09T14:05:44",
+ "updated_at": "2026-11-09T14:10:25",
  "market": "OPEN",
  "note": "",
  "data_source": "Yahoo Finance 5-min candles (free; can lag 1\u20133 min)"
