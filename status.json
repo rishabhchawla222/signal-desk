@@ -2,20 +2,20 @@
  "indices": {
   "NIFTY": {
    "name": "NIFTY",
-   "price": 25019.5,
+   "price": 24995.85,
    "prev_close": 25030.35,
-   "change_pct": -0.04,
-   "bar_time": "2026-11-09T11:40:00",
+   "change_pct": -0.14,
+   "bar_time": "2026-11-09T11:45:00",
    "indicators": {
-    "rsi": 68.4,
-    "adx": 27.8,
-    "ema_fast": 24940.69,
-    "ema_slow": 24920.84,
+    "rsi": 63.2,
+    "adx": 28.9,
+    "ema_fast": 24951.72,
+    "ema_slow": 24927.66,
     "supertrend": 24886.02,
     "supertrend_dir": 1,
     "orh": 25081.0,
     "orl": 24899.4,
-    "ema15": 24852.46
+    "ema15": 24866.12
    },
    "call": {
     "checks": [
@@ -83,34 +83,34 @@
      },
      {
       "name": "Strong bearish candle",
-      "ok": false
+      "ok": true
      },
      {
       "name": "Not overextended",
       "ok": false
      }
     ],
-    "score": 1,
+    "score": 2,
     "total": 8
    },
    "open_trade": null
   },
   "SENSEX": {
    "name": "SENSEX",
-   "price": 80762.25,
+   "price": 80841.65,
    "prev_close": 81028.02,
-   "change_pct": -0.33,
-   "bar_time": "2026-11-09T11:30:23",
+   "change_pct": -0.23,
+   "bar_time": "2026-11-09T11:35:22",
    "indicators": {
-    "rsi": 53.5,
-    "adx": 19.1,
-    "ema_fast": 80709.87,
-    "ema_slow": 80716.04,
+    "rsi": 57.3,
+    "adx": 19.7,
+    "ema_fast": 80748.14,
+    "ema_slow": 80733.61,
     "supertrend": 80934.64,
     "supertrend_dir": -1,
     "orh": 81319.5,
     "orl": 80717.91,
-    "ema15": 80534.54
+    "ema15": 80541.63
    },
    "call": {
     "checks": [
@@ -120,7 +120,7 @@
      },
      {
       "name": "EMA 9 above EMA 21",
-      "ok": false
+      "ok": true
      },
      {
       "name": "Supertrend bullish",
@@ -128,7 +128,7 @@
      },
      {
       "name": "RSI 55\u201375",
-      "ok": false
+      "ok": true
      },
      {
       "name": "ADX \u2265 20 (trending)",
@@ -147,7 +147,7 @@
       "ok": true
      }
     ],
-    "score": 2,
+    "score": 4,
     "total": 8
    },
    "put": {
@@ -158,7 +158,7 @@
      },
      {
       "name": "EMA 9 below EMA 21",
-      "ok": true
+      "ok": false
      },
      {
       "name": "Supertrend bearish",
@@ -185,14 +185,14 @@
       "ok": false
      }
     ],
-    "score": 2,
+    "score": 1,
     "total": 8
    },
    "open_trade": null
   }
  },
  "errors": [],
- "updated_at": "2026-11-09T11:40:25",
+ "updated_at": "2026-11-09T11:45:25",
  "market": "OPEN",
  "note": "",
  "data_source": "Yahoo Finance 5-min candles (free; can lag 1\u20133 min)"
