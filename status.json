@@ -2,15 +2,15 @@
  "indices": {
   "NIFTY": {
    "name": "NIFTY",
-   "price": 24878.9,
+   "price": 24896.7,
    "prev_close": 25030.35,
-   "change_pct": -0.61,
-   "bar_time": "2026-11-09T13:30:00",
+   "change_pct": -0.53,
+   "bar_time": "2026-11-09T13:35:00",
    "indicators": {
-    "rsi": 41.1,
-    "adx": 16.6,
-    "ema_fast": 24899.57,
-    "ema_slow": 24910.97,
+    "rsi": 46.2,
+    "adx": 16.3,
+    "ema_fast": 24899.0,
+    "ema_slow": 24909.68,
     "supertrend": 24978.64,
     "supertrend_dir": -1,
     "orh": 25081.0,
@@ -45,14 +45,14 @@
      },
      {
       "name": "Strong bullish candle",
-      "ok": false
+      "ok": true
      },
      {
       "name": "Not overextended",
       "ok": false
      }
     ],
-    "score": 0,
+    "score": 1,
     "total": 8
    },
    "put": {
@@ -71,7 +71,7 @@
      },
      {
       "name": "RSI 25\u201345",
-      "ok": true
+      "ok": false
      },
      {
       "name": "ADX \u2265 20 (trending)",
@@ -79,7 +79,7 @@
      },
      {
       "name": "15-min trend down",
-      "ok": true
+      "ok": false
      },
      {
       "name": "Strong bearish candle",
@@ -90,23 +90,23 @@
       "ok": true
      }
     ],
-    "score": 6,
+    "score": 4,
     "total": 8
    },
    "open_trade": null
   },
   "SENSEX": {
    "name": "SENSEX",
-   "price": 80678.42,
+   "price": 80663.64,
    "prev_close": 81028.02,
-   "change_pct": -0.43,
-   "bar_time": "2026-11-09T13:20:23",
+   "change_pct": -0.45,
+   "bar_time": "2026-11-09T13:25:24",
    "indicators": {
-    "rsi": 43.2,
-    "adx": 13.5,
-    "ema_fast": 80751.26,
-    "ema_slow": 80765.81,
-    "supertrend": 80951.96,
+    "rsi": 42.3,
+    "adx": 14.9,
+    "ema_fast": 80731.75,
+    "ema_slow": 80755.5,
+    "supertrend": 80946.97,
     "supertrend_dir": -1,
     "orh": 81319.5,
     "orl": 80717.91,
@@ -192,7 +192,7 @@
   }
  },
  "errors": [],
- "updated_at": "2026-11-09T13:30:25",
+ "updated_at": "2026-11-09T13:35:25",
  "market": "OPEN",
  "note": "",
  "data_source": "Yahoo Finance 5-min candles (free; can lag 1\u20133 min)"
