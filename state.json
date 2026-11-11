@@ -56,14 +56,14 @@
      "now_estimated": false
     }
    },
-   "last_bar": "2026-11-11T14:45:00"
+   "last_bar": "2026-11-11T14:50:00"
   },
   "SENSEX": {
    "date": "2026-11-11",
    "trades_today": 0,
    "last_loss_end": null,
    "open": null,
-   "last_bar": "2026-11-11T14:35:25"
+   "last_bar": "2026-11-11T14:40:25"
   }
  },
  "summary_sent": "2026-11-03"
