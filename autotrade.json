@@ -1,7 +1,26 @@
 {
  "start_cash": 1000000.0,
- "cash": 1005257.2,
- "open": {},
+ "cash": 991132.08,
+ "open": {
+  "NIFTY-20261111-1415-PUT": {
+   "id": "NIFTY-20261111-1415-PUT",
+   "key": "OPT:NIFTY:2026-11-17:25250:PE",
+   "option": "NIFTY 25250 PE",
+   "expiry": "2026-11-17",
+   "index": "NIFTY",
+   "side": "PUT",
+   "strike": 25250,
+   "qty": 65,
+   "lot": 65,
+   "buy_price": 216.85,
+   "buy_time": "2026-11-11T14:15:26",
+   "buy_charges": 29.87,
+   "spot_entry": 25228.6,
+   "sl": 198.9,
+   "target": 244.55,
+   "estimated": false
+  }
+ },
  "trades": [
   {
    "id": "NIFTY-20261027-1040-CALL",
@@ -220,13 +239,13 @@
  ],
  "skipped": [],
  "started": "2026-10-27",
- "updated": "2026-11-11T14:10:25",
+ "updated": "2026-11-11T14:15:27",
  "summary": {
   "trades": 8,
   "wins": 5,
   "net": 5257.2,
-  "cash": 1005257.2,
-  "value": 1005257.2,
+  "cash": 991132.08,
+  "value": 1005227.33,
   "start_cash": 1000000.0
  },
  "paused": false,
