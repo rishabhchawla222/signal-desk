@@ -2,16 +2,16 @@
  "indices": {
   "NIFTY": {
    "name": "NIFTY",
-   "price": 25373.35,
+   "price": 25330.85,
    "prev_close": 25044.65,
-   "change_pct": 1.31,
-   "bar_time": "2026-11-11T09:20:00",
+   "change_pct": 1.14,
+   "bar_time": "2026-11-11T09:25:00",
    "indicators": {
-    "rsi": 91.0,
-    "adx": 30.5,
-    "ema_fast": 25080.38,
-    "ema_slow": 25021.4,
-    "supertrend": 25159.82,
+    "rsi": 83.1,
+    "adx": 34.2,
+    "ema_fast": 25130.47,
+    "ema_slow": 25049.53,
+    "supertrend": 25198.43,
     "supertrend_dir": 1,
     "orh": null,
     "orl": null,
@@ -45,14 +45,14 @@
      },
      {
       "name": "Strong bullish candle",
-      "ok": true
+      "ok": false
      },
      {
       "name": "Not overextended",
       "ok": false
      }
     ],
-    "score": 5,
+    "score": 4,
     "total": 8
    },
    "put": {
@@ -83,14 +83,14 @@
      },
      {
       "name": "Strong bearish candle",
-      "ok": false
+      "ok": true
      },
      {
       "name": "Not overextended",
       "ok": false
      }
     ],
-    "score": 1,
+    "score": 2,
     "total": 8
    },
    "open_trade": null
@@ -192,7 +192,7 @@
   }
  },
  "errors": [],
- "updated_at": "2026-11-11T09:20:21",
+ "updated_at": "2026-11-11T09:25:25",
  "market": "OPEN",
  "note": "",
  "data_source": "Yahoo Finance 5-min candles (free; can lag 1\u20133 min)"
