@@ -2,20 +2,20 @@
  "indices": {
   "NIFTY": {
    "name": "NIFTY",
-   "price": 25269.9,
+   "price": 25291.8,
    "prev_close": 25044.65,
-   "change_pct": 0.9,
-   "bar_time": "2026-11-11T12:40:00",
+   "change_pct": 0.99,
+   "bar_time": "2026-11-11T12:45:00",
    "indicators": {
-    "rsi": 32.8,
-    "adx": 38.3,
-    "ema_fast": 25322.2,
-    "ema_slow": 25338.72,
+    "rsi": 40.0,
+    "adx": 38.2,
+    "ema_fast": 25316.12,
+    "ema_slow": 25334.46,
     "supertrend": 25356.08,
     "supertrend_dir": -1,
     "orh": 25398.95,
     "orl": 25266.65,
-    "ema15": 25245.33
+    "ema15": 25249.76
    },
    "call": {
     "checks": [
@@ -45,14 +45,14 @@
      },
      {
       "name": "Strong bullish candle",
-      "ok": false
+      "ok": true
      },
      {
       "name": "Not overextended",
       "ok": false
      }
     ],
-    "score": 2,
+    "score": 3,
     "total": 8
    },
    "put": {
@@ -83,34 +83,34 @@
      },
      {
       "name": "Strong bearish candle",
-      "ok": true
+      "ok": false
      },
      {
       "name": "Not overextended",
       "ok": false
      }
     ],
-    "score": 5,
+    "score": 4,
     "total": 8
    },
    "open_trade": null
   },
   "SENSEX": {
    "name": "SENSEX",
-   "price": 82164.1,
+   "price": 82078.78,
    "prev_close": 81106.65,
-   "change_pct": 1.3,
-   "bar_time": "2026-11-11T12:30:24",
+   "change_pct": 1.2,
+   "bar_time": "2026-11-11T12:35:24",
    "indicators": {
-    "rsi": 44.3,
-    "adx": 32.0,
-    "ema_fast": 82249.04,
-    "ema_slow": 82263.26,
-    "supertrend": 82395.24,
+    "rsi": 38.7,
+    "adx": 33.0,
+    "ema_fast": 82204.33,
+    "ema_slow": 82240.99,
+    "supertrend": 82319.95,
     "supertrend_dir": -1,
     "orh": 82422.69,
     "orl": 81979.13,
-    "ema15": 81900.44
+    "ema15": 81894.1
    },
    "call": {
     "checks": [
@@ -192,7 +192,7 @@
   }
  },
  "errors": [],
- "updated_at": "2026-11-11T12:40:25",
+ "updated_at": "2026-11-11T12:45:25",
  "market": "OPEN",
  "note": "",
  "data_source": "Yahoo Finance 5-min candles (free; can lag 1\u20133 min)"
