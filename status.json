@@ -2,20 +2,20 @@
  "indices": {
   "NIFTY": {
    "name": "NIFTY",
-   "price": 25374.25,
+   "price": 25323.95,
    "prev_close": 25044.65,
-   "change_pct": 1.32,
-   "bar_time": "2026-11-11T12:10:00",
+   "change_pct": 1.12,
+   "bar_time": "2026-11-11T12:15:00",
    "indicators": {
-    "rsi": 59.7,
-    "adx": 44.9,
-    "ema_fast": 25382.22,
-    "ema_slow": 25364.28,
-    "supertrend": 25326.55,
-    "supertrend_dir": 1,
+    "rsi": 43.9,
+    "adx": 42.6,
+    "ema_fast": 25370.56,
+    "ema_slow": 25360.61,
+    "supertrend": 25419.54,
+    "supertrend_dir": -1,
     "orh": 25398.95,
     "orl": 25266.65,
-    "ema15": 25229.98
+    "ema15": 25238.93
    },
    "call": {
     "checks": [
@@ -29,11 +29,11 @@
      },
      {
       "name": "Supertrend bullish",
-      "ok": true
+      "ok": false
      },
      {
       "name": "RSI 55\u201375",
-      "ok": true
+      "ok": false
      },
      {
       "name": "ADX \u2265 20 (trending)",
@@ -49,10 +49,10 @@
      },
      {
       "name": "Not overextended",
-      "ok": true
+      "ok": false
      }
     ],
-    "score": 6,
+    "score": 3,
     "total": 8
    },
    "put": {
@@ -67,11 +67,11 @@
      },
      {
       "name": "Supertrend bearish",
-      "ok": false
+      "ok": true
      },
      {
       "name": "RSI 25\u201345",
-      "ok": false
+      "ok": true
      },
      {
       "name": "ADX \u2265 20 (trending)",
@@ -90,27 +90,27 @@
       "ok": false
      }
     ],
-    "score": 2,
+    "score": 4,
     "total": 8
    },
    "open_trade": null
   },
   "SENSEX": {
    "name": "SENSEX",
-   "price": 82329.37,
+   "price": 82391.48,
    "prev_close": 81106.65,
-   "change_pct": 1.51,
-   "bar_time": "2026-11-11T12:00:22",
+   "change_pct": 1.58,
+   "bar_time": "2026-11-11T12:05:23",
    "indicators": {
-    "rsi": 59.8,
-    "adx": 39.2,
-    "ema_fast": 82360.38,
-    "ema_slow": 82292.94,
-    "supertrend": 82167.96,
+    "rsi": 65.4,
+    "adx": 38.2,
+    "ema_fast": 82376.12,
+    "ema_slow": 82306.81,
+    "supertrend": 82196.38,
     "supertrend_dir": 1,
     "orh": 82422.69,
     "orl": 81979.13,
-    "ema15": 81838.4
+    "ema15": 81844.07
    },
    "call": {
     "checks": [
@@ -192,7 +192,7 @@
   }
  },
  "errors": [],
- "updated_at": "2026-11-11T12:10:25",
+ "updated_at": "2026-11-11T12:15:25",
  "market": "OPEN",
  "note": "",
  "data_source": "Yahoo Finance 5-min candles (free; can lag 1\u20133 min)"
