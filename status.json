@@ -2,16 +2,16 @@
  "indices": {
   "NIFTY": {
    "name": "NIFTY",
-   "price": 25368.95,
+   "price": 25367.15,
    "prev_close": 25044.65,
    "change_pct": 1.29,
-   "bar_time": "2026-11-11T10:50:00",
+   "bar_time": "2026-11-11T10:55:00",
    "indicators": {
-    "rsi": 71.1,
-    "adx": 49.4,
-    "ema_fast": 25355.2,
-    "ema_slow": 25299.55,
-    "supertrend": 25277.42,
+    "rsi": 70.5,
+    "adx": 49.6,
+    "ema_fast": 25357.59,
+    "ema_slow": 25305.69,
+    "supertrend": 25283.21,
     "supertrend_dir": 1,
     "orh": 25398.95,
     "orl": 25266.65,
@@ -97,20 +97,20 @@
   },
   "SENSEX": {
    "name": "SENSEX",
-   "price": 82270.41,
+   "price": 82289.39,
    "prev_close": 81106.65,
-   "change_pct": 1.43,
-   "bar_time": "2026-11-11T10:40:24",
+   "change_pct": 1.46,
+   "bar_time": "2026-11-11T10:45:23",
    "indicators": {
-    "rsi": 67.0,
-    "adx": 40.3,
-    "ema_fast": 82261.3,
-    "ema_slow": 82042.44,
+    "rsi": 68.1,
+    "adx": 40.4,
+    "ema_fast": 82272.0,
+    "ema_slow": 82067.52,
     "supertrend": 81974.76,
     "supertrend_dir": 1,
     "orh": 82422.69,
     "orl": 81979.13,
-    "ema15": 81424.3
+    "ema15": 81506.69
    },
    "call": {
     "checks": [
@@ -192,7 +192,7 @@
   }
  },
  "errors": [],
- "updated_at": "2026-11-11T10:50:25",
+ "updated_at": "2026-11-11T10:55:25",
  "market": "OPEN",
  "note": "",
  "data_source": "Yahoo Finance 5-min candles (free; can lag 1\u20133 min)"
