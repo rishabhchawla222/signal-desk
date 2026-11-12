@@ -2,15 +2,15 @@
  "indices": {
   "NIFTY": {
    "name": "NIFTY",
-   "price": 25326.7,
+   "price": 25314.9,
    "prev_close": 25255.05,
-   "change_pct": 0.28,
-   "bar_time": "2026-11-12T11:00:00",
+   "change_pct": 0.24,
+   "bar_time": "2026-11-12T11:05:00",
    "indicators": {
-    "rsi": 53.8,
-    "adx": 20.9,
-    "ema_fast": 25339.72,
-    "ema_slow": 25322.31,
+    "rsi": 50.4,
+    "adx": 19.6,
+    "ema_fast": 25334.76,
+    "ema_slow": 25321.63,
     "supertrend": 25270.99,
     "supertrend_dir": 1,
     "orh": 25341.6,
@@ -37,7 +37,7 @@
      },
      {
       "name": "ADX \u2265 20 (trending)",
-      "ok": true
+      "ok": false
      },
      {
       "name": "15-min trend up",
@@ -49,10 +49,10 @@
      },
      {
       "name": "Not overextended",
-      "ok": true
+      "ok": false
      }
     ],
-    "score": 5,
+    "score": 3,
     "total": 8
    },
    "put": {
@@ -75,7 +75,7 @@
      },
      {
       "name": "ADX \u2265 20 (trending)",
-      "ok": true
+      "ok": false
      },
      {
       "name": "15-min trend down",
@@ -87,7 +87,7 @@
      },
      {
       "name": "Not overextended",
-      "ok": false
+      "ok": true
      }
     ],
     "score": 2,
@@ -97,16 +97,16 @@
   },
   "SENSEX": {
    "name": "SENSEX",
-   "price": 82235.79,
+   "price": 82212.05,
    "prev_close": 81879.4,
-   "change_pct": 0.44,
-   "bar_time": "2026-11-12T10:50:23",
+   "change_pct": 0.41,
+   "bar_time": "2026-11-12T10:55:24",
    "indicators": {
-    "rsi": 59.3,
-    "adx": 20.3,
-    "ema_fast": 82213.97,
-    "ema_slow": 82137.79,
-    "supertrend": 81960.2,
+    "rsi": 57.4,
+    "adx": 19.5,
+    "ema_fast": 82211.94,
+    "ema_slow": 82143.69,
+    "supertrend": 81953.17,
     "supertrend_dir": 1,
     "orh": 82195.44,
     "orl": 81585.94,
@@ -132,7 +132,7 @@
      },
      {
       "name": "ADX \u2265 20 (trending)",
-      "ok": true
+      "ok": false
      },
      {
       "name": "15-min trend up",
@@ -147,7 +147,7 @@
       "ok": true
      }
     ],
-    "score": 7,
+    "score": 6,
     "total": 8
    },
    "put": {
@@ -170,7 +170,7 @@
      },
      {
       "name": "ADX \u2265 20 (trending)",
-      "ok": true
+      "ok": false
      },
      {
       "name": "15-min trend down",
@@ -185,14 +185,14 @@
       "ok": false
      }
     ],
-    "score": 1,
+    "score": 0,
     "total": 8
    },
    "open_trade": null
   }
  },
  "errors": [],
- "updated_at": "2026-11-12T11:00:25",
+ "updated_at": "2026-11-12T11:05:25",
  "market": "OPEN",
  "note": "",
  "data_source": "Yahoo Finance 5-min candles (free; can lag 1\u20133 min)"
