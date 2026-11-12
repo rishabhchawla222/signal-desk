@@ -2,26 +2,26 @@
  "indices": {
   "NIFTY": {
    "name": "NIFTY",
-   "price": 25352.6,
+   "price": 25336.8,
    "prev_close": 25255.05,
-   "change_pct": 0.39,
-   "bar_time": "2026-11-12T10:10:00",
+   "change_pct": 0.32,
+   "bar_time": "2026-11-12T10:15:00",
    "indicators": {
-    "rsi": 65.4,
-    "adx": 31.9,
-    "ema_fast": 25335.81,
-    "ema_slow": 25291.75,
+    "rsi": 61.2,
+    "adx": 30.6,
+    "ema_fast": 25336.0,
+    "ema_slow": 25295.84,
     "supertrend": 25265.77,
     "supertrend_dir": 1,
     "orh": 25341.6,
     "orl": 25145.0,
-    "ema15": 25257.82
+    "ema15": 25265.34
    },
    "call": {
     "checks": [
      {
       "name": "Breakout above opening range",
-      "ok": true
+      "ok": false
      },
      {
       "name": "EMA 9 above EMA 21",
@@ -52,7 +52,7 @@
       "ok": false
      }
     ],
-    "score": 6,
+    "score": 5,
     "total": 8
    },
    "put": {
@@ -83,34 +83,34 @@
      },
      {
       "name": "Strong bearish candle",
-      "ok": true
+      "ok": false
      },
      {
       "name": "Not overextended",
       "ok": false
      }
     ],
-    "score": 2,
+    "score": 1,
     "total": 8
    },
    "open_trade": null
   },
   "SENSEX": {
    "name": "SENSEX",
-   "price": 82234.95,
+   "price": 82303.23,
    "prev_close": 81879.4,
-   "change_pct": 0.43,
-   "bar_time": "2026-11-12T10:00:24",
+   "change_pct": 0.52,
+   "bar_time": "2026-11-12T10:05:24",
    "indicators": {
-    "rsi": 62.7,
-    "adx": 29.2,
-    "ema_fast": 82132.51,
-    "ema_slow": 82002.13,
-    "supertrend": 81807.5,
+    "rsi": 65.0,
+    "adx": 29.0,
+    "ema_fast": 82174.54,
+    "ema_slow": 82033.58,
+    "supertrend": 81893.75,
     "supertrend_dir": 1,
     "orh": 82195.44,
     "orl": 81585.94,
-    "ema15": 81918.38
+    "ema15": 81923.08
    },
    "call": {
     "checks": [
@@ -192,7 +192,7 @@
   }
  },
  "errors": [],
- "updated_at": "2026-11-12T10:10:25",
+ "updated_at": "2026-11-12T10:15:25",
  "market": "OPEN",
  "note": "",
  "data_source": "Yahoo Finance 5-min candles (free; can lag 1\u20133 min)"
