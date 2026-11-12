@@ -2,115 +2,20 @@
  "indices": {
   "NIFTY": {
    "name": "NIFTY",
-   "price": 25249.4,
+   "price": 25249.25,
    "prev_close": 25255.05,
    "change_pct": -0.02,
-   "bar_time": "2026-11-12T14:40:00",
+   "bar_time": "2026-11-12T14:45:00",
    "indicators": {
     "rsi": 47.7,
-    "adx": 13.3,
-    "ema_fast": 25252.58,
-    "ema_slow": 25254.03,
+    "adx": 12.7,
+    "ema_fast": 25251.92,
+    "ema_slow": 25253.59,
     "supertrend": 25287.95,
     "supertrend_dir": -1,
     "orh": 25341.6,
     "orl": 25145.0,
-    "ema15": 25261.05
-   },
-   "call": {
-    "checks": [
-     {
-      "name": "Breakout above opening range",
-      "ok": false
-     },
-     {
-      "name": "EMA 9 above EMA 21",
-      "ok": false
-     },
-     {
-      "name": "Supertrend bullish",
-      "ok": false
-     },
-     {
-      "name": "RSI 55\u201375",
-      "ok": false
-     },
-     {
-      "name": "ADX \u2265 20 (trending)",
-      "ok": false
-     },
-     {
-      "name": "15-min trend up",
-      "ok": false
-     },
-     {
-      "name": "Strong bullish candle",
-      "ok": true
-     },
-     {
-      "name": "Not overextended",
-      "ok": false
-     }
-    ],
-    "score": 1,
-    "total": 8
-   },
-   "put": {
-    "checks": [
-     {
-      "name": "Breakdown below opening range",
-      "ok": false
-     },
-     {
-      "name": "EMA 9 below EMA 21",
-      "ok": true
-     },
-     {
-      "name": "Supertrend bearish",
-      "ok": true
-     },
-     {
-      "name": "RSI 25\u201345",
-      "ok": false
-     },
-     {
-      "name": "ADX \u2265 20 (trending)",
-      "ok": false
-     },
-     {
-      "name": "15-min trend down",
-      "ok": true
-     },
-     {
-      "name": "Strong bearish candle",
-      "ok": false
-     },
-     {
-      "name": "Not overextended",
-      "ok": true
-     }
-    ],
-    "score": 4,
-    "total": 8
-   },
-   "open_trade": null
-  },
-  "SENSEX": {
-   "name": "SENSEX",
-   "price": 81901.24,
-   "prev_close": 81879.4,
-   "change_pct": 0.03,
-   "bar_time": "2026-11-12T14:30:23",
-   "indicators": {
-    "rsi": 48.4,
-    "adx": 14.3,
-    "ema_fast": 81906.32,
-    "ema_slow": 81907.85,
-    "supertrend": 82007.07,
-    "supertrend_dir": -1,
-    "orh": 82195.44,
-    "orl": 81585.94,
-    "ema15": 81928.11
+    "ema15": 25259.93
    },
    "call": {
     "checks": [
@@ -189,10 +94,105 @@
     "total": 8
    },
    "open_trade": null
+  },
+  "SENSEX": {
+   "name": "SENSEX",
+   "price": 81917.78,
+   "prev_close": 81879.4,
+   "change_pct": 0.05,
+   "bar_time": "2026-11-12T14:35:23",
+   "indicators": {
+    "rsi": 50.3,
+    "adx": 14.8,
+    "ema_fast": 81911.56,
+    "ema_slow": 81910.28,
+    "supertrend": 82007.07,
+    "supertrend_dir": -1,
+    "orh": 82195.44,
+    "orl": 81585.94,
+    "ema15": 81929.86
+   },
+   "call": {
+    "checks": [
+     {
+      "name": "Breakout above opening range",
+      "ok": false
+     },
+     {
+      "name": "EMA 9 above EMA 21",
+      "ok": true
+     },
+     {
+      "name": "Supertrend bullish",
+      "ok": false
+     },
+     {
+      "name": "RSI 55\u201375",
+      "ok": false
+     },
+     {
+      "name": "ADX \u2265 20 (trending)",
+      "ok": false
+     },
+     {
+      "name": "15-min trend up",
+      "ok": false
+     },
+     {
+      "name": "Strong bullish candle",
+      "ok": false
+     },
+     {
+      "name": "Not overextended",
+      "ok": true
+     }
+    ],
+    "score": 2,
+    "total": 8
+   },
+   "put": {
+    "checks": [
+     {
+      "name": "Breakdown below opening range",
+      "ok": false
+     },
+     {
+      "name": "EMA 9 below EMA 21",
+      "ok": false
+     },
+     {
+      "name": "Supertrend bearish",
+      "ok": true
+     },
+     {
+      "name": "RSI 25\u201345",
+      "ok": false
+     },
+     {
+      "name": "ADX \u2265 20 (trending)",
+      "ok": false
+     },
+     {
+      "name": "15-min trend down",
+      "ok": true
+     },
+     {
+      "name": "Strong bearish candle",
+      "ok": false
+     },
+     {
+      "name": "Not overextended",
+      "ok": false
+     }
+    ],
+    "score": 2,
+    "total": 8
+   },
+   "open_trade": null
   }
  },
  "errors": [],
- "updated_at": "2026-11-12T14:40:25",
+ "updated_at": "2026-11-12T14:45:25",
  "market": "OPEN",
  "note": "",
  "data_source": "Yahoo Finance 5-min candles (free; can lag 1\u20133 min)"
