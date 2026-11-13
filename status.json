@@ -2,15 +2,15 @@
  "indices": {
   "NIFTY": {
    "name": "NIFTY",
-   "price": 25242.25,
+   "price": 25224.7,
    "prev_close": 25299.35,
-   "change_pct": -0.23,
-   "bar_time": "2026-11-13T10:50:00",
+   "change_pct": -0.3,
+   "bar_time": "2026-11-13T10:55:00",
    "indicators": {
-    "rsi": 56.2,
-    "adx": 12.1,
-    "ema_fast": 25216.21,
-    "ema_slow": 25213.44,
+    "rsi": 51.9,
+    "adx": 11.9,
+    "ema_fast": 25217.91,
+    "ema_slow": 25214.46,
     "supertrend": 25153.47,
     "supertrend_dir": 1,
     "orh": 25201.9,
@@ -33,7 +33,7 @@
      },
      {
       "name": "RSI 55\u201375",
-      "ok": true
+      "ok": false
      },
      {
       "name": "ADX \u2265 20 (trending)",
@@ -45,14 +45,14 @@
      },
      {
       "name": "Strong bullish candle",
-      "ok": true
+      "ok": false
      },
      {
       "name": "Not overextended",
       "ok": true
      }
     ],
-    "score": 6,
+    "score": 4,
     "total": 8
    },
    "put": {
@@ -79,44 +79,44 @@
      },
      {
       "name": "15-min trend down",
-      "ok": false
+      "ok": true
      },
      {
       "name": "Strong bearish candle",
-      "ok": false
+      "ok": true
      },
      {
       "name": "Not overextended",
       "ok": false
      }
     ],
-    "score": 0,
+    "score": 2,
     "total": 8
    },
    "open_trade": null
   },
   "SENSEX": {
    "name": "SENSEX",
-   "price": 81817.11,
+   "price": 81767.19,
    "prev_close": 81911.01,
-   "change_pct": -0.11,
-   "bar_time": "2026-11-13T10:40:22",
+   "change_pct": -0.18,
+   "bar_time": "2026-11-13T10:45:23",
    "indicators": {
-    "rsi": 54.0,
-    "adx": 33.5,
-    "ema_fast": 81741.62,
-    "ema_slow": 81733.95,
-    "supertrend": 81459.25,
+    "rsi": 51.4,
+    "adx": 32.4,
+    "ema_fast": 81735.21,
+    "ema_slow": 81731.02,
+    "supertrend": 81416.08,
     "supertrend_dir": 1,
     "orh": 81813.42,
     "orl": 81302.09,
-    "ema15": 81823.31
+    "ema15": 81817.97
    },
    "call": {
     "checks": [
      {
       "name": "Breakout above opening range",
-      "ok": true
+      "ok": false
      },
      {
       "name": "EMA 9 above EMA 21",
@@ -147,7 +147,7 @@
       "ok": true
      }
     ],
-    "score": 5,
+    "score": 4,
     "total": 8
    },
    "put": {
@@ -192,7 +192,7 @@
   }
  },
  "errors": [],
- "updated_at": "2026-11-13T10:50:25",
+ "updated_at": "2026-11-13T10:55:25",
  "market": "OPEN",
  "note": "",
  "data_source": "Yahoo Finance 5-min candles (free; can lag 1\u20133 min)"
