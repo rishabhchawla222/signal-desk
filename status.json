@@ -2,15 +2,15 @@
  "indices": {
   "NIFTY": {
    "name": "NIFTY",
-   "price": 25189.1,
+   "price": 25188.35,
    "prev_close": 25299.35,
    "change_pct": -0.44,
-   "bar_time": "2026-11-13T11:05:00",
+   "bar_time": "2026-11-13T11:10:00",
    "indicators": {
-    "rsi": 44.3,
-    "adx": 11.3,
-    "ema_fast": 25209.23,
-    "ema_slow": 25210.93,
+    "rsi": 44.2,
+    "adx": 11.9,
+    "ema_fast": 25205.05,
+    "ema_slow": 25208.88,
     "supertrend": 25153.47,
     "supertrend_dir": 1,
     "orh": 25201.9,
@@ -83,34 +83,34 @@
      },
      {
       "name": "Strong bearish candle",
-      "ok": true
+      "ok": false
      },
      {
       "name": "Not overextended",
       "ok": true
      }
     ],
-    "score": 5,
+    "score": 4,
     "total": 8
    },
    "open_trade": null
   },
   "SENSEX": {
    "name": "SENSEX",
-   "price": 81875.28,
+   "price": 81813.69,
    "prev_close": 81911.01,
-   "change_pct": -0.04,
-   "bar_time": "2026-11-13T10:55:22",
+   "change_pct": -0.12,
+   "bar_time": "2026-11-13T11:00:22",
    "indicators": {
-    "rsi": 56.3,
-    "adx": 29.5,
-    "ema_fast": 81792.53,
-    "ema_slow": 81760.18,
-    "supertrend": 81558.66,
+    "rsi": 52.9,
+    "adx": 28.6,
+    "ema_fast": 81785.43,
+    "ema_slow": 81759.19,
+    "supertrend": 81505.1,
     "supertrend_dir": 1,
     "orh": 81813.42,
     "orl": 81302.09,
-    "ema15": 81823.85
+    "ema15": 81822.89
    },
    "call": {
     "checks": [
@@ -128,7 +128,7 @@
      },
      {
       "name": "RSI 55\u201375",
-      "ok": true
+      "ok": false
      },
      {
       "name": "ADX \u2265 20 (trending)",
@@ -136,7 +136,7 @@
      },
      {
       "name": "15-min trend up",
-      "ok": true
+      "ok": false
      },
      {
       "name": "Strong bullish candle",
@@ -147,7 +147,7 @@
       "ok": true
      }
     ],
-    "score": 7,
+    "score": 5,
     "total": 8
    },
    "put": {
@@ -174,7 +174,7 @@
      },
      {
       "name": "15-min trend down",
-      "ok": false
+      "ok": true
      },
      {
       "name": "Strong bearish candle",
@@ -185,14 +185,14 @@
       "ok": false
      }
     ],
-    "score": 1,
+    "score": 2,
     "total": 8
    },
    "open_trade": null
   }
  },
  "errors": [],
- "updated_at": "2026-11-13T11:05:25",
+ "updated_at": "2026-11-13T11:10:25",
  "market": "OPEN",
  "note": "",
  "data_source": "Yahoo Finance 5-min candles (free; can lag 1\u20133 min)"
