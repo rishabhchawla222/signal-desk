@@ -2,20 +2,20 @@
  "indices": {
   "NIFTY": {
    "name": "NIFTY",
-   "price": 25111.95,
+   "price": 25107.15,
    "prev_close": 25299.35,
-   "change_pct": -0.74,
-   "bar_time": "2026-11-13T14:40:00",
+   "change_pct": -0.76,
+   "bar_time": "2026-11-13T14:45:00",
    "indicators": {
-    "rsi": 52.3,
-    "adx": 17.7,
-    "ema_fast": 25092.83,
-    "ema_slow": 25100.12,
+    "rsi": 50.5,
+    "adx": 17.5,
+    "ema_fast": 25095.7,
+    "ema_slow": 25100.76,
     "supertrend": 25118.19,
     "supertrend_dir": -1,
     "orh": 25201.9,
     "orl": 25077.6,
-    "ema15": 25139.82
+    "ema15": 25136.71
    },
    "call": {
     "checks": [
@@ -83,34 +83,34 @@
      },
      {
       "name": "Strong bearish candle",
-      "ok": false
+      "ok": true
      },
      {
       "name": "Not overextended",
       "ok": false
      }
     ],
-    "score": 3,
+    "score": 4,
     "total": 8
    },
    "open_trade": null
   },
   "SENSEX": {
    "name": "SENSEX",
-   "price": 81352.17,
+   "price": 81410.94,
    "prev_close": 81911.01,
-   "change_pct": -0.68,
-   "bar_time": "2026-11-13T14:30:24",
+   "change_pct": -0.61,
+   "bar_time": "2026-11-13T14:35:23",
    "indicators": {
-    "rsi": 39.2,
-    "adx": 32.1,
-    "ema_fast": 81370.16,
-    "ema_slow": 81413.94,
+    "rsi": 47.0,
+    "adx": 29.9,
+    "ema_fast": 81384.64,
+    "ema_slow": 81416.93,
     "supertrend": 81467.99,
     "supertrend_dir": -1,
     "orh": 81813.42,
     "orl": 81302.09,
-    "ema15": 81538.83
+    "ema15": 81542.6
    },
    "call": {
     "checks": [
@@ -166,7 +166,7 @@
      },
      {
       "name": "RSI 25\u201345",
-      "ok": true
+      "ok": false
      },
      {
       "name": "ADX \u2265 20 (trending)",
@@ -185,14 +185,14 @@
       "ok": true
      }
     ],
-    "score": 6,
+    "score": 5,
     "total": 8
    },
    "open_trade": null
   }
  },
  "errors": [],
- "updated_at": "2026-11-13T14:40:25",
+ "updated_at": "2026-11-13T14:45:25",
  "market": "OPEN",
  "note": "",
  "data_source": "Yahoo Finance 5-min candles (free; can lag 1\u20133 min)"
