@@ -2,15 +2,15 @@
  "indices": {
   "NIFTY": {
    "name": "NIFTY",
-   "price": 25202.95,
+   "price": 25188.4,
    "prev_close": 25299.35,
-   "change_pct": -0.38,
-   "bar_time": "2026-11-13T10:15:00",
+   "change_pct": -0.44,
+   "bar_time": "2026-11-13T10:20:00",
    "indicators": {
-    "rsi": 46.6,
-    "adx": 15.9,
-    "ema_fast": 25200.52,
-    "ema_slow": 25210.67,
+    "rsi": 43.4,
+    "adx": 15.0,
+    "ema_fast": 25198.09,
+    "ema_slow": 25208.64,
     "supertrend": 25119.34,
     "supertrend_dir": 1,
     "orh": 25201.9,
@@ -21,7 +21,7 @@
     "checks": [
      {
       "name": "Breakout above opening range",
-      "ok": true
+      "ok": false
      },
      {
       "name": "EMA 9 above EMA 21",
@@ -52,7 +52,7 @@
       "ok": false
      }
     ],
-    "score": 2,
+    "score": 1,
     "total": 8
    },
    "put": {
@@ -71,7 +71,7 @@
      },
      {
       "name": "RSI 25\u201345",
-      "ok": false
+      "ok": true
      },
      {
       "name": "ADX \u2265 20 (trending)",
@@ -83,30 +83,30 @@
      },
      {
       "name": "Strong bearish candle",
-      "ok": false
+      "ok": true
      },
      {
       "name": "Not overextended",
       "ok": true
      }
     ],
-    "score": 3,
+    "score": 5,
     "total": 8
    },
    "open_trade": null
   },
   "SENSEX": {
    "name": "SENSEX",
-   "price": 81738.16,
+   "price": 81745.21,
    "prev_close": 81911.01,
-   "change_pct": -0.21,
-   "bar_time": "2026-11-13T10:05:14",
+   "change_pct": -0.2,
+   "bar_time": "2026-11-13T10:10:23",
    "indicators": {
-    "rsi": 49.7,
-    "adx": 37.4,
-    "ema_fast": 81684.01,
-    "ema_slow": 81721.69,
-    "supertrend": 81228.59,
+    "rsi": 50.1,
+    "adx": 37.1,
+    "ema_fast": 81692.97,
+    "ema_slow": 81722.13,
+    "supertrend": 81265.57,
     "supertrend_dir": 1,
     "orh": 81813.42,
     "orl": 81302.09,
@@ -192,7 +192,7 @@
   }
  },
  "errors": [],
- "updated_at": "2026-11-13T10:15:25",
+ "updated_at": "2026-11-13T10:20:25",
  "market": "OPEN",
  "note": "",
  "data_source": "Yahoo Finance 5-min candles (free; can lag 1\u20133 min)"
