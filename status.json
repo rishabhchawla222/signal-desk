@@ -2,15 +2,15 @@
  "indices": {
   "NIFTY": {
    "name": "NIFTY",
-   "price": 25252.7,
+   "price": 25275.45,
    "prev_close": 25144.3,
-   "change_pct": 0.43,
-   "bar_time": "2026-11-16T12:05:00",
+   "change_pct": 0.52,
+   "bar_time": "2026-11-16T12:10:00",
    "indicators": {
-    "rsi": 56.9,
-    "adx": 15.3,
-    "ema_fast": 25237.49,
-    "ema_slow": 25234.54,
+    "rsi": 62.4,
+    "adx": 16.2,
+    "ema_fast": 25245.08,
+    "ema_slow": 25238.26,
     "supertrend": 25287.88,
     "supertrend_dir": -1,
     "orh": 25310.55,
@@ -45,11 +45,11 @@
      },
      {
       "name": "Strong bullish candle",
-      "ok": false
+      "ok": true
      },
      {
       "name": "Not overextended",
-      "ok": true
+      "ok": false
      }
     ],
     "score": 4,
@@ -97,20 +97,20 @@
   },
   "SENSEX": {
    "name": "SENSEX",
-   "price": 81912.96,
+   "price": 81967.85,
    "prev_close": 81592.45,
-   "change_pct": 0.39,
-   "bar_time": "2026-11-16T11:55:24",
+   "change_pct": 0.46,
+   "bar_time": "2026-11-16T12:00:23",
    "indicators": {
-    "rsi": 47.4,
-    "adx": 16.0,
-    "ema_fast": 81941.14,
-    "ema_slow": 81952.23,
-    "supertrend": 82108.79,
+    "rsi": 52.2,
+    "adx": 15.1,
+    "ema_fast": 81954.75,
+    "ema_slow": 81957.92,
+    "supertrend": 82125.7,
     "supertrend_dir": -1,
     "orh": 82230.33,
     "orl": 81857.39,
-    "ema15": 81843.75
+    "ema15": 81855.57
    },
    "call": {
     "checks": [
@@ -144,10 +144,10 @@
      },
      {
       "name": "Not overextended",
-      "ok": false
+      "ok": true
      }
     ],
-    "score": 1,
+    "score": 2,
     "total": 8
    },
    "put": {
@@ -182,17 +182,17 @@
      },
      {
       "name": "Not overextended",
-      "ok": true
+      "ok": false
      }
     ],
-    "score": 3,
+    "score": 2,
     "total": 8
    },
    "open_trade": null
   }
  },
  "errors": [],
- "updated_at": "2026-11-16T12:05:25",
+ "updated_at": "2026-11-16T12:10:25",
  "market": "OPEN",
  "note": "",
  "data_source": "Yahoo Finance 5-min candles (free; can lag 1\u20133 min)"
