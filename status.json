@@ -2,15 +2,15 @@
  "indices": {
   "NIFTY": {
    "name": "NIFTY",
-   "price": 25191.45,
+   "price": 25195.35,
    "prev_close": 25144.3,
-   "change_pct": 0.19,
-   "bar_time": "2026-11-16T14:15:00",
+   "change_pct": 0.2,
+   "bar_time": "2026-11-16T14:20:00",
    "indicators": {
-    "rsi": 35.5,
-    "adx": 23.6,
-    "ema_fast": 25208.88,
-    "ema_slow": 25227.9,
+    "rsi": 37.3,
+    "adx": 24.3,
+    "ema_fast": 25206.17,
+    "ema_slow": 25224.94,
     "supertrend": 25243.54,
     "supertrend_dir": -1,
     "orh": 25310.55,
@@ -97,16 +97,16 @@
   },
   "SENSEX": {
    "name": "SENSEX",
-   "price": 81868.41,
+   "price": 81794.98,
    "prev_close": 81592.45,
-   "change_pct": 0.34,
-   "bar_time": "2026-11-16T14:05:24",
+   "change_pct": 0.25,
+   "bar_time": "2026-11-16T14:10:24",
    "indicators": {
-    "rsi": 34.3,
-    "adx": 19.5,
-    "ema_fast": 81947.48,
-    "ema_slow": 81984.58,
-    "supertrend": 82030.95,
+    "rsi": 30.0,
+    "adx": 22.3,
+    "ema_fast": 81903.56,
+    "ema_slow": 81960.41,
+    "supertrend": 81971.45,
     "supertrend_dir": -1,
     "orh": 82230.33,
     "orl": 81857.39,
@@ -132,7 +132,7 @@
      },
      {
       "name": "ADX \u2265 20 (trending)",
-      "ok": false
+      "ok": true
      },
      {
       "name": "15-min trend up",
@@ -147,14 +147,14 @@
       "ok": false
      }
     ],
-    "score": 0,
+    "score": 1,
     "total": 8
    },
    "put": {
     "checks": [
      {
       "name": "Breakdown below opening range",
-      "ok": false
+      "ok": true
      },
      {
       "name": "EMA 9 below EMA 21",
@@ -170,7 +170,7 @@
      },
      {
       "name": "ADX \u2265 20 (trending)",
-      "ok": false
+      "ok": true
      },
      {
       "name": "15-min trend down",
@@ -185,14 +185,14 @@
       "ok": false
      }
     ],
-    "score": 4,
+    "score": 6,
     "total": 8
    },
    "open_trade": null
   }
  },
  "errors": [],
- "updated_at": "2026-11-16T14:15:25",
+ "updated_at": "2026-11-16T14:20:25",
  "market": "OPEN",
  "note": "",
  "data_source": "Yahoo Finance 5-min candles (free; can lag 1\u20133 min)"
