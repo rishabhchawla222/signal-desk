@@ -2,15 +2,15 @@
  "indices": {
   "NIFTY": {
    "name": "NIFTY",
-   "price": 25257.35,
+   "price": 25248.65,
    "prev_close": 25144.3,
-   "change_pct": 0.45,
-   "bar_time": "2026-11-16T13:20:00",
+   "change_pct": 0.42,
+   "bar_time": "2026-11-16T13:25:00",
    "indicators": {
-    "rsi": 52.8,
-    "adx": 16.9,
-    "ema_fast": 25259.25,
-    "ema_slow": 25254.51,
+    "rsi": 48.9,
+    "adx": 16.1,
+    "ema_fast": 25257.13,
+    "ema_slow": 25253.98,
     "supertrend": 25287.88,
     "supertrend_dir": -1,
     "orh": 25310.55,
@@ -49,10 +49,10 @@
      },
      {
       "name": "Not overextended",
-      "ok": true
+      "ok": false
      }
     ],
-    "score": 3,
+    "score": 2,
     "total": 8
    },
    "put": {
@@ -87,30 +87,30 @@
      },
      {
       "name": "Not overextended",
-      "ok": false
+      "ok": true
      }
     ],
-    "score": 2,
+    "score": 3,
     "total": 8
    },
    "open_trade": null
   },
   "SENSEX": {
    "name": "SENSEX",
-   "price": 82062.74,
+   "price": 82050.99,
    "prev_close": 81592.45,
-   "change_pct": 0.58,
-   "bar_time": "2026-11-16T13:10:24",
+   "change_pct": 0.56,
+   "bar_time": "2026-11-16T13:15:23",
    "indicators": {
-    "rsi": 55.3,
-    "adx": 19.6,
-    "ema_fast": 82050.48,
-    "ema_slow": 82031.52,
+    "rsi": 53.8,
+    "adx": 19.8,
+    "ema_fast": 82048.97,
+    "ema_slow": 82032.45,
     "supertrend": 81920.93,
     "supertrend_dir": 1,
     "orh": 82230.33,
     "orl": 81857.39,
-    "ema15": 81927.25
+    "ema15": 81939.03
    },
    "call": {
     "checks": [
@@ -128,7 +128,7 @@
      },
      {
       "name": "RSI 55\u201375",
-      "ok": true
+      "ok": false
      },
      {
       "name": "ADX \u2265 20 (trending)",
@@ -147,7 +147,7 @@
       "ok": true
      }
     ],
-    "score": 5,
+    "score": 4,
     "total": 8
    },
    "put": {
@@ -192,7 +192,7 @@
   }
  },
  "errors": [],
- "updated_at": "2026-11-16T13:20:25",
+ "updated_at": "2026-11-16T13:25:25",
  "market": "OPEN",
  "note": "",
  "data_source": "Yahoo Finance 5-min candles (free; can lag 1\u20133 min)"
