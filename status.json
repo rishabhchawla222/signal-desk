@@ -97,16 +97,16 @@
   },
   "SENSEX": {
    "name": "SENSEX",
-   "price": 82704.17,
+   "price": 82710.93,
    "prev_close": 82104.79,
-   "change_pct": 0.73,
-   "bar_time": "2026-11-17T13:55:23",
+   "change_pct": 0.74,
+   "bar_time": "2026-11-17T13:55:43",
    "indicators": {
-    "rsi": 56.1,
-    "adx": 30.0,
-    "ema_fast": 82647.66,
-    "ema_slow": 82660.38,
-    "supertrend": 82518.67,
+    "rsi": 56.8,
+    "adx": 30.1,
+    "ema_fast": 82649.01,
+    "ema_slow": 82661.0,
+    "supertrend": 82523.4,
     "supertrend_dir": 1,
     "orh": 82349.58,
     "orl": 82108.13,
@@ -192,7 +192,7 @@
   }
  },
  "errors": [],
- "updated_at": "2026-11-17T14:05:25",
+ "updated_at": "2026-11-17T14:05:45",
  "market": "OPEN",
  "note": "",
  "data_source": "Yahoo Finance 5-min candles (free; can lag 1\u20133 min)"
