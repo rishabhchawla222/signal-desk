@@ -2,20 +2,20 @@
  "indices": {
   "NIFTY": {
    "name": "NIFTY",
-   "price": 25445.65,
+   "price": 25438.45,
    "prev_close": 25291.1,
-   "change_pct": 0.61,
-   "bar_time": "2026-11-17T11:25:00",
+   "change_pct": 0.58,
+   "bar_time": "2026-11-17T11:30:00",
    "indicators": {
-    "rsi": 76.3,
-    "adx": 44.2,
-    "ema_fast": 25421.03,
-    "ema_slow": 25388.64,
-    "supertrend": 25383.84,
+    "rsi": 72.5,
+    "adx": 45.1,
+    "ema_fast": 25424.51,
+    "ema_slow": 25393.16,
+    "supertrend": 25384.99,
     "supertrend_dir": 1,
     "orh": 25357.85,
     "orl": 25269.2,
-    "ema15": 25316.23
+    "ema15": 25327.87
    },
    "call": {
     "checks": [
@@ -33,7 +33,7 @@
      },
      {
       "name": "RSI 55\u201375",
-      "ok": false
+      "ok": true
      },
      {
       "name": "ADX \u2265 20 (trending)",
@@ -52,7 +52,7 @@
       "ok": false
      }
     ],
-    "score": 5,
+    "score": 6,
     "total": 8
    },
    "put": {
@@ -83,34 +83,34 @@
      },
      {
       "name": "Strong bearish candle",
-      "ok": false
+      "ok": true
      },
      {
       "name": "Not overextended",
       "ok": false
      }
     ],
-    "score": 1,
+    "score": 2,
     "total": 8
    },
    "open_trade": null
   },
   "SENSEX": {
    "name": "SENSEX",
-   "price": 82640.85,
+   "price": 82632.74,
    "prev_close": 82104.79,
-   "change_pct": 0.65,
-   "bar_time": "2026-11-17T11:15:23",
+   "change_pct": 0.64,
+   "bar_time": "2026-11-17T11:20:24",
    "indicators": {
-    "rsi": 76.4,
-    "adx": 48.4,
-    "ema_fast": 82557.25,
-    "ema_slow": 82445.59,
-    "supertrend": 82459.77,
+    "rsi": 74.4,
+    "adx": 49.5,
+    "ema_fast": 82569.66,
+    "ema_slow": 82461.21,
+    "supertrend": 82450.33,
     "supertrend_dir": 1,
     "orh": 82349.58,
     "orl": 82108.13,
-    "ema15": 82233.85
+    "ema15": 82232.25
    },
    "call": {
     "checks": [
@@ -128,7 +128,7 @@
      },
      {
       "name": "RSI 55\u201375",
-      "ok": false
+      "ok": true
      },
      {
       "name": "ADX \u2265 20 (trending)",
@@ -147,7 +147,7 @@
       "ok": false
      }
     ],
-    "score": 5,
+    "score": 6,
     "total": 8
    },
    "put": {
@@ -192,7 +192,7 @@
   }
  },
  "errors": [],
- "updated_at": "2026-11-17T11:25:25",
+ "updated_at": "2026-11-17T11:30:25",
  "market": "OPEN",
  "note": "",
  "data_source": "Yahoo Finance 5-min candles (free; can lag 1\u20133 min)"
