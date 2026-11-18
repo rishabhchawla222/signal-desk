@@ -2,15 +2,15 @@
  "indices": {
   "NIFTY": {
    "name": "NIFTY",
-   "price": 25356.1,
+   "price": 25365.05,
    "prev_close": 25387.4,
-   "change_pct": -0.12,
-   "bar_time": "2026-11-18T09:20:00",
+   "change_pct": -0.09,
+   "bar_time": "2026-11-18T09:25:00",
    "indicators": {
-    "rsi": 27.6,
-    "adx": 23.8,
-    "ema_fast": 25402.43,
-    "ema_slow": 25418.38,
+    "rsi": 31.8,
+    "adx": 26.6,
+    "ema_fast": 25394.96,
+    "ema_slow": 25413.53,
     "supertrend": 25422.93,
     "supertrend_dir": -1,
     "orh": null,
@@ -192,7 +192,7 @@
   }
  },
  "errors": [],
- "updated_at": "2026-11-18T09:20:21",
+ "updated_at": "2026-11-18T09:25:25",
  "market": "OPEN",
  "note": "",
  "data_source": "Yahoo Finance 5-min candles (free; can lag 1\u20133 min)"
