@@ -2,16 +2,16 @@
  "indices": {
   "NIFTY": {
    "name": "NIFTY",
-   "price": 25202.35,
+   "price": 25191.55,
    "prev_close": 25387.4,
-   "change_pct": -0.73,
-   "bar_time": "2026-11-18T12:35:00",
+   "change_pct": -0.77,
+   "bar_time": "2026-11-18T12:40:00",
    "indicators": {
-    "rsi": 33.7,
-    "adx": 32.7,
-    "ema_fast": 25231.08,
-    "ema_slow": 25245.95,
-    "supertrend": 25283.55,
+    "rsi": 31.6,
+    "adx": 33.4,
+    "ema_fast": 25223.18,
+    "ema_slow": 25241.0,
+    "supertrend": 25272.39,
     "supertrend_dir": -1,
     "orh": 25390.65,
     "orl": 25281.8,
@@ -102,10 +102,10 @@
     "entry_time": "2026-11-18T11:55:00",
     "entry": 25235.75,
     "risk": 42.94,
-    "sl": 25278.69,
+    "sl": 25235.75,
     "initial_sl": 25278.69,
     "target": 25171.35,
-    "breakeven": false,
+    "breakeven": true,
     "status": "OPEN",
     "valid_until": "2026-11-18T12:05:00",
     "chase_limit": 25222.87,
@@ -140,26 +140,28 @@
      "iv": 14.8,
      "delta": -0.48,
      "time": "2026-11-18T11:55:25",
-     "spot_now": 25244.35
+     "spot_now": 25244.35,
+     "now": 202.5,
+     "now_estimated": false
     }
    }
   },
   "SENSEX": {
    "name": "SENSEX",
-   "price": 82091.41,
+   "price": 82067.75,
    "prev_close": 82532.19,
-   "change_pct": -0.53,
-   "bar_time": "2026-11-18T12:25:23",
+   "change_pct": -0.56,
+   "bar_time": "2026-11-18T12:30:26",
    "indicators": {
-    "rsi": 42.6,
-    "adx": 33.0,
-    "ema_fast": 82108.93,
-    "ema_slow": 82138.05,
-    "supertrend": 82305.19,
+    "rsi": 41.2,
+    "adx": 33.1,
+    "ema_fast": 82094.83,
+    "ema_slow": 82128.63,
+    "supertrend": 82281.12,
     "supertrend_dir": -1,
     "orh": 82571.81,
     "orl": 82212.63,
-    "ema15": 82277.61
+    "ema15": 82257.62
    },
    "call": {
     "checks": [
@@ -241,7 +243,7 @@
   }
  },
  "errors": [],
- "updated_at": "2026-11-18T12:35:25",
+ "updated_at": "2026-11-18T12:40:28",
  "market": "OPEN",
  "note": "",
  "data_source": "Yahoo Finance 5-min candles (free; can lag 1\u20133 min)"
