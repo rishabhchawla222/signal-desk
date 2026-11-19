@@ -2,20 +2,20 @@
  "indices": {
   "NIFTY": {
    "name": "NIFTY",
-   "price": 25381.8,
+   "price": 25386.7,
    "prev_close": 25227.95,
-   "change_pct": 0.61,
-   "bar_time": "2026-11-19T13:40:00",
+   "change_pct": 0.63,
+   "bar_time": "2026-11-19T13:45:00",
    "indicators": {
-    "rsi": 63.5,
-    "adx": 29.5,
-    "ema_fast": 25367.38,
-    "ema_slow": 25356.23,
-    "supertrend": 25322.64,
+    "rsi": 64.9,
+    "adx": 30.4,
+    "ema_fast": 25371.25,
+    "ema_slow": 25359.0,
+    "supertrend": 25335.81,
     "supertrend_dir": 1,
     "orh": 25255.35,
     "orl": 25115.9,
-    "ema15": 25315.26
+    "ema15": 25322.06
    },
    "call": {
     "checks": [
@@ -45,14 +45,14 @@
      },
      {
       "name": "Strong bullish candle",
-      "ok": true
+      "ok": false
      },
      {
       "name": "Not overextended",
       "ok": false
      }
     ],
-    "score": 7,
+    "score": 6,
     "total": 8
    },
    "put": {
@@ -102,10 +102,10 @@
     "entry_time": "2026-11-19T13:10:00",
     "entry": 25356.85,
     "risk": 32.08,
-    "sl": 25324.77,
+    "sl": 25356.85,
     "initial_sl": 25324.77,
     "target": 25404.97,
-    "breakeven": false,
+    "breakeven": true,
     "status": "OPEN",
     "valid_until": "2026-11-19T13:20:00",
     "chase_limit": 25366.47,
@@ -140,26 +140,28 @@
      "iv": 13.3,
      "delta": 0.53,
      "time": "2026-11-19T13:10:25",
-     "spot_now": 25357.05
+     "spot_now": 25357.05,
+     "now": 171.1,
+     "now_estimated": false
     }
    }
   },
   "SENSEX": {
    "name": "SENSEX",
-   "price": 82466.75,
+   "price": 82504.8,
    "prev_close": 82031.81,
-   "change_pct": 0.53,
-   "bar_time": "2026-11-19T13:30:25",
+   "change_pct": 0.58,
+   "bar_time": "2026-11-19T13:35:25",
    "indicators": {
-    "rsi": 56.2,
+    "rsi": 59.5,
     "adx": 37.7,
-    "ema_fast": 82465.19,
-    "ema_slow": 82439.35,
-    "supertrend": 82324.74,
+    "ema_fast": 82479.9,
+    "ema_slow": 82448.81,
+    "supertrend": 82340.0,
     "supertrend_dir": 1,
     "orh": 82177.04,
     "orl": 81735.86,
-    "ema15": 82322.96
+    "ema15": 82327.0
    },
    "call": {
     "checks": [
@@ -241,7 +243,7 @@
   }
  },
  "errors": [],
- "updated_at": "2026-11-19T13:40:25",
+ "updated_at": "2026-11-19T13:45:26",
  "market": "OPEN",
  "note": "",
  "data_source": "Yahoo Finance 5-min candles (free; can lag 1\u20133 min)"
