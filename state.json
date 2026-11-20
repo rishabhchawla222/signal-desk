@@ -4,64 +4,15 @@
    "date": "2026-11-20",
    "trades_today": 2,
    "last_loss_end": null,
-   "open": {
-    "id": "NIFTY-20261120-1440-CALL",
-    "index": "NIFTY",
-    "side": "CALL",
-    "option": "NIFTY 25750 CE",
-    "strike": 25750,
-    "entry_time": "2026-11-20T14:40:00",
-    "entry": 25744.4,
-    "risk": 33.73,
-    "sl": 25710.67,
-    "initial_sl": 25710.67,
-    "target": 25794.99,
-    "breakeven": false,
-    "status": "OPEN",
-    "valid_until": "2026-11-20T14:50:00",
-    "chase_limit": 25754.52,
-    "reasons": [
-     "Breakout above opening range",
-     "EMA 9 above EMA 21",
-     "Supertrend bullish",
-     "RSI 55\u201375",
-     "ADX \u2265 20 (trending)",
-     "15-min trend up",
-     "Strong bullish candle",
-     "Not overextended"
-    ],
-    "indicators": {
-     "rsi": 58.9,
-     "adx": 41.2,
-     "ema_fast": 25749.69,
-     "ema_slow": 25729.72,
-     "supertrend": 25706.26
-    },
-    "premium": {
-     "source": "NSE live",
-     "estimated": false,
-     "expiry": "2026-11-23",
-     "price": 118.1,
-     "ltp": 118,
-     "bid": 118,
-     "ask": 118.2,
-     "buy_upto": 121.75,
-     "sl": 101.75,
-     "target": 146.05,
-     "iv": 12.2,
-     "delta": 0.51,
-     "time": "2026-11-20T14:40:25",
-     "spot_now": 25744.05
-    }
-   },
-   "last_bar": "2026-11-20T14:55:00"
+   "open": null,
+   "last_bar": "2026-11-20T15:00:00"
   },
   "SENSEX": {
    "date": "2026-11-20",
    "trades_today": 0,
    "last_loss_end": null,
    "open": null,
-   "last_bar": "2026-11-20T14:45:24"
+   "last_bar": "2026-11-20T14:50:25"
   }
  },
  "summary_sent": "2026-11-03"
