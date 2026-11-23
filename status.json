@@ -2,15 +2,15 @@
  "indices": {
   "NIFTY": {
    "name": "NIFTY",
-   "price": 25414.35,
+   "price": 25442.05,
    "prev_close": 25800.6,
-   "change_pct": -1.5,
-   "bar_time": "2026-11-23T14:15:00",
+   "change_pct": -1.39,
+   "bar_time": "2026-11-23T14:20:00",
    "indicators": {
-    "rsi": 31.0,
-    "adx": 39.2,
-    "ema_fast": 25439.62,
-    "ema_slow": 25464.4,
+    "rsi": 40.9,
+    "adx": 38.2,
+    "ema_fast": 25440.11,
+    "ema_slow": 25462.37,
     "supertrend": 25496.0,
     "supertrend_dir": -1,
     "orh": 25991.95,
@@ -45,14 +45,14 @@
      },
      {
       "name": "Strong bullish candle",
-      "ok": false
+      "ok": true
      },
      {
       "name": "Not overextended",
       "ok": false
      }
     ],
-    "score": 1,
+    "score": 2,
     "total": 8
    },
    "put": {
@@ -83,11 +83,11 @@
      },
      {
       "name": "Strong bearish candle",
-      "ok": true
+      "ok": false
      },
      {
       "name": "Not overextended",
-      "ok": false
+      "ok": true
      }
     ],
     "score": 7,
@@ -97,16 +97,16 @@
   },
   "SENSEX": {
    "name": "SENSEX",
-   "price": 82804.41,
+   "price": 82683.53,
    "prev_close": 83919.71,
-   "change_pct": -1.33,
-   "bar_time": "2026-11-23T14:05:23",
+   "change_pct": -1.47,
+   "bar_time": "2026-11-23T14:10:22",
    "indicators": {
-    "rsi": 40.3,
-    "adx": 36.9,
-    "ema_fast": 82788.53,
-    "ema_slow": 82850.86,
-    "supertrend": 82944.04,
+    "rsi": 32.2,
+    "adx": 37.7,
+    "ema_fast": 82749.71,
+    "ema_slow": 82826.45,
+    "supertrend": 82901.1,
     "supertrend_dir": -1,
     "orh": 84656.72,
     "orl": 83538.69,
@@ -182,17 +182,17 @@
      },
      {
       "name": "Not overextended",
-      "ok": true
+      "ok": false
      }
     ],
-    "score": 7,
+    "score": 6,
     "total": 8
    },
    "open_trade": null
   }
  },
  "errors": [],
- "updated_at": "2026-11-23T14:15:25",
+ "updated_at": "2026-11-23T14:20:25",
  "market": "OPEN",
  "note": "",
  "data_source": "Yahoo Finance 5-min candles (free; can lag 1\u20133 min)"
