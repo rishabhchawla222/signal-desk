@@ -2,15 +2,15 @@
  "indices": {
   "NIFTY": {
    "name": "NIFTY",
-   "price": 25456.1,
+   "price": 25436.15,
    "prev_close": 25800.6,
-   "change_pct": -1.34,
-   "bar_time": "2026-11-23T14:30:00",
+   "change_pct": -1.41,
+   "bar_time": "2026-11-23T14:35:00",
    "indicators": {
-    "rsi": 45.3,
-    "adx": 35.0,
-    "ema_fast": 25444.55,
-    "ema_slow": 25460.6,
+    "rsi": 40.5,
+    "adx": 34.2,
+    "ema_fast": 25442.87,
+    "ema_slow": 25458.38,
     "supertrend": 25496.0,
     "supertrend_dir": -1,
     "orh": 25991.95,
@@ -45,14 +45,14 @@
      },
      {
       "name": "Strong bullish candle",
-      "ok": true
+      "ok": false
      },
      {
       "name": "Not overextended",
       "ok": false
      }
     ],
-    "score": 2,
+    "score": 1,
     "total": 8
    },
    "put": {
@@ -71,7 +71,7 @@
      },
      {
       "name": "RSI 25\u201345",
-      "ok": false
+      "ok": true
      },
      {
       "name": "ADX \u2265 20 (trending)",
@@ -83,30 +83,79 @@
      },
      {
       "name": "Strong bearish candle",
-      "ok": false
+      "ok": true
      },
      {
       "name": "Not overextended",
       "ok": true
      }
     ],
-    "score": 6,
+    "score": 8,
     "total": 8
    },
-   "open_trade": null
+   "open_trade": {
+    "id": "NIFTY-20261123-1435-PUT",
+    "index": "NIFTY",
+    "side": "PUT",
+    "option": "NIFTY 25450 PE",
+    "strike": 25450,
+    "entry_time": "2026-11-23T14:35:00",
+    "entry": 25436.15,
+    "risk": 39.49,
+    "sl": 25475.65,
+    "initial_sl": 25475.65,
+    "target": 25376.91,
+    "breakeven": false,
+    "status": "OPEN",
+    "valid_until": "2026-11-23T14:45:00",
+    "chase_limit": 25424.3,
+    "reasons": [
+     "Breakdown below opening range",
+     "EMA 9 below EMA 21",
+     "Supertrend bearish",
+     "RSI 25\u201345",
+     "ADX \u2265 20 (trending)",
+     "15-min trend down",
+     "Strong bearish candle",
+     "Not overextended"
+    ],
+    "indicators": {
+     "rsi": 40.5,
+     "adx": 34.2,
+     "ema_fast": 25442.87,
+     "ema_slow": 25458.38,
+     "supertrend": 25496.0
+    },
+    "premium": {
+     "source": "NSE live",
+     "estimated": false,
+     "expiry": "2026-12-01",
+     "price": 255.0,
+     "ltp": 254.6,
+     "bid": 254.65,
+     "ask": 255.4,
+     "buy_upto": 263.05,
+     "sl": 235.75,
+     "target": 283.85,
+     "iv": 17.6,
+     "delta": -0.48,
+     "time": "2026-11-23T14:35:25",
+     "spot_now": 25434.6
+    }
+   }
   },
   "SENSEX": {
    "name": "SENSEX",
-   "price": 82658.43,
+   "price": 82732.0,
    "prev_close": 83919.71,
-   "change_pct": -1.5,
-   "bar_time": "2026-11-23T14:20:23",
+   "change_pct": -1.42,
+   "bar_time": "2026-11-23T14:25:25",
    "indicators": {
-    "rsi": 32.4,
-    "adx": 39.7,
-    "ema_fast": 82709.98,
-    "ema_slow": 82793.49,
-    "supertrend": 82876.97,
+    "rsi": 40.4,
+    "adx": 37.5,
+    "ema_fast": 82725.38,
+    "ema_slow": 82793.58,
+    "supertrend": 82888.97,
     "supertrend_dir": -1,
     "orh": 84656.72,
     "orl": 83538.69,
@@ -182,17 +231,17 @@
      },
      {
       "name": "Not overextended",
-      "ok": false
+      "ok": true
      }
     ],
-    "score": 6,
+    "score": 7,
     "total": 8
    },
    "open_trade": null
   }
  },
  "errors": [],
- "updated_at": "2026-11-23T14:30:25",
+ "updated_at": "2026-11-23T14:35:28",
  "market": "OPEN",
  "note": "",
  "data_source": "Yahoo Finance 5-min candles (free; can lag 1\u20133 min)"
