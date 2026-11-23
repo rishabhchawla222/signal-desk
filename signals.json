@@ -1312,7 +1312,7 @@
   "initial_sl": 25665.13,
   "target": 25487.05,
   "breakeven": true,
-  "status": "OPEN",
+  "status": "CLOSED",
   "valid_until": "2026-11-23T11:30:00",
   "chase_limit": 25572.53,
   "reasons": [
@@ -1348,17 +1348,28 @@
    "time": "2026-11-23T11:20:25",
    "spot_now": 25590.95,
    "now": 305.4,
-   "now_estimated": false
+   "now_estimated": false,
+   "exit_price": 312.95,
+   "exit_price_estimated": false,
+   "pnl": 50.45
   },
   "late": false,
   "auto": {
-   "status": "bought",
+   "status": "sold",
    "qty": 65,
-   "price": 262.85,
-   "charges": 31.19,
+   "price": 312.6,
+   "buy_price": 262.85,
    "estimated": false,
-   "time": "2026-11-23T11:20:26",
-   "cash_after": 999374.08
-  }
+   "net": 3140.06,
+   "charges": 93.69,
+   "time": "2026-11-23T12:45:26",
+   "cash_after": 1019630.58
+  },
+  "exit_time": "2026-11-23T12:45:00",
+  "exit": 25487.05,
+  "outcome": "TARGET",
+  "note": "Target hit",
+  "points": 106.85,
+  "r_multiple": 1.5
  }
 ]
