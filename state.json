@@ -13,10 +13,10 @@
     "entry_time": "2026-11-23T11:20:00",
     "entry": 25593.9,
     "risk": 71.23,
-    "sl": 25665.13,
+    "sl": 25593.9,
     "initial_sl": 25665.13,
     "target": 25487.05,
-    "breakeven": false,
+    "breakeven": true,
     "status": "OPEN",
     "valid_until": "2026-11-23T11:30:00",
     "chase_limit": 25572.53,
@@ -51,17 +51,19 @@
      "iv": 18.1,
      "delta": -0.48,
      "time": "2026-11-23T11:20:25",
-     "spot_now": 25590.95
+     "spot_now": 25590.95,
+     "now": 305.4,
+     "now_estimated": false
     }
    },
-   "last_bar": "2026-11-23T11:45:00"
+   "last_bar": "2026-11-23T11:50:00"
   },
   "SENSEX": {
    "date": "2026-11-23",
    "trades_today": 0,
    "last_loss_end": null,
    "open": null,
-   "last_bar": "2026-11-23T11:35:23"
+   "last_bar": "2026-11-23T11:40:23"
   }
  },
  "summary_sent": "2026-11-03"
